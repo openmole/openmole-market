@@ -38,6 +38,5 @@ val learning =
     name := "learning",
     inputs += (folder, p1) 
   )
-
-val generateDataSets = fileExploration -< copy >- parameterExploration
-(generateDataSets -< folderExploration -< learning)
+ 
+(fileExploration -< copy >- parameterExploration -< folderExploration -< learning)
