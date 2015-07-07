@@ -1,6 +1,8 @@
 val i = Val[Int]
 val images = Val[Array[File]]
 val folder = Val[File]
+val folders = folder.toArray
+
 val p1 = Val[Double]
 
 val fileExploration = 
@@ -14,16 +16,28 @@ val copy =
     |val folder = newDir("images")
     |images.foreach { image => image copy (folder / image.getName) }
     |""".stripMargin) set ( 
+    name := "copy",
     inputs += images,
     outputs += folder  
   )
   
 val parameterExploration = 
   ExplorationTask(p1 in (0.5 to 1.5 by 0.5)) set (
-    inputs += folder,
-    outputs += folder
+    inputs += folders,
+    outputs += folders
   )
   
-val learning = ScalaTask("""println(s"$folder $p1")""") set ( inputs += (folder, p1) )
- 
-(fileExploration -< copy -- parameterExploration -< learning) 
+val folderExploration = 
+  ExplorationTask(folder in folders) set (
+    inputs += p1,
+    outputs += p1
+  )
+  
+val learning = 
+  ScalaTask("""println(s"$folder $p1")""") set ( 
+    name := "learning",
+    inputs += (folder, p1) 
+  )
+
+val generateDataSets = fileExploration -< copy >- parameterExploration
+(generateDataSets -< folderExploration -< learning)
