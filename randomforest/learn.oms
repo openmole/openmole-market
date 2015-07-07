@@ -33,6 +33,7 @@ val parameterExploration =
     outputs += folders
   )
 
+
 val folderExploration = 
   ExplorationTask(folder in folders) set (
     inputs += (nbTrees, treeDepth),
@@ -47,9 +48,10 @@ val dummyLearning =
 
 val learning = SystemExecTask(
   "./archive_python.bin",
-  "archive_python/re-execute.sh python forest.py /home/jopasserat/Downloads/leaves ${nbTrees} ${treeDepth}"
+  "archive_python/re-execute.sh python forest.py /home/jopasserat/Downloads/images ${nbTrees} ${treeDepth}"
 ) set (
   inputs += (nbTrees, treeDepth),
+  inputFiles += (folder, "archive_python/rootfs/home/jopasserat/Downloads/images"),
   resources += archiveLocation
 )
 
@@ -60,4 +62,4 @@ SLURMEnvironment(
   queue="short"
 )
 
-(fileExploration -< copy >- parameterExploration -< folderExploration) -< (learning on slurm)
+(fileExploration -< copy >- parameterExploration -< folderExploration) -< (learning)
