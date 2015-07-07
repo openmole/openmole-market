@@ -1,16 +1,20 @@
-val i = Val[Int]
+val kFold  = Val[Int]
 val images = Val[Array[File]]
-val p1 = Val[Double]
+val nbTrees   = Val[Int]
+val treeDepth = Val[Int]
   
 val parameterExploration = 
-  ExplorationTask(p1 in (0.5 to 1.5 by 0.5))
+  ExplorationTask(
+  (nbTrees in (5 to 25 by 5)) x
+  (treeDepth in (5 to 21 by 3))
+  )
   
 val imagesExploration = 
   ExplorationTask(
-   (i in (0 until 10)) x
-   (images is ListFilesDomain(inputDirectory, filter = ".*\\.jpg").shuffle.take(10))) set (
-    inputs += p1,
-    outputs += p1
+   (kFold in (0 until 10)) x
+   (images is ListFilesDomain(inputDirectory, filter = ".*\\.jpg").shuffle)) set (
+    inputs += (nbTrees, treeDepth),
+    outputs += (nbTrees, treeDepth)
   )
   
 val dummyLearning = 
