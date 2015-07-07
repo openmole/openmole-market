@@ -13,11 +13,26 @@ val imagesExploration =
     outputs += p1
   )
   
-val learning = 
+val dummyLearning = 
   ScalaTask("""println(s"$images $p1")""") set ( 
     name := "learning",
     inputs += p1,
     inputFileArrays += (images, "images/image", ".jpg", link = true) 
   )
- 
+
+val learning = SystemExecTask(
+  "./archive_python.bin",
+  "archive_python/re-execute.sh python forest.py /home/jopasserat/Downloads/leaves ${nbTrees} ${treeDepth}"
+) set (
+  inputs += (nbTrees, treeDepth),
+  inputFileArrays += (images, "archive_python/rootfs/home/jopasserat/Downloads/images/image", ".jpg", link = true)
+)
+
+val slurm =
+SLURMEnvironment(
+  "jpassera",
+  "predict5.doc.ic.ac.uk",
+  queue="short"
+)
+
 (parameterExploration -< imagesExploration -< learning)
