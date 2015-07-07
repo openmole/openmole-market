@@ -1,3 +1,5 @@
+// TODO define inputDirectory and archiveLocation
+
 val kFold  = Val[Int]
 val images = Val[Array[File]]
 val folder = Val[File]
@@ -37,10 +39,25 @@ val folderExploration =
     outputs += (nbTrees, treeDepth)
   )
   
-val learning = 
+val dummyLearning = 
   ScalaTask("""println(s"$folder $nbTrees $treeDepth")""") set ( 
     name := "learning",
     inputs += (folder, nbTrees, treeDepth) 
   )
- 
-(fileExploration -< copy >- parameterExploration -< folderExploration -< learning)
+
+val learning = SystemExecTask(
+  "./archive_python.bin",
+  "archive_python/re-execute.sh python forest.py /home/jopasserat/Downloads/leaves ${nbTrees} ${treeDepth}"
+) set (
+  inputs += (nbTrees, treeDepth),
+  resources += archiveLocation
+)
+
+val slurm =
+SLURMEnvironment(
+  "jpassera",
+  "predict5.doc.ic.ac.uk",
+  queue="short"
+)
+
+(fileExploration -< copy >- parameterExploration -< folderExploration) -< (learning on slurm)
