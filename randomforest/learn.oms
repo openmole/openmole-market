@@ -1,4 +1,4 @@
-val i = Val[Int]
+val kFold  = Val[Int]
 val images = Val[Array[File]]
 val folder = Val[File]
 val folders = folder.toArray
@@ -7,20 +7,20 @@ val p1 = Val[Double]
 
 val fileExploration = 
   ExplorationTask(
-    (i in (0 until 10)) x
-    (images is ListFilesDomain(inputDirectory, filter = ".*\\.jpg").shuffle.take(10))
+    (kFold in (0 until 10)) x
+    (images is ListFilesDomain(inputDirectory, filter = ".*\\.jpg").shuffle)
   )
   
 val copy = 
   ScalaTask("""
     |val folder = newDir("images")
-    |images.foreach { image => image copy (folder / image.getName) }
+    |images.zipWithIndex.foreach { case (image, id) => image copy (folder / (id + ".jpg")) }
     |""".stripMargin) set ( 
     name := "copy",
     inputs += images,
     outputs += folder  
   )
-  
+
 val parameterExploration = 
   ExplorationTask(p1 in (0.5 to 1.5 by 0.5)) set (
     inputs += folders,
