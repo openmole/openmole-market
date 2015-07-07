@@ -3,7 +3,8 @@ val images = Val[Array[File]]
 val folder = Val[File]
 val folders = folder.toArray
 
-val p1 = Val[Double]
+val nbTrees   = Val[Int]
+val treeDepth = Val[Int]
 
 val fileExploration = 
   ExplorationTask(
@@ -22,21 +23,24 @@ val copy =
   )
 
 val parameterExploration = 
-  ExplorationTask(p1 in (0.5 to 1.5 by 0.5)) set (
+  ExplorationTask(
+    (nbTrees in (5 to 25 by 5)) x
+    (treeDepth in (5 to 21 by 3))
+  ) set (
     inputs += folders,
     outputs += folders
   )
-  
+
 val folderExploration = 
   ExplorationTask(folder in folders) set (
-    inputs += p1,
-    outputs += p1
+    inputs += (nbTrees, treeDepth),
+    outputs += (nbTrees, treeDepth)
   )
   
 val learning = 
-  ScalaTask("""println(s"$folder $p1")""") set ( 
+  ScalaTask("""println(s"$folder $nbTrees $treeDepth")""") set ( 
     name := "learning",
-    inputs += (folder, p1) 
+    inputs += (folder, nbTrees, treeDepth) 
   )
  
 (fileExploration -< copy >- parameterExploration -< folderExploration -< learning)
