@@ -24,14 +24,20 @@ val dummyLearning =
     inputFileArrays += (images, "images/image", ".jpg", link = true) 
   )
 
+val accuracy = Val[String]
 val learning = SystemExecTask(
-  "./archive_python.bin",
-  "archive_python/re-execute.sh python forest.py /home/jopasserat/Downloads/images ${nbTrees} ${treeDepth}"
+  "./archive_python2.bin",
+  "archive_python2/re-execute.sh python forest.py /home/jopasserat/Downloads/images ${nbTrees} ${treeDepth}"
 ) set (
   inputs += (nbTrees, treeDepth),
   resources += archiveLocation,
-  inputFileArrays += (images, "archive_python/rootfs/home/jopasserat/Downloads/images/image", ".jpg", link = true)
+  inputFileArrays += (images, "archive_python2/rootfs/home/jopasserat/Downloads/images/image", ".jpg", link = true),
+  stdOut := accuracy,
+  outputs += (nbTrees, treeDepth)
 )
+
+val resultsFile = Val[File]
+val h = AppendToCSVFileHook("/tmp/accuracy.csv", nbTrees, treeDepth, accuracy)
 
 val slurm =
 SLURMEnvironment(
@@ -40,5 +46,5 @@ SLURMEnvironment(
   queue="short"
 )
 
-(parameterExploration -< imagesExploration -< learning) start
+(parameterExploration -< imagesExploration -< (learning hook h)) start
 
