@@ -18,9 +18,9 @@ val imagesExploration =
   )
   
 val dummyLearning = 
-  ScalaTask("""println(s"$images $p1")""") set ( 
+  ScalaTask("""println(s"${images.head} $nbTrees $treeDepth")""") set ( 
     name := "learning",
-    inputs += p1,
+    inputs += (nbTrees, treeDepth),
     inputFileArrays += (images, "images/image", ".jpg", link = true) 
   )
 
@@ -29,7 +29,7 @@ val learning = SystemExecTask(
   "archive_python/re-execute.sh python forest.py /home/jopasserat/Downloads/images ${nbTrees} ${treeDepth}"
 ) set (
   inputs += (nbTrees, treeDepth),
-  resources += archiveLocation
+  resources += archiveLocation,
   inputFileArrays += (images, "archive_python/rootfs/home/jopasserat/Downloads/images/image", ".jpg", link = true)
 )
 
@@ -40,5 +40,5 @@ SLURMEnvironment(
   queue="short"
 )
 
-(parameterExploration -< imagesExploration -< learning)
+(parameterExploration -< imagesExploration -< learning) start
 
