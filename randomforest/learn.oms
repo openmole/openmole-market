@@ -1,23 +1,24 @@
 val images = Val[Array[File]]
 val nbTrees   = Val[Int]
 val treeDepth = Val[Int]
+val kFold = 10
   
-val inputDirectory = File("/home/reuillon/Documents/Recherche/Work/OpenMOLE/tutoimperial")
+val inputDirectory = File("/home/jopasserat/postdoc/openmole/tutos/imperial/openmole-market/randomforest")
 val outputDirectory = File("/tmp/output")
 
 val random = new util.Random(42)
 val imagesArrays = 
-  (0 until 10).map(i => random.shuffle((inputDirectory / "images").listFiles.toSeq).toArray)
+  (0 until kFold).map(i => random.shuffle((inputDirectory / "images").listFiles.toSeq).toArray)
 
 val parameterExploration = 
   ExplorationTask(
-    (nbTrees in (5 to 25 by 5)) x
-    (treeDepth in (5 to 21 by 3))
+    (nbTrees in (5 to 5 by 5)) x
+    (treeDepth in (5 to 5 by 3))
   )
   
 val imagesExploration = 
   ExplorationTask(images in imagesArrays) set (
-    inputs += (nbTrees, treeDepth),
+    inputs  += (nbTrees, treeDepth),
     outputs += (nbTrees, treeDepth)
   )
 
@@ -36,12 +37,18 @@ val learning = SystemExecTask(
 val resultsFile = Val[File]
 val h = AppendToCSVFileHook(outputDirectory / "result.csv", nbTrees, treeDepth, accuracy)
 
-val slurm =
+val env =
 SLURMEnvironment(
   "jpassera",
   "predict5.doc.ic.ac.uk",
   queue="short"
 )
 
-val ex = (parameterExploration -< imagesExploration -< (learning hook h)) start
+val condor =
+CondorEnvironment(
+  "jpassera",
+  "hornbeam.doc.ic.ac.uk"
+)
+
+val ex = (parameterExploration -< imagesExploration -< (learning on condor hook h)) start
 
