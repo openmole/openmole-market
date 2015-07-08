@@ -2,9 +2,12 @@ val images = Val[Array[File]]
 val nbTrees   = Val[Int]
 val treeDepth = Val[Int]
   
+val inputDirectory = File("/home/reuillon/Documents/Recherche/Work/OpenMOLE/tutoimperial")
+val outputDirectory = File("/tmp/output")
+
 val random = new util.Random(42)
 val imagesArrays = 
-  (0 until 10).map(i => random.shuffle(File(inputDirectory).listFiles.toSeq).toArray)
+  (0 until 10).map(i => random.shuffle((inputDirectory / "images").listFiles.toSeq).toArray)
 
 val parameterExploration = 
   ExplorationTask(
@@ -17,16 +20,6 @@ val imagesExploration =
     inputs += (nbTrees, treeDepth),
     outputs += (nbTrees, treeDepth)
   )
-  
-/*val dummyLearning = 
-  ScalaTask("""println(s"${images.head} $nbTrees $treeDepth")""") set ( 
-    name := "learning",
-    inputs += (nbTrees, treeDepth), 
-    outputs += (nbTrees, treeDepth),
-    inputFileArrays += (images, "images/image", ".jpg", link = true) 
-  )
-  
-val dummyHook = ToStringHook()*/
 
 val accuracy = Val[String]
 val learning = SystemExecTask(
@@ -34,8 +27,8 @@ val learning = SystemExecTask(
   "archive_python2/re-execute.sh python forest.py /home/jopasserat/Downloads/images ${nbTrees} ${treeDepth}"
 ) set (
   inputs += (nbTrees, treeDepth),
-  resources += archiveLocation,
-  inputFileArrays += (images, "archive_python2/rootfs/home/jopasserat/Downloads/images/image", ".jpg", link = true),
+  resources += inputDirectory / "archive_python2.bin",
+  inputFileArrays += (images, "archive_python2/rootfs/home/jopasserat/Downloads/images/image", ".jpg"),
   stdOut := accuracy,
   outputs += (nbTrees, treeDepth)
 )
@@ -50,5 +43,5 @@ SLURMEnvironment(
   queue="short"
 )
 
-(parameterExploration -< imagesExploration -< (dummyLearning hook dummyHook))
+val ex = (parameterExploration -< imagesExploration -< (learning hook h)) start
 
