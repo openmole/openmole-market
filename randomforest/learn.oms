@@ -1,28 +1,32 @@
-val kFold  = Val[Int]
 val images = Val[Array[File]]
 val nbTrees   = Val[Int]
 val treeDepth = Val[Int]
   
+val random = new util.Random(42)
+val imagesArrays = 
+  (0 until 10).map(i => random.shuffle(File(inputDirectory).listFiles.toSeq).toArray)
+
 val parameterExploration = 
   ExplorationTask(
-  (nbTrees in (5 to 25 by 5)) x
-  (treeDepth in (5 to 21 by 3))
+    (nbTrees in (5 to 25 by 5)) x
+    (treeDepth in (5 to 21 by 3))
   )
   
 val imagesExploration = 
-  ExplorationTask(
-   (kFold in (0 until 10)) x
-   (images is ListFilesDomain(inputDirectory, filter = ".*\\.jpg").shuffle)) set (
+  ExplorationTask(images in imagesArrays) set (
     inputs += (nbTrees, treeDepth),
     outputs += (nbTrees, treeDepth)
   )
   
-val dummyLearning = 
+/*val dummyLearning = 
   ScalaTask("""println(s"${images.head} $nbTrees $treeDepth")""") set ( 
     name := "learning",
-    inputs += (nbTrees, treeDepth),
+    inputs += (nbTrees, treeDepth), 
+    outputs += (nbTrees, treeDepth),
     inputFileArrays += (images, "images/image", ".jpg", link = true) 
   )
+  
+val dummyHook = ToStringHook()*/
 
 val accuracy = Val[String]
 val learning = SystemExecTask(
@@ -37,7 +41,7 @@ val learning = SystemExecTask(
 )
 
 val resultsFile = Val[File]
-val h = AppendToCSVFileHook("/tmp/accuracy.csv", nbTrees, treeDepth, accuracy)
+val h = AppendToCSVFileHook(outputDirectory / "result.csv", nbTrees, treeDepth, accuracy)
 
 val slurm =
 SLURMEnvironment(
@@ -46,5 +50,5 @@ SLURMEnvironment(
   queue="short"
 )
 
-(parameterExploration -< imagesExploration -< (learning hook h)) start
+(parameterExploration -< imagesExploration -< (dummyLearning hook dummyHook))
 
