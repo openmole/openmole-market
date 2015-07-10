@@ -13,12 +13,13 @@ val model =
     |val random = newRNG(seed)
     |val inside = 
     |  for {
-    |    i <- (0 until 100)
+    |    i <- (0 until 100).toIterator
     |    x = random.nextDouble()
     |    y = random.nextDouble()
     |  } yield { (x * x) + (y * y) }
     |  val pi = (inside.count(_ < 1).toDouble / 100) * 4
-    """.stripMargin) set (
+    |""".stripMargin) set (
+      name := "pi",
       inputs += seed,
       outputs += pi
     )
@@ -26,6 +27,7 @@ val model =
 // Define the average task that average several estimation of pi
 val average = 
   ScalaTask("""val piAvg = pi.sum / pi.size""") set (
+    name := "average",
     inputs += pi.toArray,
     outputs += piAvg
   )
