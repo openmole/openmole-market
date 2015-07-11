@@ -1,3 +1,13 @@
+val density = Val[Double]
+val seed = Val[Int]
+val burned = Val[Double]
+
+val exploration =
+  ExplorationTask(
+    (density in (20.0 to 80.0 by 10.0)) x
+    (seed in (UniformDistribution[Int]() take 10))
+  )
+
 val cmds = 
   List(
     "random-seed ${seed}",
@@ -6,8 +16,13 @@ val cmds =
   )
 
 val fireTask =
-  NetLogo5Task("/path/to/the/Fire.nlogo", cmds) set (
+  NetLogo5Task(workDirectory / "Fire.nlogo", cmds) set (
     inputs += seed,
+    outputs += (seed, density),
     netLogoInputs += (density, "density"),
     netLogoOutputs += ("burned-trees", burned)
   )
+
+val csvHook = AppendToCSVFileHook(workDirectory / "result.csv", density, burned, seed)
+
+exploration -< (fireTask hook csvHook)
