@@ -1,0 +1,17 @@
+
+val rPackagingPath = "care/rootfs//home/reuillon/Documents/Recherche/Projects/openmole-market/R/"
+
+val i = Val[Int]
+val output = Val[File]
+
+val rTask = SystemExecTask("care.bin", "care/re-execute.sh R --slave -f test.R --args ${i}") set (
+  resources += workDirectory / "care.bin",
+  inputs += i,
+  outputs += i,
+  outputFiles += (rPackagingPath + "results.csv", output),
+  i := 42
+)
+
+val copyHook = CopyFileHook(output, workDirectory / "results/results${i}.csv")
+
+val ex = (rTask hook copyHook) start
