@@ -1,0 +1,72 @@
+
+// Define the input variables
+val gPopulation = Val[Double]
+val gDiffusionRate = Val[Double]
+val gEvaporationRate = Val[Double]
+val seed = Val[Int]
+
+// Define the output variables
+val food1 = Val[Double]
+val food2 = Val[Double]
+val food3 = Val[Double]
+
+// Define the NetlogoTask
+val cmds = Seq("random-seed ${seed}", "run-to-grid")
+val ants =
+  NetLogo5Task(workDirectory / "ants.nlogo", cmds) set (
+    // Map the OpenMOLE variables to NetLogo variables
+    netLogoInputs += (gPopulation, "gpopulation"),
+    netLogoInputs += (gDiffusionRate, "gdiffusion-rate"),
+    netLogoInputs += (gEvaporationRate, "gevaporation-rate"),
+    netLogoOutputs += ("final-ticks-food1", food1),
+    netLogoOutputs += ("final-ticks-food2", food2),
+    netLogoOutputs += ("final-ticks-food3", food3),
+    gPopulation := 100,
+    // The seed is used to control the initialisation of the random number generator of NetLogo
+    inputs += seed
+  )
+  
+val modelCapsule = Capsule(ants)
+
+// Define the output variables
+val medNumberFood1 = Val[Double]
+val medNumberFood2 = Val[Double]
+val medNumberFood3 = Val[Double]
+
+// We compute three median
+val statistic =
+  StatisticTask() set (
+    statistics += (food1, medNumberFood1, median),
+    statistics += (food2, medNumberFood2, median),
+    statistics += (food3, medNumberFood3, median)
+  )
+
+val statisticCapsule = Capsule(statistic)
+
+val seedFactor = seed in (UniformDistribution[Int]() take 5)
+val replicateModel = Replicate(modelCapsule, seedFactor, statisticCapsule)
+
+
+// Define the population (200) and the computation time (1h)
+// The remaining is the same as above
+val evolution =
+  NSGA2(
+    mu = 200,
+    termination = Timed(1 hour),
+    inputs = Seq(gDiffusionRate -> (0.0, 99.0), gEvaporationRate -> (0.0, 99.0)),
+    objectives = Seq(medNumberFood1, medNumberFood2, medNumberFood3),
+    reevaluate = 0.01
+  )
+
+// Define the island model with 2,000 concurrent islands. Each island gets 50 individuals sampled from the global
+// population. The algorithm stops after 200,000 islands evaluations.
+val (puzzle, ga) = IslandSteadyGA(evolution)(replicateModel, 2000, 200000, 50)
+
+val savePopulationHook = SavePopulationHook(ga, workDirectory / "results")
+val display = DisplayHook("Generation ${" + ga.generation.name + "}")
+
+// Define the execution environment
+val env = LocalEnvironment(4)
+
+// Define the workflow
+(puzzle on env hook savePopulationHook hook display)
