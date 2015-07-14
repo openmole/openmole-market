@@ -1,0 +1,14 @@
+import hellocode._
+
+val n = Val[String]
+val output = Val[String]
+
+val exploration = ExplorationTask(n in List("Richard", "Martin", "Benjamin"))
+
+val hello = ScalaTask("val output = hellocode.Hello(n)) set (
+  plugins += pluginsOf(Hello),
+  inputs += name,
+  outputs += output)
+
+exploration -< (hello hook ToStringHook())
+
