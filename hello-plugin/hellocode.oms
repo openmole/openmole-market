@@ -5,9 +5,9 @@ val output = Val[String]
 
 val exploration = ExplorationTask(n in List("Richard", "Martin", "Benjamin"))
 
-val hello = ScalaTask("val output = hellocode.Hello(n)) set (
+val hello = ScalaTask("val output = hellocode.Hello(n)") set (
   plugins += pluginsOf(Hello),
-  inputs += name,
+  inputs += n,
   outputs += output)
 
 exploration -< (hello hook ToStringHook())
