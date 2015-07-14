@@ -16,7 +16,7 @@ All the accepted submissions will be part of the market place and will be compil
 
 ## Available workflows ##
 
-  - [R-hello](R-Hello): a *Hello world* in R ranging over 100 of different inputs.
+  - [R hello world](R-hello): a *Hello world* in R ranging over 100 of different inputs.
   - [Ants model](ants): a NetLogo model calibrated using the Evolutionary/Genetic Algorithms.
   - [Fire simulation](fire): a fire simulation model in Netlogo with a design of experiments studying its density factor.
   - [OpenMOLE plugin](hello-plugin): two workflows using two different OpenMOLE plugins.
