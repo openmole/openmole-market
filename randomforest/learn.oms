@@ -9,8 +9,8 @@ val imagesArrays =
 
 val parameterExploration = 
   ExplorationTask(
-    (nbTrees in (5 to 5 by 5)) x
-    (treeDepth in (5 to 5 by 3))
+    (nbTrees in (5 to 25 by 5)) x
+    (treeDepth in (3 to 18 by 3))
   )
   
 val imagesExploration = 
