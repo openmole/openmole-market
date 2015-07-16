@@ -47,5 +47,5 @@ val condor =
     "hornbeam.doc.ic.ac.uk"
   )
 
-val ex = (parameterExploration -< imagesExploration -< (learning on condor hook h)) start
+(parameterExploration -< imagesExploration -< (learning on condor hook h))
 
