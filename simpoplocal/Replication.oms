@@ -1,0 +1,22 @@
+
+import Model._
+
+// Define the workflow that replicate the evaluation and aggregate the results
+val statistic = 
+  Capsule(
+    StatisticTask() set (
+      name := "aggregate",
+      statistics += (ksValue, sumKsFailValue, sum),
+      statistics += (deltaPop, medPop, median),
+      statistics += (deltaTime, medTime, median)
+    )
+  )
+ 
+val replication =   
+  Replicate(
+    runModel -- evalModel, 
+    seed in UniformDistribution[Long]() take 100,
+    statistic
+  )
+  
+replication + (statistic  hook ToStringHook())
