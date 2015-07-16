@@ -1,0 +1,11 @@
+import hellotask._
+
+val name = Val[String]
+val output = Val[String]
+
+val exploration = ExplorationTask(name in List("Richard", "Martin", "Benjamin"))
+
+val hello = HelloTask(name, output)
+
+exploration -< (hello hook ToStringHook())
+
