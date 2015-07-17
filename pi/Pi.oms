@@ -11,13 +11,14 @@ val exploration =
 val model =
   ScalaTask("""
     |val random = newRNG(seed)
+    |val points = 100000
     |val inside = 
     |  for {
-    |    i <- (0 until 100).toIterator
+    |    i <- (0 until points).toIterator
     |    x = random.nextDouble()
     |    y = random.nextDouble()
     |  } yield { (x * x) + (y * y) }
-    |  val pi = (inside.count(_ < 1).toDouble / 100) * 4
+    |  val pi = (inside.count(_ < 1).toDouble / points) * 4
     |""".stripMargin) set (
       name := "pi",
       inputs += seed,
