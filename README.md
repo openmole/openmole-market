@@ -23,3 +23,4 @@ All the accepted submissions will be part of the market place and will be compil
   - [Java hello wold](java-hello): an example of how to embed Java code in OpenMOLE.
   - [Pi Monte Carlo approximation](pi): a workflow using a ScalaTask to approximate the value of Pi. The Design of Experiments changes the seed of the random number generator.
   - [Random Forest classifier](randomforest): This workflow explores the parameters of a random forest image classifier written in Python using scikit-learn.
+  - [SimPopLocal model](simpoplocal): A geographical model calibrated using genetic algorithms.
