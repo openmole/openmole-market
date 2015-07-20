@@ -31,10 +31,10 @@ ExplorationTask (
     200,
     rewiringProbability in Range(0.0 , 1.0),
     strengthOfDilemma in Range(0.00, 0.50),
-    initialNeighbours in Range(8.0 , 900.0),      
+    initialNeighbours in Range(8.0 , 90.0),      
     inicoop in Range( 0.0 , 100.0)
     )
-    take 100)
+    take 10)
 
  
 
@@ -48,7 +48,7 @@ val cmds = List(
 )
   
 
-val basePath = "workDirectory/"
+val basePath = "/MyDirectory/"
 
 
 
@@ -57,7 +57,7 @@ val model =
   NetLogo5Task(basePath + "OM_Metamimetic_Networks_GIT.nlogo", cmds, true) set (
     inputs += seed,
     topology := "Small-World",
-    numAgents := 1000.0,
+    numAgents := 100.0,
     connectionProbability := 1.0,
     filein := "SW1000", 
     initialRandomTypes := true,
