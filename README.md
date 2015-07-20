@@ -10,6 +10,7 @@ Still they should be easily reusable and any material required by the workflow (
   - Fork this repository
   - Create a new folder for your workflow example
   - Add all the required dependencies and a subset of the input data
+  - Edit the top-level README.md to add your new entry
   - Create a Pull Request for us to review your submission
 
 All the accepted submissions will be part of the market place and will be compiled against the last version of OpenMOLE. The available entries are also available from the OpenMOLE website: [http://next.openmole.org/Documentation_Market%20Place_All.html](http://next.openmole.org/Documentation_Market%20Place_All.html)
