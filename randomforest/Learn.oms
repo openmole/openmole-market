@@ -19,7 +19,8 @@ val imagesExploration =
     outputs += (nbTrees, treeDepth)
   )
 
-val accuracy = Val[String]
+val learningOutput = Val[String]
+
 val learning = SystemExecTask(
   "./archive_python2.bin",
   "archive_python2/re-execute.sh python forest.py /home/jopasserat/Downloads/images ${nbTrees} ${treeDepth}"
@@ -27,12 +28,10 @@ val learning = SystemExecTask(
   inputs += (nbTrees, treeDepth),
   resources += workDirectory / "archive_python2.bin",
   inputFileArrays += (images, "archive_python2/rootfs/home/jopasserat/Downloads/images/image", ".jpg"),
-  stdOut := accuracy,
+  stdOut := learningOutput,
   outputs += (nbTrees, treeDepth)
 )
 
-val resultsFile = Val[File]
-val h = AppendToCSVFileHook(workDirectory / "result.csv", nbTrees, treeDepth, accuracy)
 
 val env =
   SLURMEnvironment(
@@ -47,5 +46,9 @@ val condor =
     "hornbeam.doc.ic.ac.uk"
   )
 
-(parameterExploration -< imagesExploration -< (learning on condor hook h))
-
+val pointsHook = 
+  AppendToCSVFileHook(
+    workDirectory / "points.csv",
+    nbTrees, treeDepth, learningOutput)
+    
+parameterExploration -< imagesExploration -< (learning hook pointsHook)
