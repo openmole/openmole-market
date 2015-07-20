@@ -1836,7 +1836,6 @@ if-else Colormap-View = "Strategies"
 ]
 end
 
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 32
@@ -2468,12 +2467,16 @@ NIL
 1
 
 @#$#@#$#@
+
+
 ## WHAT IS IT?
 
-This is a version of metamimetic games with agents playing the prisoner's dilemma game:
+This is an implementation of a prisonner’s dilemma metamimetic game for different network topologies under netlogo 5.1.0. 
 
-Agents 
 
+Agents play the prisoner's dilemma game with each one of their neighbours in a torus lattice or a network (small world or random).   
+
+The parameter p corresponds to the strength of dilemma in the widget:
 
 
 
@@ -2489,27 +2492,30 @@ Agents
             (x, y) = x: your score, y: your partner's score
             Note: higher the score (amount of the benefit), the better.
 
-whit each one of their neighbours in a torus or network   
 
-The agents can have one of 4 valuation functions:
+The agents can have one of 4 types:
+
 Maxi : The agent tries to maximize the score (payoff)  
-mini : The agent tries to minimize the score  
-Conformist: The agent tries to behaves as the majority   
+Mini : The agent tries to minimize the score  
+Conformist: The agent tries to behave as the majority   
 Anti-conformist: The agent tries to behave as the minority
+
+Each round agents play they copy the most succesfull agent in their neighborhood according to their own current type: 
+
+A Maxi agent would copy the type and behavior (C or D) of the agent in its neighborhood with highest payoffs. 
+A Mini agent would copy the type and behavior (C or D) of the agent in its neighborhood with lower payoffs.
+A Conformist would copy the type and behavior (C or D) that the majority of its neighborhood is using. 
+An Anti-Conformist would copy the type and behavior (C or D) that the minority of its neighborhood is using.
+
    
 ## HOW TO USE IT
 
-Decide what percentage of patches should cooperate at the initial stage.
-
 Decide the topology structure or load one.
-
-If you are not loading a topology; choose the parameters for the desired topology. Notice the size of the lattice is fixed and you cant change the number of agents.
-
-Also, choose if agents can incur in errors while copying either rules or behaviors, with the corresponding sliders.
-
-Additionaly, choose if agents can have biased perceptions on their own satisfaction with the chooser error_on_satisfaction
-
-Finally choose if agents can do something different than that of what they see in their neighbourhood through the chooser Innovate?
+Decide a Number of Agents that will be playing. 
+Decide what percentage of agents should cooperate at the initial stage with inicoop.
+Decide what is the strenght of the dilemma p.
+If you are not loading a topology; choose the parameters for the desired topology. 
+Choose to add noise to the model by renovating the population and have some agents die. 
 
 ## HOW IT WORKS
 
@@ -2521,27 +2527,22 @@ Each agent looks at the payoffs, decision-making rules and behaviours of other a
 
 For any agent A, if according to A's  type (payoffs based or non-materialistic) there is one neighbour B that is more successful than A himself, and if B has a different decision-making rule, then A copies the rule of agent B. In the case of two or more candidates to copy, then A chooses one of the rules at random. 
 
-If according to its new rule of behaviour and its associated utility function, A is still not among the most successful agents in Gamma_A, then A copies the behaviour of the neighbour with the best situation.
+If according to its new rule of behaviour and its associated utility function, A is still not among the most successful agents in the neighborhood, then A copies the behaviour of the neighbour with the best situation.
 
 
-As an example:
+## EXAMPLE:
 
  If agent A had the conformist type and if the majority of its neighbours have turned to maxi since last round, then A will adopt the maxi rule. Here, the imitation rule is used to update itself (reflexivity).
  If same agent A, which is now a maxi agent, played C last round but a D-player did strictly better than all of A’s neighbours (A included), then A will become a D-player. Here, the imitation rule is used to update the behaviour (metacognition).
 
 
-Maxi and mini agents want to maximize or minimize their scores and look for those neighbours who did better score-wise. Conformists and anti-conformists desire to be in the majority or the minority respectively.
-
-
 ## THINGS TO NOTICE
-
-Parameters of the network can be observed bellow the world.
-
 How do populations change with the strength of the dilemma?
-
-What are the effects of the different types of noise?
-
+What is the effect of noise with renovation of the population?
 Where are agents located in the network at the attractor? 
+What is the effect of the initial disposition towards cooperation? 
+Are there differences in the final populations for each topology?
+
 @#$#@#$#@
 default
 true
