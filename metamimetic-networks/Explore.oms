@@ -23,17 +23,15 @@ val ages =  Val[File]
 
 val exploration = 
 ExplorationTask (
-    (seed in (UniformDistribution[Int]() take 50 ))x
+    (seed in (UniformDistribution[Int]() take 50 )) x
     SobolSampling (
-    200,
-    rewiringProbability in Range(0.0 , 1.0),
-    strengthOfDilemma in Range(0.00, 0.50),
-    initialNeighbours in Range(8.0 , 90.0),      
-    inicoop in Range( 0.0 , 100.0)
+      200,
+      rewiringProbability in Range(0.0 , 1.0),
+      strengthOfDilemma in Range(0.00, 0.50),
+      initialNeighbours in Range(8.0 , 90.0),      
+      inicoop in Range(0.0, 100.0)
     )
-    take 10)
-
- 
+  )
 
 val cmds = List(
   "random-seed ${seed}",
@@ -44,10 +42,8 @@ val cmds = List(
   "export-ages"
 )
   
-
-
 val model = 
-  NetLogo5Task(workDirectory / "OM_Metamimetic_Networks_GIT.nlogo", cmds, true) set (
+  NetLogo5Task(workDirectory / "model" / "OM_Metamimetic_Networks_GIT.nlogo", cmds, true) set (
     inputs += seed,
     topology := "Small-World",
     numAgents := 100.0,
@@ -92,6 +88,6 @@ val coopHook = CopyFileHook(coop, workDirectory / "output/plots/coop/coop_${rewi
 val agesHook = CopyFileHook(ages, workDirectory / "output/plots/ages/ages_${rewiringProbability}_${inicoop}_${seed}_${strengthOfDilemma}_${culturalConstant}_${initialNeighbours}_${filein}.csv" )
 
 
-exploration  -< (model    hook ( fileHook , populHook , coopHook, agesHook))
+exploration -< (model hook (fileHook , populHook , coopHook, agesHook))
 
 
