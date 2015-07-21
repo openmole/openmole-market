@@ -60,7 +60,8 @@ val evalModel =
     outputs += (ksValue, deltaPop, deltaTime)
   )
 
-
+// Define the execution environment
+val grid = EGIEnvironment("biomed", openMOLEMemory = 1200, wallTime = 4 hours)
 
 runModel -- (evalModel hook ToStringHook())
 
