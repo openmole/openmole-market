@@ -1,7 +1,7 @@
 import Model._
 import Replication._
 
-val inputs = 
+val inputDomains = 
   Seq(
     rMax -> (2.0, 50000.0),
     distanceDecay -> (0.0, 4.0),
@@ -14,7 +14,7 @@ val evolution =
   NSGA2 (
     mu = 200,
     termination = 1 hour,
-    inputs = inputs,
+    inputs = inputDomains,
     objectives = Seq(sumKsFailValue, medPop, medTime),
     epsilons = Seq(0.0, 10.0, 10.0),
     reevaluate = 0.01
@@ -23,12 +23,9 @@ val evolution =
 // Define the island model
 val (isl, ga) = IslandSteadyGA(evolution)(replication, island = 5000, termination = 200000, sample = 50)
 
-// Define the execution environment
-val env = EGIEnvironment("biomed", openMOLEMemory = 1400, wallTime = 4 hours)
-
 // Define the hook to save the results
 val savePopulation = SavePopulationHook(ga, workDirectory / "populations")
 
 // Define the execution
-(isl on env hook savePopulation)
+(isl on grid hook savePopulation)
 

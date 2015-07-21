@@ -4,11 +4,16 @@ import Model._
 // Define the workflow that replicate the evaluation and aggregate the results
 val statistic = 
   Capsule(
-    StatisticTask() set (
+    ScalaTask(
+      """
+      |val sumKsFailValue = ksValue.sum
+      |val medPop = deltaPop.median
+      |val medTime = deltaTime.median
+      """
+    ) set (
       name := "aggregate",
-      statistics += (ksValue, sumKsFailValue, sum),
-      statistics += (deltaPop, medPop, median),
-      statistics += (deltaTime, medTime, median)
+      inputs += (ksValue.toArray, deltaPop.toArray, deltaTime.toArray),
+      outputs += (sumKsFailValue, medPop, medTime)
     )
   )
  

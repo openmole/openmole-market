@@ -1,0 +1,45 @@
+import Model._
+import Replication._
+
+val aggregatedFitness = Val[Double]
+
+val relativizeTask = 
+  ScalaTask("""val aggregatedFitness = Seq(sumKsFailValue / 200, medPop / 10000, medTime / 4000).max""") set (
+    inputs += (sumKsFailValue, medPop, medTime),
+    outputs += aggregatedFitness
+  )
+
+val relativized = replication -- relativizeTask
+
+val inputDomains = 
+  Seq(
+    rMax -> (2.0, 50000.0),
+    distanceDecay -> (0.0, 4.0),
+    pCreation -> (0.0 -> 0.01),
+    pDiffusion -> (0.0, 0.01),
+    innovationImpact -> (0.0, 2.0)
+  )
+  
+// Calibration profile of 1000 points for the parameter 0
+val evolution = 
+  GenomeProfile (
+    x = 0,
+    nX = 1000,
+    termination = 1 minute,
+    inputs = inputDomains,
+    objective = aggregatedFitness,
+    reevaluate = 0.01
+  )
+
+
+// Define the island model
+val (isl, ga) = IslandSteadyGA(evolution)(relativized, island = 5000, termination = 200000, sample = 500)
+
+// Define the execution environment
+val env = EGIEnvironment("biomed", openMOLEMemory = 1200, wallTime = 4 hours)
+
+// Define the hook to save the results
+val savePopulation = SaveProfileHook(ga, workDirectory / "profile/1/")
+
+// Define the execution
+(isl on grid hook savePopulation)
