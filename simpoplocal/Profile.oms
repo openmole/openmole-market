@@ -19,27 +19,35 @@ val inputDomains =
     pDiffusion -> (0.0, 0.01),
     innovationImpact -> (0.0, 2.0)
   )
-  
-// Calibration profile of 1000 points for the parameter 0
-val evolution = 
-  GenomeProfile (
-    x = 0,
-    nX = 1000,
-    termination = 1 minute,
-    inputs = inputDomains,
-    objective = aggregatedFitness,
-    reevaluate = 0.01
-  )
-
-
-// Define the island model
-val (isl, ga) = IslandSteadyGA(evolution)(relativized, island = 5000, termination = 200000, sample = 500)
 
 // Define the execution environment
 val env = EGIEnvironment("biomed", openMOLEMemory = 1200, wallTime = 4 hours)
 
-// Define the hook to save the results
-val savePopulation = SaveProfileHook(ga, workDirectory / "profile/1/")
+def profile(parameter: Int) = {  
+  // Calibration profile of 1000 points for the parameter
+  val evolution = 
+    GenomeProfile (
+      x = parameter,
+      nX = 1000,
+      termination = 1 minute,
+      inputs = inputDomains,
+      objective = aggregatedFitness,
+      reevaluate = 0.01
+    )
 
-// Define the execution
-(isl on grid hook savePopulation)
+
+  // Define the island model
+  val (isl, ga) = IslandSteadyGA(evolution)(relativized, island = 1000, termination = 200000, sample = 500)
+
+  // Define the hook to save the results
+  val savePopulation = SaveProfileHook(ga, workDirectory / s"profile/$parameter/")
+
+  // Define the execution
+  (isl on grid hook savePopulation)
+}
+
+val firstCapsule = Capsule(EmptyTask())
+
+val profiles = (0 until inputDomains.size).map(profile)
+
+profiles.map(firstCapsule -- _).reduce(_ + _)
