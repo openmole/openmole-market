@@ -20,16 +20,13 @@ val inputDomains =
     innovationImpact -> (0.0, 2.0)
   )
 
-// Define the execution environment
-val env = EGIEnvironment("biomed", openMOLEMemory = 1200, wallTime = 4 hours)
-
 def profile(parameter: Int) = {  
   // Calibration profile of 1000 points for the parameter
   val evolution = 
     GenomeProfile (
       x = parameter,
       nX = 1000,
-      termination = 1 minute,
+      termination = 2 hours,
       inputs = inputDomains,
       objective = aggregatedFitness,
       reevaluate = 0.01

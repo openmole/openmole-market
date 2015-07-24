@@ -61,7 +61,7 @@ val evalModel =
   )
 
 // Define the execution environment
-val grid = EGIEnvironment("biomed", openMOLEMemory = 1200, wallTime = 4 hours)
+val grid = EGIEnvironment("vo.complex-systems.eu", openMOLEMemory = 1200, wallTime = 4 hours)
 
 runModel -- (evalModel hook ToStringHook())
 
