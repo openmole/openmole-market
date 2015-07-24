@@ -37,6 +37,6 @@ val average =
 val env = LocalEnvironment(4)
 
 // Define and start the workflow
-exploration -< (model on env) >- (average hook ToStringHook())
+exploration -< (model on env hook ToStringHook()) >- (average hook ToStringHook())
 
 
