@@ -23,7 +23,7 @@ val learningOutput = Val[String]
 
 val learning = SystemExecTask(
   "./archive_python2.bin",
-  "archive_python2/re-execute.sh python forest.py /home/jopasserat/Downloads/images ${nbTrees} ${treeDepth}"
+  "./archive_python2/re-execute.sh python forest.py /home/jopasserat/Downloads/images ${nbTrees} ${treeDepth}"
 ) set (
   inputs += (nbTrees, treeDepth),
   resources += workDirectory / "archive_python2.bin",
