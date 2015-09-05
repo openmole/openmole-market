@@ -20,6 +20,7 @@ All the accepted submissions will be part of the market place and will be compil
   - [R hello world](R-hello): a *Hello world* in R ranging over 100 of different inputs.
   - [Ants model](ants): a NetLogo model calibrated using the Evolutionary/Genetic Algorithms.
   - [Fire simulation](fire): a fire simulation model in Netlogo with a design of experiments studying its density factor.
+  - [FSL segmentation](fsl-fast): brain segmentation using FSL.
   - [OpenMOLE plugin](hello-plugin): two workflows using two different OpenMOLE plugins.
   - [Java hello wold](java-hello): an example of how to embed Java code in OpenMOLE.
   - [Pi Monte Carlo approximation](pi): a workflow using a ScalaTask to approximate the value of Pi. The Design of Experiments changes the seed of the random number generator.
