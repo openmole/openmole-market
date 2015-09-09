@@ -9,7 +9,7 @@ val statistic =
       |val sumKsFailValue = ksValue.sum
       |val medPop = deltaPop.median
       |val medTime = deltaTime.median
-      """
+      """.stripMargin
     ) set (
       name := "aggregate",
       inputs += (ksValue.toArray, deltaPop.toArray, deltaTime.toArray),
