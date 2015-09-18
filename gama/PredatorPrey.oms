@@ -1,0 +1,19 @@
+// Declare the variable
+val number_of_preys = Val[Int]
+val nb_preys_init = Val[Int]
+
+// Gama task
+// The third argument of the GamaTask is the gama experiment name
+// and the fourth argument is the number of steps
+val gama = 
+  GamaTask(workDirectory / "predatorPrey.gaml", "preyPred", 10) set (
+    gamaInputs += nb_preys_init,
+    gamaOutputs += number_of_preys 
+  )
+
+val exploration = 
+  ExplorationTask(
+    nb_preys_init in (0 to 200 by 10)
+  )
+
+exploration -< (gama hook ToStringHook())
