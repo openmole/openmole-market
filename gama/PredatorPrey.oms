@@ -15,7 +15,7 @@ val gama =
     gamaOutputs += ("number_of_preys", numberOfPreys)
   )
 
-val exploration = ExplorationTask(nbPreysInit in (0 to 20 by 10))
+val exploration = ExplorationTask(nbPreysInit in (0 to 200 by 10))
 val replications = ExplorationTask(seed in (UniformDistribution[Long](42) take 10))
 
 val average = 
