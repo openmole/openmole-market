@@ -2,7 +2,7 @@ name := "hellotask"
 
 version := "1.0"
 
-scalaVersion := "2.11.6"
+scalaVersion := "2.11.7"
 
 osgiSettings
 
@@ -16,7 +16,7 @@ scalariformSettings
 
 resolvers += "ISC-PIF Release" at "http://maven.iscpif.fr/public/"
 
-val openMOLEVersion = "5.0-SNAPSHOT"
+val openMOLEVersion = "6.0-SNAPSHOT"
 
 libraryDependencies += "org.openmole" %% "org-openmole-core-dsl" % openMOLEVersion
 
