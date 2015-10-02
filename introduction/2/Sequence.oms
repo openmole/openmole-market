@@ -1,0 +1,21 @@
+
+val i = Val[Double]
+val j = Val[Double]
+val k = Val[Double]
+
+val by2 = 
+  ScalaTask("val j = i * 2") set (
+    inputs += i,
+    outputs += (i, j),
+    i := 10.0
+  )
+
+val plus1 = 
+  ScalaTask("val k = j + 1") set (
+    inputs += j,
+    outputs += (j, k)
+  )
+
+// A workflow with a sequence of task, they communicate through the variables
+// here the value of the variable j is transfered from "by2" to "plus1"
+(by2 hook ToStringHook()) -- (plus1 hook ToStringHook())

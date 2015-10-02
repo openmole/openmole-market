@@ -1,0 +1,18 @@
+
+// Variables
+val i = Val[Double]
+val j = Val[Double]
+
+// Task
+val by2 = 
+  ScalaTask("val j = i * 2") set (
+    inputs += i,
+    outputs += (i, j),
+    i := 10.0
+  )
+
+// Output
+val display = ToStringHook()
+
+// Workflow, here it is a workflow with 1 task
+by2 hook display
