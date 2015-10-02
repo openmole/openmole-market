@@ -1,0 +1,36 @@
+val i = Val[Double]
+val j = Val[Double]
+val k = Val[Double]
+val avg = Val[Double]
+
+val by2 = 
+  ScalaTask("val j = i * 2") set (
+    inputs += i,
+    outputs += (i, j),
+    i := 10.0
+  )
+
+val plus1 = 
+  ScalaTask("val k = j + 1") set (
+    inputs += j,
+    outputs += (j, k)
+  )
+  
+val exploration = ExplorationTask(i in (0.0 to 100.0 by 2.0))
+
+val average = 
+  ScalaTask("val avg = k.average") set (
+    inputs += k.toArray,
+    outputs += avg
+  )
+  
+// Run 4 parallel processes on the local computer
+val env = LocalEnvironment(4)
+
+// Many environments are available: many cluster systems and grid comptuting
+// => see the documentation on environments.
+// For instance:
+// val env =  CondorEnvironment("login", "machine.domain")
+
+// The on keyword is used to delgate tasks to execution environmens
+exploration -< (by2 on env) -- (plus1 on env) >- (average hook ToStringHook())

@@ -1,0 +1,27 @@
+val i = Val[Double]
+val j = Val[Double]
+val k = Val[Double]
+
+val by2 = 
+  ScalaTask("val j = i * 2") set (
+    inputs += i,
+    outputs += (i, j),
+    i := 10.0
+  )
+
+val plus1 = 
+  ScalaTask("val k = j + 1") set (
+    inputs += j,
+    outputs += (j, k)
+  )
+  
+val exploration = ExplorationTask(i in (0.0 to 100.0 by 2.0))
+
+// In OpenMOLE there are different kinds of hooks. This one has been designed
+// to store variables into a CSV file.
+val by2Hook = AppendToCSVFileHook(workDirectory / "results/by2.csv", i, j) 
+val plus1Hook = AppendToCSVFileHook(workDirectory / "results/plus2.csv", j, k)
+
+exploration -< (by2 hook by2Hook) -- (plus1 hook plus1Hook)
+
+
