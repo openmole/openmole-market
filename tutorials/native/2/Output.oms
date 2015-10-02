@@ -1,0 +1,12 @@
+val output = Val[File]
+
+val pyTask = SystemExecTask(
+  "./python.bin", 
+  "./python/re-execute.sh python matrix.py data.csv 2 /tmp/out.csv") set (
+  resources += workDirectory / "../python.bin",
+  outputFiles += ("python/rootfs/tmp/out.csv", output)
+)
+
+val copyHook = CopyFileHook(output, workDirectory / "result.csv")
+
+(pyTask hook copyHook)
