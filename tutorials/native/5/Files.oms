@@ -1,0 +1,24 @@
+val input = Val[File]
+val inputName = Val[String]
+val output = Val[File]
+val i = Val[Int]
+
+val pyTask = SystemExecTask(
+  "./python.bin",
+  "./python/re-execute.sh python matrix.py /tmp/data.csv ${i} /tmp/out.csv") set (
+  resources += workDirectory / "../python.bin",
+  inputFiles += (input, "python/rootfs/tmp/data.csv"),
+  outputFiles += ("python/rootfs/tmp/out.csv", output),
+  inputs += i,
+  outputs += i
+)
+
+val copyHook = CopyFileHook(output, workDirectory / "results/${inputName.dropRight(4)}/result${i}.csv")
+
+val exploration = 
+  ExplorationTask(
+    (i in (1 to 10)) x 
+    (input in (workDirectory / "../data/").files withName inputName)
+  )
+  
+exploration -< (Strain(pyTask) hook copyHook)
