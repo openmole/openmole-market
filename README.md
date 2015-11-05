@@ -17,7 +17,7 @@ All the accepted submissions will be part of the market place and will be compil
 
 ## Available workflows ##
 
-  - [Advanced methods](advanced): Advanced methods for calibrating, validating and analyzing complex systems models.
+  - [Advanced methods](https://github.com/guillaumecherel/TutorialEAForModelling): Advanced methods for calibrating, validating and analyzing complex systems models.
   - [Ants model](ants): a NetLogo model calibrated using the Evolutionary/Genetic Algorithms.
   - [Fire simulation](fire): a fire simulation model in Netlogo with a design of experiments studying its density factor.
   - [FSL segmentation](fsl-fast): brain segmentation using FSL.
