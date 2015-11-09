@@ -17,12 +17,13 @@ All the accepted submissions will be part of the market place and will be compil
 
 ## Available workflows ##
 
-  - [R hello world](R-hello): a *Hello world* in R ranging over 100 of different inputs.
+  - [Advanced methods](https://github.com/guillaumecherel/TutorialEAForModelling): Advanced methods for calibrating, validating and analyzing complex systems models.
   - [Ants model](ants): a NetLogo model calibrated using the Evolutionary/Genetic Algorithms.
   - [Fire simulation](fire): a fire simulation model in Netlogo with a design of experiments studying its density factor.
   - [FSL segmentation](fsl-fast): brain segmentation using FSL.
-  - [OpenMOLE plugin](hello-plugin): two workflows using two different OpenMOLE plugins.
   - [Java hello wold](java-hello): an example of how to embed Java code in OpenMOLE.
+  - [OpenMOLE plugin](hello-plugin): two workflows using two different OpenMOLE plugins.
   - [Pi Monte Carlo approximation](pi): a workflow using a ScalaTask to approximate the value of Pi. The Design of Experiments changes the seed of the random number generator.
+  - [R hello world](R-hello): a *Hello world* in R ranging over 100 of different inputs.
   - [Random Forest classifier](randomforest): This workflow explores the parameters of a random forest image classifier written in Python using scikit-learn.
   - [SimPopLocal model](simpoplocal): A geographical model calibrated using genetic algorithms.
