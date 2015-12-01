@@ -30,6 +30,6 @@ val resultHook =
 val imageExplorationCapsule = Capsule(imagesExploration)
 val statSlot = Slot(stat)
 
-(parameterExploration -< imageExplorationCapsule -< learning -- parsing >- statSlot) + 
+(parameterExploration -< imageExplorationCapsule -< learning -- parsing >- statSlot) & 
   (imageExplorationCapsule -- (statSlot hook resultHook))
   
