@@ -3,9 +3,10 @@
  * and open the template in the editor.
  */
 
-package fr.geocite.simpoplocal.exploration
+package fr.geocites.simpoplocal.exploration
 
 import cern.colt.list.DoubleArrayList
+import java.util.Random
 import umontreal.iro.lecuyer.probdist.LognormalDist
 import umontreal.iro.lecuyer.probdist._
 import umontreal.iro.lecuyer.gof.GofStat._

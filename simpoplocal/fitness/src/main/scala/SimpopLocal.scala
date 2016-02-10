@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.geocite.simpoplocal.exploration
+package fr.geocites.simpoplocal.exploration
 
 import scala.collection.immutable.TreeSet
 import scala.collection.mutable.ListBuffer
@@ -25,8 +25,8 @@ import math._
 
 trait SimpopLocal {
 
-  /// The average annual growth on the settlements in inhabitants per step
-  def populationRate = 0.02
+  /// The maximal annual growth on the settlements in inhabitants per step
+  def populationRate: Double = 0.02
 
   /// The probability that an innovation emerges from the interaction between two individuals of the same settlement
   def pCreation: Double
@@ -136,7 +136,7 @@ trait SimpopLocal {
   /// Read settlements from the file
   lazy val readSettlements = {
     val input =
-      Source.fromInputStream(this.getClass.getClassLoader.getResourceAsStream("init-situation.txt"))
+      Source.fromInputStream(this.getClass.getClassLoader.getResourceAsStream("fr/geocites/simpoplocal/exploration/init-situation.txt"))
 
     /* Read File to create settlements with the matching attributes */
     input.getLines.map {

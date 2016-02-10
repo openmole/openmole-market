@@ -15,17 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.geocite.simpoplocal.exploration
+package fr.geocites.simpoplocal.exploration
 
 object Fit {
 
   def apply(state: SimpopLocal#SimpopLocalState): Fit = apply(ModelResult(state))
 
-  def apply(result: ModelResult, populationObj: Int = 10000, timeObj: Int = 4000): Fit =
+  def apply(result: ModelResult, populationObjective: Int = 10000, timeObjective: Int = 4000): Fit =
     Fit(
       ks = LogNormalKSTest.test(result.population).count(_ == false).toDouble,
-      deltaPop = DeltaTest.delta(result.population, populationObj),
-      deltaTime = DeltaTest.delta(result.time, timeObj)
+      deltaPop = DeltaTest.delta(result.population, populationObjective),
+      deltaTime = DeltaTest.delta(result.time, timeObjective)
     )
 
 }

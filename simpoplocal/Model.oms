@@ -2,7 +2,7 @@
 // genetic algorithm
 
 // Import model namespace
-import fr.geocite.simpoplocal.exploration._
+import fr.geocites.simpoplocal.exploration._
 
 // Define the variables
 val seed = Val[Long]
@@ -11,15 +11,12 @@ val distanceDecay = Val[Double]
 val pCreation = Val[Double]
 val pDiffusion = Val[Double]
 val innovationImpact = Val[Double]
+val innovationLife = Val[Double]
 val modelResult = Val[ModelResult]
 
 val deltaTime = Val[Double]
 val deltaPop = Val[Double]
 val ksValue = Val[Double]
-
-val sumKsFailValue = Val[Double]
-val medPop = Val[Double]
-val medTime = Val[Double]
 
 val medADDeltaPop = Val[Double]
 val medADDeltaTime = Val[Double]
@@ -27,6 +24,8 @@ val medADDeltaTime = Val[Double]
 // Define the task which runs the model
 val runModel = 
   ScalaTask("""
+      |import fr.geocites.simpoplocal.exploration._
+      |
       |val simu =
       |  new SimpopLocal {
       |    def distanceDecay = input.distanceDecay
@@ -35,33 +34,40 @@ val runModel =
       |    def innovationImpact = input.innovationImpact
       |    def maxInnovation = 10000
       |    def rMax = input.rMax
-      |    override def innovationLife = 4000
+      |    override def innovationLife = input.innovationLife.toInt
       |  }
-      |  val modelResult = ModelResult(simu.run(newRNG(seed)))""".stripMargin) set (
+      |
+      |val modelResult = ModelResult(simu.run(newRNG(seed)))""".stripMargin) set (
     name := "simpoplocal",
     plugins += pluginsOf[SimpopLocal],
-    imports += "fr.geocite.simpoplocal.exploration._",
-    inputs += (rMax, distanceDecay, seed, pCreation, pDiffusion, innovationImpact),
+    inputs += (rMax, distanceDecay, seed, pCreation, pDiffusion, innovationImpact, innovationLife),
     outputs += modelResult,
-    rMax := 1000.0, innovationImpact := 0.1, distanceDecay := 0.5, pCreation := 0.0001, pDiffusion := 0.0001, seed := 42
+    rMax := 1000.0,
+    innovationImpact := 0.1,
+    distanceDecay := 0.5,
+    pCreation := 0.0001, 
+    pDiffusion := 0.0001,
+    seed := 42,
+    innovationLife := 4000.0
   )
 
 // Define the task which evaluate a single replication
 val evalModel = 
   ScalaTask(
     """
-    |val ksValue =  LogNormalKSTest.test(modelResult.population).count(_ == false).toDouble
-    |val deltaPop = DeltaTest.delta(modelResult.population, 10000)
-    |val deltaTime = DeltaTest.delta(modelResult.time, 4000)""".stripMargin
+    |import fr.geocites.simpoplocal.exploration._
+    |
+    |val ksValue =  LogNormalKSTest.test(modelResult.population).count(_ == false).toDouble / 2
+    |val deltaPop = DeltaTest.delta(modelResult.population, 10000) / 10000
+    |val deltaTime = DeltaTest.delta(modelResult.time, 4000) / 4000""".stripMargin
   ) set (
     name := "evaluation",
-    imports += "fr.geocite.simpoplocal.exploration._",
+    plugins += pluginsOf[SimpopLocal],
     inputs += modelResult,
     outputs += (ksValue, deltaPop, deltaTime)
   )
+  
+val evaluateModel = runModel -- evalModel
 
-// Define the execution environment
-val grid = EGIEnvironment("vo.complex-systems.eu", openMOLEMemory = 1200, wallTime = 4 hours)
-
-runModel -- (evalModel hook ToStringHook())
+evaluateModel hook ToStringHook()
 

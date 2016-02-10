@@ -1,50 +1,53 @@
 import Model._
-import Replication._
 
 val aggregatedFitness = Val[Double]
 
-val relativizeTask = 
-  ScalaTask("""val aggregatedFitness = Seq(sumKsFailValue / 200, medPop / 10000, medTime / 4000).max""") set (
-    inputs += (sumKsFailValue, medPop, medTime),
+val aggregate = 
+  ScalaTask("""
+    |val normalised = Seq(ksValue, deltaPop, deltaTime)
+    |val aggregatedFitness = if(normalised.exists(_.isNaN)) Double.PositiveInfinity else normalised.max""".stripMargin) set (
+    inputs += (ksValue, deltaPop, deltaTime),
     outputs += aggregatedFitness
   )
 
-val relativized = replication -- relativizeTask
+val grid = DIRACEnvironment("vo.complex-systems.eu")
 
-val inputDomains = 
-  Seq(
-    rMax -> (2.0, 50000.0),
-    distanceDecay -> (0.0, 4.0),
-    pCreation -> (0.0 -> 0.01),
-    pDiffusion -> (0.0, 0.01),
-    innovationImpact -> (0.0, 2.0)
-  )
-
-def profile(parameter: Int) = {  
-  // Calibration profile of 1000 points for the parameter
-  val evolution = 
+def profile(variable: Val[Double]) = {  
+  
+  val algo =
     GenomeProfile (
-      x = parameter,
-      nX = 1000,
-      termination = 2 hours,
-      inputs = inputDomains,
+      x = variable,
+      nX = 100,
+      genome = Seq(
+        rMax in (2.0, 50000.0),
+        distanceDecay in (0.0, 4.0),
+        pCreation in (0.0, 0.01),
+        pDiffusion in (0.0, 0.01),
+        innovationImpact in (0.0, 2.0),
+        innovationLife in (1.0, 4001.0)
+      ),
       objective = aggregatedFitness,
-      reevaluate = 0.01
+      replication = Replication(seed = seed)
     )
 
+  // Calibration profile of 1000 points for the parameter
+  val evolution = SteadyStateEvolution(
+    algorithm = algo,
+    evaluation =  evaluateModel -- aggregate,
+    termination = 30 minutes
+  )
 
   // Define the island model
-  val (isl, ga) = IslandSteadyGA(evolution)(relativized, island = 1000, termination = 200000, sample = 500)
+  val island = IslandEvolution(evolution, parallelism = 1000, termination = 200000)
 
   // Define the hook to save the results
-  val savePopulation = SaveProfileHook(ga, workDirectory / s"profile/$parameter/")
+  val savePopulation = SavePopulationHook(island, workDirectory / s"profile2/${variable.name}/")
 
   // Define the execution
-  (isl on grid hook savePopulation)
+  (island on grid hook savePopulation)
 }
 
 val firstCapsule = Capsule(EmptyTask())
+val profiles = Seq(rMax, distanceDecay, pCreation, pDiffusion, innovationImpact, innovationLife).map(profile)
+profiles.map(firstCapsule -- _).reduce(_ & _)
 
-val profiles = (0 until inputDomains.size).map(profile)
-
-profiles.map(firstCapsule -- _).reduce(_ + _)

@@ -15,28 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.geocite.simpoplocal.exploration
+package fr.geocites.simpoplocal.exploration
 
-import scala.annotation.tailrec
-
-// Code picked from stack overflow
 object Median {
 
-  def choosePivot(arr: Array[Double]) = arr(arr.size / 2)
-
-  @tailrec def findKMedian(arr: Array[Double], k: Int): Double = {
-    val a = choosePivot(arr)
-    val (s, b) = arr partition (a >)
-    if (s.size == k) a
-    // The following test is used to avoid infinite repetition
-    else if (s.isEmpty) {
-      val (s, b) = arr partition (a ==)
-      if (s.size > k) a
-      else findKMedian(b, k - s.size)
-    } else if (s.size < k) findKMedian(b, k - s.size)
-    else findKMedian(s, k)
+  def median(sequence: Iterable[Double]): Double = {
+    val sortedSerie = sequence.toArray.filterNot(_.isNaN).sorted
+    val size = sortedSerie.size
+    if (size == sequence.size)
+      if (size % 2 == 0) (sortedSerie(size / 2) + sortedSerie((size / 2) - 1)) / 2
+      else sortedSerie((size / 2))
+    else Double.NaN
   }
 
-  def apply(arr: Array[Double]) = findKMedian(arr, (arr.size - 1) / 2)
+  def apply(arr: Array[Double]) = median(arr)
 
 }
