@@ -1,4 +1,6 @@
 
+import R
+
 // Declare the variable
 val i = Val[Int]
 val input = Val[File]
