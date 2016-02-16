@@ -3,16 +3,16 @@ val input = Val[File]
 val output = Val[File]
 val i = Val[Int]
 
-val pyTask = SystemExecTask(
-  "./python.bin",
-  "./python/re-execute.sh python matrix.py /tmp/data.csv ${i} /tmp/out.csv") set (
-  resources += workDirectory / "../python.bin",
-  inputFiles += (input, "python/rootfs/tmp/data.csv"),
-  outputFiles += ("python/rootfs/tmp/out.csv", output),
-  input := workDirectory / "../data/data1.csv",
-  inputs += i,
-  outputs += i
-)
+val pyTask = 
+  CARETask(
+    workDirectory / "../python.bin",
+    "python matrix.py /tmp/data.csv ${i} /tmp/out.csv"
+  ) set (
+    inputFiles += (input, "/tmp/data.csv"),
+    outputFiles += ("/tmp/out.csv", output),
+    input := workDirectory / "../data/data1.csv",
+    (inputs, outputs) += i
+  )
 
 val copyHook = CopyFileHook(output, workDirectory / "results/result${i}.csv")
 

@@ -1,10 +1,8 @@
 
 val pyTask = 
-  SystemExecTask(
-    "./python.bin",
-    "./python/re-execute.sh python matrix.py data.csv 2 out.csv") set (
-    resources += workDirectory / "../python.bin"
-  )
+  CARETask(
+    workDirectory / "../python.bin",
+    "python matrix.py data.csv 2 out.csv"
+  ) 
 
 pyTask
-
