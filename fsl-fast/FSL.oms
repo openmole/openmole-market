@@ -2,7 +2,7 @@
 // This is the dir where to find the executable in the archive fsl.bin.
 // It depends on the machine where the archive has been generated.
 // Change that if you repackage fsl on you computer.
-val fslPackagingPath = "fsl/rootfs/home/reuillon/Documents/Recherche/Work/OpenMOLE/fsl/"
+val fslPackagingPath = "/home/reuillon/Documents/Recherche/Work/OpenMOLE/fsl/"
 
 val dataFile = Val[File]
 val dataFileName = Val[String]
@@ -10,20 +10,18 @@ val resultDir = Val[File]
 val smoothness = Val[Double]
 
 // Explore the data files and a parameter
-val exploration = 
+val exploration =
   ExplorationTask(
-    (dataFile in ListFilesDomain(workDirectory / "data") zipWithName dataFileName) x
+    (dataFile in ListFilesDomain(workDirectory / "data") withName dataFileName) x
     (smoothness in (0.05 to 0.3 by 0.05))
   )
 
 // Run fsl
-val fslTask = SystemExecTask(
-  "./fsl.bin", 
-  s"mkdir ${fslPackagingPath}/res", 
-  "./fsl/re-execute.sh fsl5.0-fast -t 1 -n 3 -H ${smoothness} -I 4 -l 20.0 -o 'res/output.nii.gz' 'input.nii.gz'") set (
-  resources += workDirectory / "fsl.bin",
+val fslTask = CARETask(
+  workDirectory / "./fsl.bin",
+  "fsl5.0-fast -t 1 -n 3 -H ${smoothness} -I 4 -l 20.0 -o 'result/output.nii.gz' 'input.nii.gz'") set (
   inputFiles += (dataFile, fslPackagingPath + "/input.nii.gz"),
-  outputFiles += (fslPackagingPath + "/res", resultDir),
+  outputFiles += (fslPackagingPath + "/result", resultDir),
   inputs += (smoothness, dataFileName),
   outputs += (smoothness, dataFileName)
 )
@@ -33,3 +31,4 @@ val copyHook = CopyFileHook(resultDir, workDirectory / "results/${dataFileName.t
 
 // Compose the workflow
 exploration -< (fslTask hook copyHook)
+
