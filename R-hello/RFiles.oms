@@ -1,6 +1,4 @@
 
-import R.rPackagingPath
-
 // Declare the variable
 val i = Val[Int]
 val input = Val[File]
@@ -24,4 +22,7 @@ val rTask =
   
 val copyHook = CopyFileHook(output, workDirectory / "results/${n.dropRight(4)}_${i}.csv")  
 
-exploration -< (rTask hook copyHook)
+// you must have registered an EGI P12 certificate before using this environment
+val grid = EGIEnvironment("biomed")
+
+exploration -< (rTask on grid hook copyHook)
