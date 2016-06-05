@@ -2,7 +2,7 @@ name := "hellotask"
 
 version := "1.0"
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.8"
 
 osgiSettings
 
@@ -13,8 +13,6 @@ OsgiKeys.importPackage := Seq("*")
 OsgiKeys.privatePackage := Seq("")
 
 scalariformSettings
-
-resolvers += "ISC-PIF Release" at "http://maven.iscpif.fr/public/"
 
 val openMOLEVersion = "6.0-SNAPSHOT"
 
