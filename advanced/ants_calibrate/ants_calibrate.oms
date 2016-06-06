@@ -1,0 +1,101 @@
+
+val seed = Val[Int]
+val population = Val[Double]
+val diffusion = Val[Double]
+val evaporation = Val[Double]
+val maxsteps = Val[Int]
+
+// Define the output variables
+val food1 = Val[Double]
+val food2 = Val[Double]
+val food3 = Val[Double]
+val foodDifference = Val[Double]
+
+
+// Define the average output variables
+val medFood1 = Val[Double]
+val medFood2 = Val[Double]
+val medFood3 = Val[Double]
+
+// Define the NetlogoTask
+val cmds = Seq("random-seed ${seed}", "run-to-grid")
+val ants =
+  NetLogo5Task(workDirectory / "../ants.nlogo", cmds) set (
+    name := "ants",
+    // Map the OpenMOLE variables to NetLogo variables
+    netLogoInputs += (population, "gpopulation"),
+    netLogoInputs += (diffusion, "gdiffusion-rate"),
+    netLogoInputs += (evaporation, "gevaporation-rate"),
+    netLogoInputs += (maxsteps, "gmax-steps"),
+    netLogoOutputs += ("final-ticks-food1", food1),
+    netLogoOutputs += ("final-ticks-food2", food2),
+    netLogoOutputs += ("final-ticks-food3", food3),
+    // The seed is used to control the initialisation of the random number generator of NetLogo
+    inputs += seed,
+    // Define default values for inputs of the model
+    //seed := 42,
+    population := 125.0,
+    maxsteps := 2000
+ )
+
+val medianSlot = Slot(Capsule(
+  ScalaTask("""
+    import math.abs
+  
+    val medFood1 = food1.median
+    val medFood2 = food2.median
+    val medFood3 = food3.median
+    val foodDifference = abs(250 - medFood1) + abs(400 - medFood2) + abs(800 - medFood3)
+    """) set (
+    name := "median",
+    inputs += (food1.toArray,food2.toArray, food3.toArray),
+    outputs += (foodDifference)
+  ) 
+))
+
+val replicateCapsule = Capsule(
+  ExplorationTask(seed in (UniformDistribution[Int]() take 10))  set (
+  name := "Replicate ants",
+  inputs += (diffusion, evaporation),
+  outputs += (diffusion, evaporation)
+  )
+)
+  
+  
+val env = LocalEnvironment(50)
+//val env = SSHEnvironment("cherel","zebulon.iscpif.fr", 20)
+//val env = EGIEnvironment("vo.complex-systems.eu")
+
+val replicateModel = (replicateCapsule -< (ants by 1 on env hook ToStringHook()) >- medianSlot)
+
+  
+// Execute the workflow
+// Define the population (10) and the number of generations (100).
+// Define the inputs and their respective variation bounds.
+// Define the objectives to minimize.
+// Assign 1 percent of the computing time to reevaluating
+// parameter settings to eliminate over-evaluated individuals.
+val evolution =
+  NSGA2(
+    mu = 20,
+    termination = 1000000,
+    inputs = Seq(diffusion -> (0.0, 99.0), evaporation -> (0.0, 99.0)),
+    objectives = Seq(foodDifference),
+    reevaluate = 0.01
+  )
+
+
+val (puzzle, ga) = SteadyGA(evolution)(replicateModel, 50)
+
+// Define a hook to save the Pareto frontier
+val savePopulationHook = SavePopulationHook(ga, workDirectory / "results")
+
+// Define another hook to display the generation in the console
+val display = DisplayHook("Generation ${" + ga.generation.name + "}")
+
+// Plug everything together to create the workflow
+(puzzle hook savePopulationHook hook display)
+  
+  
+  
+  
