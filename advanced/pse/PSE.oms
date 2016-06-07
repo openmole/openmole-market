@@ -1,0 +1,31 @@
+import _parent_.Model._
+
+val pse =
+  PSE(
+    genome = Seq(
+      diffusion in (0.0, 99.0), 
+      evaporation in (0.0, 99.0)),
+    objectives =  Seq(
+      food1 in (0.0 to 4000.0 by 50.0), 
+      food3 in (0.0 to 4000.0 by 50.0)),
+    replication = Replication(seed = seed)
+  )
+  
+
+val evolution =
+  SteadyStateEvolution(
+    algorithm = pse,
+    evaluation = ants,
+    parallelism = 10,
+    termination = 1000000
+  )
+
+// Define a hook to save the Pareto frontier
+val savePopulationHook = SavePopulationHook(evolution, workDirectory / "results")
+
+// Plug everything together to create the workflow
+(evolution hook savePopulationHook)
+  
+  
+  
+  

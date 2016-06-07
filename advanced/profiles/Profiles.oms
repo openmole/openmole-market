@@ -1,0 +1,30 @@
+
+import _parent_.Model._
+import _parent_.calibrate.Objective._
+
+
+def profile(variable: Val[Double]) = {
+  val profile =
+    GenomeProfile (
+      x = variable,
+      nX = 100,
+      genome = Seq(
+        diffusion in (0.0, 99.0), 
+        evaporation in (0.0, 99.0)),
+      objective = deltaFood,
+      replication = Replication(seed = seed)
+    )
+
+  // Calibration profile of 1000 points for the parameter
+  val evolution = SteadyStateEvolution(
+    algorithm = profile,
+    evaluation =  ants -- objective,
+    termination = 20000
+  )
+  
+  val savePopulationHook = SavePopulationHook(evolution, workDirectory / s"results/${variable.name}" )
+  
+  (evolution hook savePopulationHook)
+}
+
+EmptyTask() -- (profile(diffusion), profile(evaporation))

@@ -1,0 +1,14 @@
+import _parent_.Model._
+
+
+// Define the average output variables
+val deltaFood = Val[Double]
+ 
+val objective = 
+  ScalaTask("val deltaFood = math.abs(250 - food1) + math.abs(400 - food2) + math.abs(800 - food3)") set (
+    inputs += (food1, food2, food3),
+    outputs += deltaFood
+  )
+  
+objective
+  
