@@ -1,6 +1,6 @@
-import _parent_.model._
-import _parent_.replicate.aggregate._
-import _parent_.replicate.replicate._
+import _parent_.Model._
+import _parent_.replicate.Aggregate._
+import _parent_.replicate.Replicate._
 
 val sampling =
   LHS(
