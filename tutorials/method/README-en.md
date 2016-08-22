@@ -1,54 +1,34 @@
-[Version Française](README-fr.md)
-
 # Calibration, validation and sensitivity analysis of complex systems models with OpenMOLE
 
 Guillaume Chérel, 2015-10-23
 
-Translated from French by Guillaume Chérel, Mathieu Leclaire, Juste Raimbault, Julien Perret. Edited by Sarah Wise.
+Translated from French by Guillaume Chérel, Mathieu Leclaire, Juste Raimbault, Julien Perret. Edited by Sarah Wise. Corrected by Romain Reuillon.
 
-Complex systems models are difficult to explore through simulation because they
-can involve many parameters, stochasticity, and nonlinear behaviours. We need to find ways to
-solve important modelling problems, including calibration, sensitivity analysis, and
-validation. In this tutorial, we will see how evolutionary algorithms can help
-us solve these problems for complex systems models, and how to use them in
-OpenMOLE.
+Complex systems models are difficult to explore through simulation because they can involve many parameters, stochasticity, and nonlinear behaviours. We need to find ways to solve important modelling problems, including calibration, sensitivity analysis, andvalidation. In this tutorial, we will see how evolutionary algorithms can help us solve these problems for complex systems models, and how to use them in OpenMOLE.
 
 Script files accompanying this document
 ----------------------------------------
 
-This document is part of a git repository which also contains the OpenMOLE
-script files to execute the experiments presented below, as well as a Haskell source
-file to perform the simulation results analysis and plotting. A link to the
-corresponding OpenMOLE script is given below in each section title. Please refer to
-the [OpenMOLE documentation](http://www.openmole.org/) for directions on how to
-use these scripts.
+This document is part of a git repository which also contains the OpenMOLE script files to execute the experiments presented below, as well as a Haskell source file to perform the simulation results analysis and plotting. A link to the corresponding OpenMOLE script is given below in each section title. Please refer to the [OpenMOLE documentation](http://www.openmole.org/) for directions on how to use these scripts.
 
-Data analysis and plotting is done with Haskell. The file
-[analyses/analyses.hs](analyses/analyses.hs) contains commented functions
-for carrying out the analysis. The directory [analyses](analyses) is formatted as a
-[Stack](http://www.stackage.org/) project which deals with the necessary
-dependencies. To use it, install stack and run:
+Data analysis and plotting is done with Haskell. The file [analyses/analyses.hs](analyses/analyses.hs) contains commented functions for carrying out the analysis. The directory [analyses](analyses) is formatted as a [Stack](http://www.stackage.org/) project which deals with the necessary dependencies. To use it, install stack and run:
 
     $ cd analyses #move into the directory
     $ stack setup #let stack install the right ghc version
     $ stack build #compile the project and install the dependencies
     $ stack exec EAForModelling #generate the figures
 
-You can also generate the figures interactively with ghci. In place of the last
-command, use:
+You can also generate the figures interactively with ghci. In place of the last command, use:
 
     $ stack ghci
 
-This starts the haskell interpreter and you can call functions defined in
-analyses.hs directly, such as `plot_ants_calibrate`, `plot_ants_pse` and
+This starts the haskell interpreter and you can call functions defined in analyses.hs directly, such as `plot_ants_calibrate`, `plot_ants_pse` and
 `plot_ants_profiles`.
 
 The modelling problem we are trying to address
 ---------------------------------------------
 
-We are developing a model to explain an observed phenomenon. For
-example, we would like to explain the formation of paths by ants between their nest
-and a food source. We propose the following mechanism:
+We are developing a model to explain an observed phenomenon. For example, we would like to explain the formation of paths by ants between their nest and a food source. We propose the following mechanism:
 
 - in general, ants move randomly
 - when ants find food, they pick some up and go back to the nest
@@ -58,96 +38,40 @@ and a food source. We propose the following mechanism:
 - when pheromones are dropped by an ant, they diffuse with a certain diffusion
   rate (a parameter of the model).
 
-Once this mechanism is proposed, the challenge is to test it and assess its
-explanatory or scientific value. These rules can be implemented algorithmically, 
-which yields a model that can be simulated. We will use a version of the NetLogo 
-model *ants* modified to include additional output variables. It is available in the file
-[ants.nlogo](ants.nlogo).
+Once this mechanism is proposed, the challenge is to test it and assess its explanatory or scientific value. These rules can be implemented algorithmically, which yields a model that can be simulated. We will use a version of the NetLogo model *ants* modified to include additional output variables. It is available in the file [ants.nlogo](ants.nlogo).
 
 ![](img/ants_screenshot.png) 
 
-The first thing to verify is that the model is able to reproduce the phenomena
-it was designed to explain. We are thus looking for parameter values with which
-the simulation reproduces the phenomena. This is the problem of
-**inverse calibration**. It can be translated into an optimisation problem:
-find the parameter values which minimise the distance between experimental
-measurements or field data and the simulation results. Evolutionary algorithms
-were first designed as optimisation methods and can be used to find solutions to
-these kinds of problems.
+The first thing to verify is that the model is able to reproduce the phenomena it was designed to explain. We are thus looking for parameter values with which the simulation reproduces the phenomena. This is the problem of **inverse calibration**. It can be translated into an optimisation problem: find the parameter values which minimise the distance between experimental measurements or field data and the simulation results. Evolutionary algorithms were first designed as optimisation methods and can be used to find solutions to these kinds of problems.
 
-Knowing that a model can reproduce an observed phenomenon does not guarantee that
-it represents the way the phenomenon is actually produced in nature. Other
-explanations could be possible. The proposed model is but one candidate among
-several possibilities. It is probably out of reach to be certain that it is the
-right one, and there can be more than one valid interpretation of the same
-phenomena. But we can attempt to test its validity. This is the problem of model
-**validation**.
+Knowing that a model can reproduce an observed phenomenon does not guarantee that it represents the way the phenomenon is actually produced in nature. Other explanations could be possible. The proposed model is but one candidate among several possibilities. It is probably out of reach to be certain that it is the right one, and there can be more than one valid interpretation of the same phenomena. But we can attempt to test its validity. This is the problem of model **validation**.
 
-One way to test the model is to look for its different possible behaviours;
-that is, not only those we have designed the model to reproduce, but also unexpected ones. By
-looking for unexpected behaviours, we can identify those which are
-not acceptable, for example because they differ from empirical
-data. We also can determine whether certain kinds of behaviours are absent,
-which implies the inability of the model to generate such behaviours. These
-observations of the model, if they contradict empirical observations, give us the
-opportunity to revise the model assumptions or find bugs in the code. They also
-give us the opportunity to express new hypotheses to be tested empirically. By
-reiterating this process of observation of the simulated model, the formulation of hypotheses, 
-the empirical testing of these hypotheses, and model revision in
-accordance with the new observations, we can enhance our understanding of the
-phenomena and increase our confidence in the models we build.
+One way to test the model is to look for its different possible behaviours; that is, not only those we have designed the model to reproduce, but also unexpected ones. By looking for unexpected behaviours, we can identify those which are not acceptable, for example because they differ from empirical data. We also can determine whether certain kinds of behaviours are absent, which implies the inability of the model to generate such behaviours. These observations of the model, if they contradict empirical observations, give us the opportunity to revise the model assumptions or find bugs in the code. They also give us the opportunity to express new hypotheses to be tested empirically. By reiterating this process of observation of the simulated model, the formulation of hypotheses,  the empirical testing of these hypotheses, and model revision in accordance with the new observations, we can enhance our understanding of the phenomena and increase our confidence in the models we build.
 
-Identifying the set of distinct behaviours a model can possibly exhibit is not an
-optimisation problem, as we are not looking for any one behaviour in particular.
-Evolutionary algorithms can help us address this problem by following the
-approach of [Novelty Search](http://eplex.cs.ucf.edu/noveltysearch/userspage/),
-as we will explain below.
+Identifying the set of distinct behaviours a model can possibly exhibit is not an optimisation problem, as we are not looking for any one behaviour in particular. Evolutionary algorithms can help us address this problem by following the approach of [Novelty Search](http://eplex.cs.ucf.edu/noveltysearch/userspage/), as we will explain below.
 
-A third important modelling problem is sensitivity analysis. It deals with
-understanding how the different model parameters contribute to the behaviour of 
-the system. Below, we will propose an approach to sensitivity analysis which leads to
-visualising the contribution of each parameter in the reproduction of a target
-behaviour. This is the **profiles** method. We will then propose another
-approach to evaluate a **calibration's robustness*, i.e. to know if small
-variations of the parameters around calibrated values can lead to important
-changes in the model's behaviour.
+A third important modelling problem is sensitivity analysis. It deals with understanding how the different model parameters contribute to the behaviour of the system. Below, we will propose an approach to sensitivity analysis which leads to visualising the contribution of each parameter in the reproduction of a target behaviour. This is the **profiles** method. We will then propose another approach to evaluate a **calibration's robustness*, i.e. to know if small variations of the parameters around calibrated values can lead to important changes in the model's behaviour.
 
 Evolutionary algorithms
 -----------------------
 
-Evolutionary algorithms are optimisation methods which were originally inspired
-by evolution and natural selection. The general principle is to iteratively generate
-new populations of individuals from the previous population, as follows:
+Evolutionary algorithms are optimisation methods which were originally inspired by evolution and natural selection. The general principle is to iteratively generate new populations of individuals from the previous population, as follows:
 
 1. Generate new individuals by crossover and mutation of the individuals in the
    previous population,
 2. Evaluate the new individuals,
 3. Select the individuals to keep in the new population.
 
-From this general framework, we can look for the best solutions to a given
-problem by selecting from each generation the individuals that are the best at
-solving it. We can also prioritise diversity by selecting individuals whose behaviours 
-vary most from one another.
+From this general framework, we can look for the best solutions to a given problem by selecting from each generation the individuals that are the best at solving it. We can also prioritise diversity by selecting individuals whose behaviours vary most from one another.
 
 Using evolutionary algorithms with models
 -----------------------------------------
 
-In the context of complex systems modelling, we are evaluating parameter values
-based on the behaviour they induce in the model. The individuals are thus
-endowed with a genome which encodes a value for each model parameter. 
-Evaluating an individual means executing a model simulation with the parameter
-values in the individual's genome and performing desired measures on the model output. The
-set of values measured constitute what we will call here a pattern. Each
-simulation thus generates a pattern. When the model is stochastic, we can take
-the average or median pattern of several simulation replications with the same
-parameter values. In the end, an individual is comprised of the genome and its
-associated pattern.
+In the context of complex systems modelling, we are evaluating parameter values based on the behaviour they induce in the model. The individuals are thus endowed with a genome which encodes a value for each model parameter.  Evaluating an individual means executing a model simulation with the parameter values in the individual's genome and performing desired measures on the model output. The set of values measured constitute what we will call here a pattern. Each simulation thus generates a pattern. When the model is stochastic, we can take the average or median pattern of several simulation replications with the same parameter values. In the end, an individual is comprised of the genome and its associated pattern.
 
-In order to solve the modelling problems described above, we will use the
-evolutionary algorithms with different objectives:
+In order to solve the modelling problems described above, we will use the evolutionary algorithms with different objectives:
 
-- the objective of looking for patterns which are the closest to a pattern observed or
-  measured experimentally,
+- the objective of looking for patterns which are the closest to a pattern observed or measured experimentally,
 - the objective of looking for different patterns.
 
 Calibrate a model to reproduce expected patterns
@@ -157,18 +81,11 @@ Calibrate a model to reproduce expected patterns
 
 *Corresponding paper: Schmitt C, Rey-Coyrehourcq S, Reuillon R, Pumain D, 2015, "Half a billion simulations: evolutionary algorithms and distributed computing for calibrating the SimpopLocal geographical model" Environment and Planning B: Planning and Design, 42(2), 300-315. <https://hal.archives-ouvertes.fr/hal-01118918/document>*
 
-We will see now how OpenMOLE can help in finding the parameter values with which a
-model reproduces a given pattern.
+We will see now how OpenMOLE can help in finding the parameter values with which a model reproduces a given pattern.
 
-Coming back to the ants example, we can imagine a real world experiment where
-three stacks of food are set around the anthill, and the experimenter seeks to measure the 
-amount of time required for each stack to be emptied. Assume that the measurements taken from real 
-data are respectively 250, 400, and 800 seconds. If the model is accurate, it should be able to 
-reproduce these measurements. Are we able to find some parameter values which reproducing these values?
+Coming back to the ants example, we can imagine a real world experiment where three stacks of food are set around the anthill, and the experimenter seeks to measure the amount of time required for each stack to be emptied. Assume that the measurements taken from real data are respectively 250, 400, and 800 seconds. If the model is accurate, it should be able to reproduce these measurements. Are we able to find some parameter values which reproducing these values?
 
-This question can be understood as an optimisation problem, in which we search for the
-parameter values which minimise the difference between experimental measured times
-and simulated times, given by:
+This question can be understood as an optimisation problem, in which we search for the parameter values which minimise the difference between experimental measured times and simulated times, given by:
 
     |250 - simuFood1| + |400 - simuFood2| + |800 - simuFood3|
 
@@ -204,7 +121,7 @@ The corresponding OpenMOLE code is the following:
     val evolution =
       NSGA2(
         mu = 200,
-        inputs = Seq(diffusion -> (0.0, 99.0), evaporation -> (0.0, 99.0)),
+        genome = Seq(diffusion in (0.0, 99.0), evaporation in 0.0, 99.0)),
         objectives = Seq(foodTimesDifference), //we have a single objective here
         reevaluate = 0.01,
         termination = 1000000
