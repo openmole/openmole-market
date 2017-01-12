@@ -3,9 +3,9 @@ val output = Val[File]
 val pyTask = 
   CARETask(
     workDirectory / "../python.bin", 
-    "python matrix.py data.csv 2 /tmp/out.csv"
+    "python matrix.py data.csv 2 out.csv"
   ) set (
-    outputFiles += ("/tmp/out.csv", output)
+    outputFiles += ("out.csv", output)
   )
 
 val copyHook = CopyFileHook(output, workDirectory / "result.csv")

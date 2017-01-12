@@ -4,10 +4,10 @@ val output = Val[File]
 val pyTask = 
   CARETask(
     workDirectory / "../python.bin",
-    "python matrix.py /tmp/data.csv 2 /tmp/out.csv"
+    "python matrix.py data.csv 2 out.csv"
   ) set (
-    inputFiles += (input, "/tmp/data.csv"),
-    outputFiles += ("/tmp/out.csv", output),
+    inputFiles += (input, "data.csv"),
+    outputFiles += ("out.csv", output),
     input := workDirectory / "../data/data1.csv"
   )
 
