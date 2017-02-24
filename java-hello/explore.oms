@@ -1,8 +1,6 @@
 val i = Val[Int]
 val o = Val[String]
 
-val explo = ExplorationTask(i in (0 to 10))
-
 //Defines the task to perform the hello function
 val javaTask = ScalaTask("val o = hello.Hello.run(i)") set (
   libraries += workDirectory / "Hello.jar",
@@ -10,6 +8,10 @@ val javaTask = ScalaTask("val o = hello.Hello.run(i)") set (
   outputs += o
 )
 
-val displayHook = ToStringHook(o)
+val exploration = 
+  DirectSampling(
+    evaluation = javaTask hook ToStringHook(),
+    sampling = i in (0 to 10)
+  )
 
-explo -< (javaTask hook displayHook)
+exploration
