@@ -4,9 +4,9 @@ val medFood1 = Val[Double]
 val medFood2 = Val[Double]
 val medFood3 = Val[Double]
 
-val food1Vector = VectorOf(food1)
-val food2Vector = VectorOf(food2)
-val food3Vector = VectorOf(food3)
+val food1Vector = Vec(food1)
+val food2Vector = Vec(food2)
+val food3Vector = Vec(food3)
 
 val medians = 
   ScalaTask("""
