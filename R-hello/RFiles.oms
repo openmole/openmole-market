@@ -5,12 +5,6 @@ val input = Val[File]
 val output = Val[File]
 val n = Val[String]
 
-val exploration = 
-  ExplorationTask(
-    i in (1 to 10) x 
-    (input in ListFilesDomain(workDirectory / "data") withName n)
-  )
-
 // R task
 val rTask = 
   CARETask(workDirectory / "care.bin", "R --slave -f test.R --args ${i}") set (
@@ -25,4 +19,12 @@ val copyHook = CopyFileHook(output, workDirectory / "results/${n.dropRight(4)}_$
 // you must have registered an EGI P12 certificate before using this environment
 val grid = EGIEnvironment("biomed")
 
-exploration -< (rTask on grid hook copyHook)
+val exploration = 
+  DirectSampling(
+    evaluation = rTask on grid hook copyHook,
+    sampling = 
+      i in (1 to 10) x 
+      (input in ListFilesDomain(workDirectory / "data") withName n)
+  )
+
+exploration

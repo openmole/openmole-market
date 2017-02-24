@@ -2,8 +2,6 @@
 val i = Val[Int]
 val output = Val[File]
 
-val exploration = ExplorationTask(i in (0 to 100))
-
 val rTask = CARETask(workDirectory / "care.bin", "R --slave -f test.R --args ${i}") set (
   (inputs, outputs) += i,
   outputFiles += ("results.csv", output)
@@ -11,4 +9,12 @@ val rTask = CARETask(workDirectory / "care.bin", "R --slave -f test.R --args ${i
 
 val copyHook = CopyFileHook(output, workDirectory / "results/results${i}.csv")
 
-exploration -< (rTask hook copyHook)
+val multiThread = LocalEnvironment(5)
+
+val exploration = 
+  DirectSampling(
+    evaluation = rTask on multiThread hook copyHook,
+    sampling = i in (0 to 100)
+  )
+
+exploration
