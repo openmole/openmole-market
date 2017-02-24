@@ -3,10 +3,6 @@ val seed = Val[Long]
 val pi = Val[Double]
 val piAvg = Val[Double]
 
-// Define the design of experiment on the seed for the random number generator
-val exploration =
-  ExplorationTask(seed in UniformDistribution[Long]() take 100)
-
 // Define the model task that computes an estimation of pi
 val model =
   ScalaTask("""
@@ -18,17 +14,15 @@ val model =
     |    x = random.nextDouble()
     |    y = random.nextDouble()
     |  } yield { (x * x) + (y * y) }
-    |  val pi = (inside.count(_ < 1).toDouble / points) * 4
+    |val pi = (inside.count(_ < 1).toDouble / points) * 4
     |""".stripMargin) set (
-      name := "pi",
       inputs += seed,
       outputs += pi
     )
     
 // Define the average task that average several estimation of pi
 val average = 
-  ScalaTask("""val piAvg = pi.sum / pi.size""") set (
-    name := "average",
+  ScalaTask("val piAvg = pi.sum / pi.size") set (
     inputs += pi.toArray,
     outputs += piAvg
   )
@@ -36,7 +30,14 @@ val average =
 // Define the execution environment, here it is a local execution environment with 4 threads
 val env = LocalEnvironment(4)
 
-// Define and start the workflow
-exploration -< (model on env hook ToStringHook()) >- (average hook ToStringHook())
+val exploration = 
+  Replication(
+    evaluation = model on env hook ToStringHook(),
+    seed = seed,
+    replications = 100,
+    aggregation = average hook ToStringHook()
+  )
+
+exploration 
 
 
