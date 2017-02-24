@@ -15,8 +15,8 @@ val evolution =
             innovationLife in (1.0, 4001.0)
           ),
         objectives = Seq(ksValue, deltaPop, deltaTime),
-        replication = 
-          Replication(
+        stochastic = 
+          Stochastic(
             seed = seed, 
             aggregation = Seq(average, median, median)
           )
