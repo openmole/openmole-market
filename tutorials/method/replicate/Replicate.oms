@@ -2,13 +2,10 @@
 import _parent_.Model._
 
 val replications = 
- ExplorationTask(
-  seed in UniformDistribution[Int]() take 10) set (
-  name := "Replicate ants",
-  inputs += (diffusion, evaporation),
-  outputs += (diffusion, evaporation),
-  diffusion := 10.0,
-  evaporation := 10.0
+ Replication (
+  evaluation = ants hook ToStringHook(),
+  seed = seed,
+  replications = 10
 )
 
-replications -< (ants hook ToStringHook())
+replications

@@ -8,7 +8,7 @@ val pse =
     objectives =  Seq(
       food1 in (0.0 to 4000.0 by 50.0), 
       food3 in (0.0 to 4000.0 by 50.0)),
-    replication = Replication(seed = seed)
+    stochastic = Stochastic(seed = seed)
   )
   
 

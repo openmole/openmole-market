@@ -12,7 +12,7 @@ def profile(variable: Val[Double]) = {
         diffusion in (0.0, 99.0), 
         evaporation in (0.0, 99.0)),
       objective = deltaFood,
-      replication = Replication(seed = seed)
+      stochastic = Stochastic(seed = seed)
     )
 
   // Calibration profile of 1000 points for the parameter

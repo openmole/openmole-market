@@ -15,7 +15,7 @@ val nsga2 =
       diffusion in (0.0, 99.0),
       evaporation in (0.0, 99.0)),
     objectives = Seq(deltaFood),
-    replication = Replication(seed = seed, aggregation = Seq(median))
+    stochastic = Stochastic(seed = seed, aggregation = Seq(median))
   )
 
 val evolution =

@@ -1,15 +1,16 @@
 import _parent_.Model._
 import _parent_.replicate.Aggregate._
-import _parent_.replicate.Replicate._
 
-val sampling =
-  LHS(
-    500,
-    diffusion in (10.0, 100.0),
-    evaporation in (10.0, 100.0)
+val exploration = 
+  DirectSampling(
+    evaluation = replications hook CSVHook(workDirectory / "result.csv"),
+    sampling =   
+      LHS(
+        500,
+        diffusion in (10.0, 100.0),
+        evaporation in (10.0, 100.0)
+      )
   )
 
-val exploration = ExplorationTask(sampling)
-
-exploration -< Strain(replications -< ants >- medians) hook AppendToCSVFileHook(workDirectory / "result.csv")
+exploration
 
