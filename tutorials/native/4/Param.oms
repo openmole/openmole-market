@@ -16,6 +16,10 @@ val pyTask =
 
 val copyHook = CopyFileHook(output, workDirectory / "results/result${i}.csv")
 
-val exploration = ExplorationTask(i in (1 to 10))
+val exploration = 
+  DirectSampling (
+    evaluation = pyTask hook copyHook,
+    sampling = i in (1 to 10)
+  )
 
-exploration -< (pyTask hook copyHook)
+exploration
