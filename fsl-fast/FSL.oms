@@ -9,13 +9,6 @@ val dataFileName = Val[String]
 val resultDir = Val[File]
 val smoothness = Val[Double]
 
-// Explore the data files and a parameter
-val exploration =
-  ExplorationTask(
-    (dataFile in ListFilesDomain(workDirectory / "data") withName dataFileName) x
-    (smoothness in (0.05 to 0.3 by 0.05))
-  )
-
 // Run fsl
 val fslTask = CARETask(
   workDirectory / "./fsl.bin",
@@ -29,6 +22,13 @@ val fslTask = CARETask(
 // Copy the results
 val copyHook = CopyFileHook(resultDir, workDirectory / "results/${dataFileName.takeWhile(_ != '.')}_${smoothness}")
 
-// Compose the workflow
-exploration -< (fslTask hook copyHook)
+val exploration = 
+  DirectSampling(
+    evaluation = fslTask hook copyHook,
+    sampling = 
+      (dataFile in ListFilesDomain(workDirectory / "data") withName dataFileName) x
+      (smoothness in (0.05 to 0.3 by 0.05))
+  )
+
+exploration
 
