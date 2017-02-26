@@ -10,7 +10,7 @@ val cmds =
   )
 
 val fireTask =
-  NetLogo5Task(workDirectory / "Fire.nlogo", cmds) set (
+  NetLogo6Task(workDirectory / "Fire.nlogo", cmds) set (
     inputs += seed,
     outputs += (seed, density),
     netLogoInputs += (density, "density"),

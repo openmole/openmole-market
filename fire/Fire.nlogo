@@ -56,10 +56,10 @@ end
 GRAPHICS-WINDOW
 200
 10
-712
-543
-125
-125
+710
+521
+-1
+-1
 2.0
 1
 10
@@ -78,6 +78,7 @@ GRAPHICS-WINDOW
 1
 1
 ticks
+30.0
 
 MONITOR
 43
@@ -99,7 +100,7 @@ density
 density
 0.0
 99.0
-57
+57.0
 1.0
 1
 %
@@ -120,7 +121,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 26
@@ -168,13 +169,17 @@ Each turtle that represents a piece of the fire is born and then dies without ev
 
 Set the density of trees to 55%. At this setting, there is virtually no chance that the fire will reach the right edge of the forest. Set the density of trees to 70%. At this setting, it is almost certain that the fire will reach the right edge. There is a sharp transition around 59% density. At 59% density, the fire has a 50/50 chance of reaching the right edge.
 
-Try setting up and running a BehaviorSpace experiment (see Tools menu) to analyze the percent burned at different tree density levels.
+Try setting up and running a BehaviorSpace experiment (see Tools menu) to analyze the percent burned at different tree density levels. Plot the burn-percentage against the density. What kind of curve do you get?
+
+Try changing the size of the lattice (`max-pxcor` and `max-pycor` in the Model Settings). Does it change the burn behavior of the fire?
 
 ## EXTENDING THE MODEL
 
-What if the fire could spread in eight directions (including diagonals)? To do that, use "neighbors" instead of "neighbors4". How would that change the fire's chances of reaching the right edge? In this model, what "critical density" of trees is needed for the fire to propagate?
+What if the fire could spread in eight directions (including diagonals)? To do that, use `neighbors` instead of `neighbors4`. How would that change the fire's chances of reaching the right edge? In this model, what "critical density" of trees is needed for the fire to propagate?
 
 Add wind to the model so that the fire can "jump" greater distances in certain directions.
+
+Add the ability to plant trees where you want them. What configurations of trees allow the fire to cross the forest? Which don't? Why is over 59% density likely to result in a tree configuration that works? Why does the likelihood of such a configuration increase so rapidly at the 59% density?
 
 ## NETLOGO FEATURES
 
@@ -191,20 +196,29 @@ See the "CA 1D Rule 30" and "CA 1D Rule 30 Turtle" for an example of a model wri
 * Percolation
 * Rumor Mill
 
+## CREDITS AND REFERENCES
+
+https://en.wikipedia.org/wiki/Forest-fire_model
 
 ## HOW TO CITE
 
-If you mention this model in a publication, we ask that you include these citations for the model itself and for the NetLogo software:  
-- Wilensky, U. (1997).  NetLogo Fire model.  http://ccl.northwestern.edu/netlogo/models/Fire.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.  
-- Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.  
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (1997).  NetLogo Fire model.  http://ccl.northwestern.edu/netlogo/models/Fire.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
 
 ## COPYRIGHT AND LICENSE
 
 Copyright 1997 Uri Wilensky.
 
-![CC BY-NC-SA 3.0](http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png)
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
 
-This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
 
 Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
 
@@ -214,6 +228,7 @@ This model was developed at the MIT Media Lab using CM StarLogo.  See Resnick, M
 
 This model was converted to NetLogo as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227. Converted from StarLogoT to NetLogo, 2001.
 
+<!-- 1997 2001 MIT -->
 @#$#@#$#@
 default
 true
@@ -496,9 +511,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.0beta1
+NetLogo 6.0.1-M1
 @#$#@#$#@
 set density 60.0
 setup
@@ -517,7 +531,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@
