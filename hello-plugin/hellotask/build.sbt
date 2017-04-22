@@ -2,7 +2,7 @@ name := "hellotask"
 
 version := "1.0"
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.11.11"
 
 osgiSettings
 
@@ -14,7 +14,7 @@ OsgiKeys.privatePackage := Seq("")
 
 scalariformSettings
 
-val openMOLEVersion = "6.0-SNAPSHOT"
+val openMOLEVersion = "7.0-SNAPSHOT"
 
 libraryDependencies += "org.openmole" %% "org-openmole-core-dsl" % openMOLEVersion
 
