@@ -478,7 +478,7 @@ d'échantillonnages.
 Analyse de sensibilité: Profiles
 --------------------------------
 
-*Script OpenMOLE associé: [profiles/profiles.oms](profiles/profiles.oms)*
+*Script OpenMOLE associé: [profiles/Profiles.oms](profiles/Profiles.oms)*
 
 *Article associé: Reuillon R., Schmitt C., De Aldama R., Mouret J.-B., 2015, "A New Method to Evaluate Simulation Models: The Calibration Profile (CP) Algorithm", JASSS : Journal of Artificial Societies and Social Simulation, Vol. 18, Issue 1, <http://jasss.soc.surrey.ac.uk/18/1/12.html>*
 

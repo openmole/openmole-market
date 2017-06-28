@@ -367,7 +367,7 @@ efficiency.
 Sensitivity analysis: Profiles
 --------------------------------
 
-*Linked OpenMOLE script: [profiles/profiles.oms](profiles/profiles.oms)*
+*Linked OpenMOLE script: [profiles/Profiles.oms](profiles/Profiles.oms)*
 
 *Article: Reuillon R., Schmitt C., De Aldama R., Mouret J.-B., 2015, "A New Method to Evaluate Simulation Models: The Calibration Profile (CP) Algorithm", JASSS : Journal of Artificial Societies and Social Simulation, Vol. 18, Issue 1, <http://jasss.soc.surrey.ac.uk/18/1/12.html>*
 
