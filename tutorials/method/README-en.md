@@ -77,7 +77,10 @@ In order to solve the modelling problems described above, we will use the evolut
 Calibrate a model to reproduce expected patterns
 ------------------------------------------------------
 
-*Corresponding OpenMOLE script: [ants\_calibrate/ants\_calibrate.oms](ants_calibrate/ants_calibrate.oms)*
+*Corresponding OpenMOLE script:*
+
+- [calibrate/Calibrate.oms](calibrate/Calibrate.oms)
+- [calibrate/Objective.oms](calibrate/Objective.oms)
 
 *Corresponding paper: Schmitt C, Rey-Coyrehourcq S, Reuillon R, Pumain D, 2015, "Half a billion simulations: evolutionary algorithms and distributed computing for calibrating the SimpopLocal geographical model" Environment and Planning B: Planning and Design, 42(2), 300-315. <https://hal.archives-ouvertes.fr/hal-01118918/document>*
 
@@ -201,7 +204,7 @@ to experimental values. We show the evolution of the distance between simulation
 and experimental measures between successive evaluations in the following
 figure:
 
-![](ants_calibrate/fitnessVSEval.png) 
+![](calibrate/fitnessVSEval.png) 
 
 When the evolution has stabilised, we can conclude whether we have found parameter
 values with which the model reproduces experimental data. If so, we
@@ -237,7 +240,7 @@ phenomenon.
 Validation: Putting a model to the test
 ----------------------------------------
 
-*Associated OpenMOLE Script: [ants\_pse/ants\_pse.oms](ants_pse/ants_pse.oms)*
+*Associated OpenMOLE Script: [pse/pse.oms](pse/pse.oms)*
 
 *Associated Article: Chérel G., Cottineau C., Reuillon R., 2015, " Beyond Corroboration: Strengthening Model Validation by Looking for Unexpected Patterns ", PLoS ONE 10(9): e0138212. doi:[10.1371/journal.pone.0138212](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0138212)*
 
@@ -310,7 +313,7 @@ As the exploration progresses, new patterns are discovered. The following figure
 gives the number of known patterns (the number of cells with a counter value
 greater than 0) with respect to the number of evaluations.
 
-![](ants_pse/volumeDiscovered.png) 
+![](pse/volumeDiscovered.png) 
 
 When this number stabilises, PSE is no longer making new discoveries. One has
 to be careful when interpreting this stabilisation. The absence of new discoveries can
@@ -320,7 +323,7 @@ it is possible that other patterns exist but that PSE could not reach them.
 The following figure shows the set of patterns discovered by PSE when we interrupt
 the exploration after it stabilises.
 
-![](ants_pse/patterns.png) 
+![](pse/patterns.png) 
 
 The first observation that can be made is that all patterns have indeed been
 discovered: in every pattern, the closest food source has been drained before the furthest one.
@@ -364,7 +367,7 @@ efficiency.
 Sensitivity analysis: Profiles
 --------------------------------
 
-*Linked OpenMOLE script: [ants\_profiles/ants\_profiles.oms](ants_profiles/ants_profiles.oms)*
+*Linked OpenMOLE script: [profiles/profiles.oms](profiles/profiles.oms)*
 
 *Article: Reuillon R., Schmitt C., De Aldama R., Mouret J.-B., 2015, "A New Method to Evaluate Simulation Models: The Calibration Profile (CP) Algorithm", JASSS : Journal of Artificial Societies and Social Simulation, Vol. 18, Issue 1, <http://jasss.soc.surrey.ac.uk/18/1/12.html>*
 
@@ -449,9 +452,9 @@ puzzle, as follows :
 
 We obtain the following profiles :
 
-![](ants_profiles/profile_diffusion.png) 
+![](profiles/profile_diffusion.png) 
 
-![](ants_profiles/profile_evaporation.png) 
+![](profiles/profile_evaporation.png) 
 
 When the diffusion rate is set to any value above 10, the model is able to reproduce 
 experimental measures rather accurately. A refined profile within the interval 

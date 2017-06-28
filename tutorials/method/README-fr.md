@@ -165,7 +165,10 @@ Pour résoudre les problèmes mentionnés ci-dessus, on va utiliser des algorith
 Calibrer un modèle pour reproduire des motifs attendus
 ------------------------------------------------------
 
-*Script OpenMOLE associé: [ants\_calibrate/ants\_calibrate.oms](ants_calibrate/ants_calibrate.oms)*
+*Scripts OpenMOLE associés:* 
+
+- [calibrate/Calibrate.oms](calibrate/Calibrate.oms)
+- [calibrate/Objective.oms](calibrate/Objective.oms)
 
 *Article associé: Schmitt C, Rey-Coyrehourcq S, Reuillon R, Pumain D, 2015, "Half a billion simulations: evolutionary algorithms and distributed computing for calibrating the SimpopLocal geographical model" Environment and Planning B: Planning and Design, 42(2), 300-315. <https://hal.archives-ouvertes.fr/hal-01118918/document>*
 
@@ -304,7 +307,7 @@ les valeurs de paramètres avec lesquelles le modèle reproduit les mesures
 expérimentales. Voici l'évolution de la distance entre les simulations et les
 mesures expérimentales au fil des évaluations successives.
 
-![](ants_calibrate/fitnessVSEval.png) 
+![](calibrate/fitnessVSEval.png) 
 
 Lorsque l'évolution se stabilise, on peut conclure que l'on a trouvé ou non des
 valeurs de paramètres avec lesquelles le modèle reproduit les données, et si
@@ -337,7 +340,7 @@ observé.
 Validation: Mettre un modèle à l'épreuve
 ----------------------------------------
 
-*Script OpenMOLE associé: [ants\_pse/ants\_pse.oms](ants_pse/ants_pse.oms)*
+*Script OpenMOLE associé: [pse/pse.oms](pse/pse.oms)*
 
 *Article associé: Chérel G., Cottineau C., Reuillon R., 2015, " Beyond Corroboration: Strengthening Model Validation by Looking for Unexpected Patterns ", PLoS ONE 10(9): e0138212. doi:[10.1371/journal.pone.0138212](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0138212)*
 
@@ -415,7 +418,7 @@ figure suivante donne le nombre de motifs connus (que l'on calcule par le nombre
 de cellules dont le compteur est supérieur ou égal à 1) en fonction du nombre
 d'évaluations.
 
-![](ants_pse/volumeDiscovered.png) 
+![](pse/volumeDiscovered.png) 
 
 Lorsque ce nombre se stabilise, c'est que PSE ne fait plus de nouvelles
 découvertes. Il faut être prudent sur la manière d'interpréter cela. L'absence
@@ -426,7 +429,7 @@ existent mais que PSE n'arrive pas à les atteindre.
 La figure suivante montre les motifs découverts par PSE lorsque nous avons
 interrompu l'exploration.
 
-![](ants_pse/patterns.png) 
+![](pse/patterns.png) 
 
 La première observation que l'on peut faire est que dans tous les motifs
 découverts, la source de nourriture la plus proche a été épuisée avant la source
@@ -475,7 +478,7 @@ d'échantillonnages.
 Analyse de sensibilité: Profiles
 --------------------------------
 
-*Script OpenMOLE associé: [ants\_profiles/ants\_profiles.oms](ants_profiles/ants_profiles.oms)*
+*Script OpenMOLE associé: [profiles/profiles.oms](profiles/profiles.oms)*
 
 *Article associé: Reuillon R., Schmitt C., De Aldama R., Mouret J.-B., 2015, "A New Method to Evaluate Simulation Models: The Calibration Profile (CP) Algorithm", JASSS : Journal of Artificial Societies and Social Simulation, Vol. 18, Issue 1, <http://jasss.soc.surrey.ac.uk/18/1/12.html>*
 
@@ -563,9 +566,9 @@ puis on assemble tous les puzzles en un puzzle commun, comme ci-dessous:
 
 Voici les profiles obtenus pour chaque paramètre:
 
-![](ants_profiles/profile_diffusion.png) 
+![](profiles/profile_diffusion.png) 
 
-![](ants_profiles/profile_evaporation.png) 
+![](profiles/profile_evaporation.png) 
 
 Le modèle semble pouvoir reproduire assez fidèlement les mesures expérimentales
 indépendamment du taux de diffusion, sauf peut-être lorsqu'il descend en dessous
