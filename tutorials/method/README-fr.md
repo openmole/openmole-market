@@ -340,7 +340,7 @@ observé.
 Validation: Mettre un modèle à l'épreuve
 ----------------------------------------
 
-*Script OpenMOLE associé: [pse/pse.oms](pse/pse.oms)*
+*Script OpenMOLE associé: [pse/PSE.oms](pse/PSE.oms)*
 
 *Article associé: Chérel G., Cottineau C., Reuillon R., 2015, " Beyond Corroboration: Strengthening Model Validation by Looking for Unexpected Patterns ", PLoS ONE 10(9): e0138212. doi:[10.1371/journal.pone.0138212](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0138212)*
 

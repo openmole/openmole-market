@@ -240,7 +240,7 @@ phenomenon.
 Validation: Putting a model to the test
 ----------------------------------------
 
-*Associated OpenMOLE Script: [pse/pse.oms](pse/pse.oms)*
+*Associated OpenMOLE Script: [pse/PSE.oms](pse/PSE.oms)*
 
 *Associated Article: Chérel G., Cottineau C., Reuillon R., 2015, " Beyond Corroboration: Strengthening Model Validation by Looking for Unexpected Patterns ", PLoS ONE 10(9): e0138212. doi:[10.1371/journal.pone.0138212](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0138212)*
 
