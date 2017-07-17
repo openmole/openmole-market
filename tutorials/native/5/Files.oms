@@ -5,7 +5,7 @@ val i = Val[Int]
 
 val pyTask = 
   CARETask(
-    workDirectory / "../python.bin",
+    workDirectory / "../python.tgz.bin",
     "python matrix.py data.csv ${i} out.csv"
   ) set (
     inputFiles += (input, "data.csv"),

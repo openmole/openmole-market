@@ -1,7 +1,7 @@
 
 val pyTask = 
   CARETask(
-    workDirectory / "../python.bin",
+    workDirectory / "../python.tgz.bin",
     "python matrix.py data.csv 2 out.csv"
   ) 
 
