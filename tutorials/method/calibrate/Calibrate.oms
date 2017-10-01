@@ -1,6 +1,6 @@
 
 import _parent_.Model._
-import Objective._
+import _file_.Objective._
 
 // Execute the workflow
 // Define the population (10) and the number of generations (100).
