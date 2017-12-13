@@ -15,16 +15,21 @@ val gama =
     gamaSeed := seed,
     gamaOutputs += ("nb_preys", numberOfPreys)
   )
-  
+
+// Compute the average among the simulations
 val average = 
   ScalaTask("val numberOfPreysAvg = numberOfPreys.map(_.toDouble).average") set (
     inputs += numberOfPreys.toArray,
-    outputs += numberOfPreysAvg
+    outputs += numberOfPreysAvg,
+    (inputs, outputs) += nbPreysInit
   )
 
+//Store the results
 val csvHook = CSVHook(workDirectory / "result.csv", nbPreysInit, numberOfPreysAvg)
 
+// Explore and replicate the model
 DirectSampling(
-  evaluation = Replication(gama, seed, 10, aggregation = average) hook csvHook,
+  evaluation = Replication(gama, seed, 10, aggregation = average hook csvHook),
   sampling = nbPreysInit in (0 to 200 by 10)
 )
+
