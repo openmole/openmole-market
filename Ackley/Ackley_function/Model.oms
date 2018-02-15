@@ -24,9 +24,9 @@ val toDouble = ScalaTask("val doubleValue = strValue.toDouble") set (
   outputs += doubleValue
 )
 
-//AckleyFunction -- toDouble hook ToStringHook() //Uncoment here to test the CARETask
+//AckleyFunction -- toDouble hook ToStringHook() //Uncomment here to test the CARETask
 
-//Configuration of the algorithm
+//Configuration of the algorithm NSGA2
 val nsga2 = NSGA2(
   mu = 50,  //Size of population
   genome = Seq(x in (-30.0, 30.0), y in (-30.0, 30.0)), //Space in which the population is sampled
@@ -41,6 +41,8 @@ val evolution = SteadyStateEvolution(
   termination = 100
 )
 
+//Since the task run in a very short time, we aggregate the tasks in island
+//in order to use the parallelization as much as possible
 val island =
   IslandEvolution(
     evolution,
