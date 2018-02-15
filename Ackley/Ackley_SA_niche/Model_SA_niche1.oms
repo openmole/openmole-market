@@ -40,6 +40,7 @@ val mapper = ScalaTask("""
   outputs += (T0, cexp, pas, niter, a, b, c),
 )
 
+//This Task contains a SA algorithm runned on the Ackley function parametrized by (a, b, c)
 val AckleyFunction =
   CARETask( workDirectory / "Ackley_SA_niche.tgz.bin", "python Ackley_SA_niche.py ${T0} ${cexp} ${pas} ${niter} ${a} ${b} ${c}") set (
     inputs += (T0, cexp, pas, niter, a, b, c),      //These inputs are the same as the inputs of the python script
