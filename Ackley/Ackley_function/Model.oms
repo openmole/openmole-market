@@ -1,0 +1,53 @@
+//Variables of the two dimensional position of the algorithm
+val x = Val[Double]
+val y = Val[Double]
+
+//In these two variables is catched the value of the Ackley function at the end of the algorithm
+val strValue = Val[String]
+val doubleValue = Val[Double]
+
+//MODEL
+val AckleyFunction =
+  CARETask( workDirectory / "Ackley_function.tgz.bin", "python Ackley_function.py ${x} ${y}") set (
+    inputs += (x, y),             //Inputs of the the model
+    outputs += (x, y, strValue),  //Outputs of the model, only strValue is mandatory
+    
+    stdOut := strValue,           //Here we catch the python output as a string
+    
+    x := 0.0,
+    y := 0.0
+)
+
+//This scalaTask convert the string output of the CARETask in double
+val toDouble = ScalaTask("val doubleValue = strValue.toDouble") set (
+  inputs += strValue,
+  outputs += doubleValue
+)
+
+//AckleyFunction -- toDouble hook ToStringHook() //Uncoment here to test the CARETask
+
+//Configuration of the algorithm
+val nsga2 = NSGA2(
+  mu = 50,  //Size of population
+  genome = Seq(x in (-30.0, 30.0), y in (-30.0, 30.0)), //Space in which the population is sampled
+  objectives = Seq(doubleValue) //We want to optimize the value of the Ackley function
+)
+
+//Configuration of the workflow
+val evolution = SteadyStateEvolution(
+  algorithm = nsga2,
+  evaluation = AckleyFunction -- toDouble,
+  parallelism = 10,
+  termination = 100
+)
+
+val island =
+  IslandEvolution(
+    evolution,
+    parallelism = 10,
+    termination = 100
+  )
+  
+val savePopulation = SavePopulationHook(island, workDirectory / "evolution/")
+
+(island hook savePopulation on LocalEnvironment(6))
