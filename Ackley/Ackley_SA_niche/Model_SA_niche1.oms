@@ -1,20 +1,30 @@
-//Parameters to tune for the Simulated Annealing
+//Parameters to tune for the Simulated Annealing (genotype of NSGA2)
 val T0 = Val[Double]          //Initiale temperature
 val cexp = Val[Double]        //Coefficient for exponential decrease of temperature
 val pas = Val[Double]         //Size of a step along x and y dimensions
 val niter = Val[Double]       //Number of iteration of the algorithm
 
+//Parameters of the Ackley function. By tunning them, one may vary the problem on which NSGA2 will be working
 val a = Val[Double]
 val b = Val[Double]
 val c = Val[Double]
 
+//We are going to use a discrete version of the nichedNSGA2 so we need discrete variables to set up the problem
 val discrete_a = Val[Int]
 val discrete_b = Val[Int]
 val discrete_c = Val[Int]
 
+//Here we will catch the output of the careTask. We choose to not do replications here in order to go
+//straight to the point : the nicheNSGA2 algorithm but one may add this feature with the help of the Ackley_SA.oms file.
 val strValue = Val[String]
 val doubleValue = Val[Double]
 
+//We use the same careTask for the discrete and continuous versions of the algorithm, this Task needs continuous
+//parameters but is not programmed to do the conversion. We do it in this scalaTask
+//Please note two things :
+// 1. We did not include "borne_inf_x" values but you may need these in your own Task.
+// 2. To be correct, the parameters "step_x" must match the max bound of the "discrete_x" parameters given in the declaration
+      of nnsga. 
 val mapper = ScalaTask("""
                         |val borne_sup_a = 40.0
                         |val borne_sup_b = 2.0
@@ -37,33 +47,39 @@ val AckleyFunction =
     
     stdOut := strValue,                             //Here we catch the python output as a string
     
-    T0 := 0.1,                                      //Here are 4 defaults ouptuts for Debug
-    cexp := 0.8,                                    //Defaults value allox you to run -> AckleyFunction hook ToStringHook()
+    T0 := 0.1,                                      //Here are defaults ouptuts for Debug
+    cexp := 0.8,                                    
     pas := 5.0,
     niter := 1000.0,
-    a := 5.0,     //0, 40
-    b := 1.0,     //0, 2
-    c := 0.1     //0, 2pi
+    a := 5.0,
+    b := 1.0,
+    c := 0.1
 )
 
+//This Task convert the output of the CARETask (a string) into a double
 val toDouble = ScalaTask("val doubleValue = strValue.toDouble") set (
   inputs += strValue,
   outputs += doubleValue
 )
 
-//version continue
+//This is a discrete version of the NichedNSGA2 algorithm
+//
 val nnsga = NichedNSGA2(
-  nicheSize = 20,  //Size of the population
-  genome = Seq(T0 in (0.0, 3.0),
-               cexp in (0.5, 1.0),
-               pas in (0.1, 5.0),
-               niter in (100.0, 10000.0),
-               discrete_a in (0 to 5),
-               discrete_b in (0 to 5),
-               discrete_c in (0 to 5)
-               ), //Space in which the population is sampled, values are rough estimations
+  //Size of the population
+  nicheSize = 20,                         
+  //Space in which the population is sampled, the bounds given for the genotype are hand made estimations
+  genome = Seq(T0 in (0.0, 3.0),          //genotype
+               cexp in (0.5, 1.0),        //genotype
+               pas in (0.1, 5.0),         //genotype
+               niter in (100.0, 10000.0), //genotype
+               discrete_a in (0 to 5),    //niche
+               discrete_b in (0 to 5),    //niche
+               discrete_c in (0 to 5)     //niche
+               ),
+  //Specify the niche parameters
   niche = Seq(discrete_a, discrete_b, discrete_c),
-  objectives = Seq(doubleValue)  //We want to optimize over three parameters
+  //Specify the objective(s)
+  objectives = Seq(doubleValue)
 )
 
 val evolution = SteadyStateEvolution(
