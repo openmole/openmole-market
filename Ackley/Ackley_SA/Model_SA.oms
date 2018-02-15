@@ -1,4 +1,4 @@
-//Parameters to tune for the Simulated Annealing
+//Parameters to tune for the Simulated Annealing (genotype of the NSGA2)
 val T0 = Val[Double]          //Initiale temperature
 val cexp = Val[Double]        //Coefficient for exponential decrease of temperature
 val pas = Val[Double]         //Size of a step along x and y dimensions
@@ -8,7 +8,7 @@ val niter = Val[Double]       //Number of iteration of the algorithm
 val strValue = Val[String]    //Output value as string
 val doubleValue = Val[Double] //Output value as float
 
-//These variables are use at the replication stage
+//These variables are use at the replication stage (phenotype of the NSGA2)
 val VectorValue = Vec(doubleValue)
 val meanValue = Val[Double]
 val varValue = Val[Double]
@@ -25,8 +25,8 @@ val AckleyFunction =
     
     stdOut := strValue,                             //Here we catch the python output as a string
     
-    T0 := 0.1,                                      //Here are 4 defaults ouptuts for Debug
-    cexp := 0.8,                                    //Defaults value allox you to run -> AckleyFunction hook ToStringHook()
+    T0 := 0.1,                                      //Here are 4 defaults outputs for Debug
+    cexp := 0.8,                                    //Defaults values allow you to run -> AckleyFunction hook ToStringHook()
     pas := 5.0,
     niter := 1000.0
 )
@@ -48,6 +48,8 @@ val meanAndVar =
     outputs += (meanValue, varValue)
   )
 
+//Because of the way the SA algorithm works, the output of the CARETask is not deterministic.
+//This is why we are going to optimize over statistical indicators, to get these we replicate each Task.
 val replications = 
  Replication (
   evaluation = AckleyFunction -- toDouble hook ToStringHook(),
@@ -73,7 +75,9 @@ val evolution = SteadyStateEvolution(
   termination = 2000
 )
 
+//A hook to save our work
 val savePopulation = SavePopulationHook(evolution, workDirectory / "evolution/")
 
+//A workflow must always be called
 (evolution hook savePopulation on LocalEnvironment(2))
 
