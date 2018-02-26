@@ -24,7 +24,7 @@ val doubleValue = Val[Double]
 //Please note two things :
 // 1. We did not include "borne_inf_x" values but you may need these in your own Task.
 // 2. To be correct, the parameters "step_x" must match the max bound of the "discrete_x" parameters given in the declaration
-      of nnsga. 
+//    of nnsga. 
 val mapper = ScalaTask("""
                         |val borne_sup_a = 40.0
                         |val borne_sup_b = 2.0
