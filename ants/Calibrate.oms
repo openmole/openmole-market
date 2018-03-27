@@ -26,18 +26,18 @@ val ants =
     netLogoOutputs += ("final-ticks-food3", food3),
     gPopulation := 100
   )
-  
-val aggregate = 
+
+val aggregate =
   ScalaTask("val obj = math.abs(250 - food1) + math.abs(400 - food2) + math.abs(800 - food3)") set (
     inputs += (food1, food2, food3),
     outputs += obj
   )
-  
+
 val modelCapsule = Capsule(ants)
 
 val evolution =
   SteadyStateEvolution(
-    algorithm =   
+    algorithm =
       NSGA2(
         mu = 10,
         genome = Seq(gDiffusionRate in (0.0, 99.0), gEvaporationRate in (0.0, 99.0)),
@@ -48,7 +48,7 @@ val evolution =
     parallelism = 10,
     termination = 100
   )
-  
+
 // Define a hook to save the Pareto frontier
 val savePopulationHook = SavePopulationHook(evolution, workDirectory / "calibration")
 

@@ -1,0 +1,82 @@
+;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Setup procedures ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+to setup:setup
+  clear-all
+  setup:setup-globals
+  setup:setup-ants
+end
+
+
+;;
+; setup global vars
+to setup:setup-globals
+ set gpopulation population
+ set gdiffusion-rate diffusion-rate
+ set gevaporation-rate evaporation-rate
+
+ set setup-type "fixed"
+
+end
+
+
+
+to setup:setup-ants
+  set-default-shape turtles "bug"
+  create-ants gpopulation
+  [ set size 2         ;; easier to see
+    set color red  ]   ;; red = not carrying food
+  setup-patches
+  reset-ticks
+end
+
+
+
+to setup-patches
+  setup:setup-nest
+  setup:setup-food
+  display:color-patches
+end
+
+
+;;
+; nest 
+to setup:setup-nest 
+  ask patches [
+    ;; set nest? variable to true inside the nest, false elsewhere
+    set nest? (distancexy 0 0) < 5
+    ;; spread a nest-scent over the whole world -- stronger near the nest
+    set nest-scent 200 - distancexy 0 0
+  ]
+end
+
+to setup:setup-food 
+  
+  if setup-type = "reaction-diffusion" [
+     generate-synth-pattern
+  ]
+  
+  if setup-type = "kernel-mixture" [
+    
+  ]
+  
+  if setup-type = "fixed" [
+    ask patches [
+    ;; patch procedure
+    ;; setup food source one on the right
+    if (distancexy (0.6 * max-pxcor) 0) < 5
+    [ set food-source-number 1 ]
+    ;; setup food source two on the lower-left
+    if (distancexy (-0.6 * max-pxcor) (-0.6 * max-pycor)) < 5
+    [ set food-source-number 2 ]
+    ;; setup food source three on the upper-left
+    if (distancexy (-0.8 * max-pxcor) (0.8 * max-pycor)) < 5
+    [ set food-source-number 3 ]
+    ;; set "food" at sources to either 1 or 2, randomly
+    if food-source-number > 0
+    [ set food one-of [1 2] ]
+    ]
+  ]
+end

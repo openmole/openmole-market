@@ -1,0 +1,16 @@
+
+
+
+to-report count-food
+  report sum [food] of patches
+end
+
+
+to compute-fitness 
+  if ((sum [food] of patches with [food-source-number = 1] = 0) and (final-ticks-food1 = 0)) [
+   set final-ticks-food1 ticks ]
+ if ((sum [food] of patches with [food-source-number = 2] = 0) and (final-ticks-food2 = 0)) [
+   set final-ticks-food2 ticks ]
+  if ((sum [food] of patches with [food-source-number = 3] = 0) and (final-ticks-food3 = 0)) [
+   set final-ticks-food3 ticks ]
+end
