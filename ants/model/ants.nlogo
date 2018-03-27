@@ -12,6 +12,11 @@ __includes [
    "main.nls"
 
    ;;
+   ; ants
+   "ants.nls"
+
+
+   ;;
    ; synthetic configuration generation
    "embedded-synth-pattern.nls"
 
@@ -48,9 +53,14 @@ globals [
  ; evaporation-rate
  gevaporation-rate
 
+
+  wiggle-angle
+
+ ;delayed-start?
+
  ;;
  ; type of setup
- setup-type
+ ;setup-type
 
 
  ;;
@@ -69,6 +79,13 @@ globals [
  sp-diffusion
  sp-population
 
+ ;;
+ ; kernel mixture setup parameters
+ km-setup-center-number
+ km-setup-max-pop
+ km-setup-rank-size-exp
+ km-setup-center-density
+
 ]
 
 
@@ -78,7 +95,7 @@ patches-own [
   chemical
 
   ;;
-  ; amount of food on this patch (0, 1, or 2)
+  ; amount of food on this patch
   food
 
   ;;
@@ -134,10 +151,10 @@ ticks
 30.0
 
 BUTTON
-46
-71
-126
-104
+33
+409
+113
+442
 setup
 setup:setup
 NIL
@@ -151,40 +168,40 @@ NIL
 1
 
 SLIDER
-31
-106
-221
-139
+28
+197
+218
+230
 diffusion-rate
 diffusion-rate
 0.0
 99.0
-21
+2
 1.0
 1
 NIL
 HORIZONTAL
 
 SLIDER
-31
-141
-221
-174
+28
+232
+218
+265
 evaporation-rate
 evaporation-rate
 0.0
 99.0
-9
+18
 1.0
 1
 NIL
 HORIZONTAL
 
 BUTTON
-136
-71
-211
-104
+123
+409
+198
+442
 NIL
 go
 T
@@ -198,10 +215,10 @@ NIL
 1
 
 SLIDER
-31
-36
-221
-69
+28
+127
+218
+160
 population
 population
 0.0
@@ -275,6 +292,38 @@ final-ticks-food3
 17
 1
 11
+
+CHOOSER
+29
+17
+203
+62
+setup-type
+setup-type
+"fixed" "kernel-mixture" "reaction-diffusion"
+1
+
+SWITCH
+26
+311
+185
+344
+delayed-start?
+delayed-start?
+0
+1
+-1000
+
+SWITCH
+25
+349
+185
+382
+infinite-food?
+infinite-food?
+0
+1
+-1000
 
 @#$#@#$#@
 ## WHAT IS IT?

@@ -1,0 +1,66 @@
+
+
+
+to return-to-nest  ;; ant procedure
+  ifelse nest?
+  [ ;; drop food and head out again
+    set color red
+    rt 180 ]
+  [ set chemical chemical + 60  ;; drop some chemical
+    uphill-nest-scent ]         ;; head toward the greatest value of nest-scent
+end
+
+to look-for-food  ;; ant procedure
+  if food > 0 [
+    ;; pick up food
+    set color orange + 1     
+    ;; reduce the food source
+    if not infinite-food? [set food food - 1]
+    rt 180                   ;; and turn around
+    stop ]
+  ;; go in the direction where the chemical smell is strongest
+  if (chemical >= 0.05) and (chemical < 2)
+  [ uphill-chemical ]
+end
+
+;; sniff left and right, and go where the strongest smell is
+to uphill-chemical  ;; turtle procedure
+  let scent-ahead chemical-scent-at-angle   0
+  let scent-right chemical-scent-at-angle  45
+  let scent-left  chemical-scent-at-angle -45
+  if (scent-right > scent-ahead) or (scent-left > scent-ahead)
+  [ ifelse scent-right > scent-left
+    [ rt 45 ]
+    [ lt 45 ] ]
+end
+
+;; sniff left and right, and go where the strongest smell is
+to uphill-nest-scent  ;; turtle procedure
+  let scent-ahead nest-scent-at-angle   0
+  let scent-right nest-scent-at-angle  45
+  let scent-left  nest-scent-at-angle -45
+  if (scent-right > scent-ahead) or (scent-left > scent-ahead)
+  [ ifelse scent-right > scent-left
+    [ rt 45 ]
+    [ lt 45 ] ]
+end
+
+to wiggle  ;; ant procedure
+  rt random wiggle-angle
+  lt random wiggle-angle
+  if not can-move? 1 [ rt 180 ]
+end
+
+to-report nest-scent-at-angle [angle]
+  let p patch-right-and-ahead angle 1
+  if p = nobody [ report 0 ]
+  report [nest-scent] of p
+end
+
+to-report chemical-scent-at-angle [angle]
+  let p patch-right-and-ahead angle 1
+  if p = nobody [ report 0 ]
+  report [chemical] of p
+end
+
+

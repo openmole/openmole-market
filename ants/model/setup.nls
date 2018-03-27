@@ -17,14 +17,23 @@ to setup:setup-globals
  set gdiffusion-rate diffusion-rate
  set gevaporation-rate evaporation-rate
 
- set setup-type "fixed"
+ set wiggle-angle 90
 
+ ;set setup-type "fixed"
+
+ ;set delayed-start? true
+
+
+ set km-setup-max-pop 200
+ set km-setup-rank-size-exp 0.5
+ set km-setup-center-density 5
+ set km-setup-center-number 4
 end
 
 
 
 to setup:setup-ants
-  set-default-shape turtles "bug"
+  set-default-shape ants "bug"
   create-ants gpopulation
   [ set size 2         ;; easier to see
     set color red  ]   ;; red = not carrying food
@@ -59,6 +68,15 @@ to setup:setup-food
   ]
   
   if setup-type = "kernel-mixture" [
+    let i 1
+    repeat km-setup-center-number [
+      let current-pop km-setup-max-pop / (i ^ km-setup-rank-size-exp) set i i + 1
+      let current-patch one-of patches
+      ;create-cities 1 [move-to current-patch set city-population current-pop]
+      apply-monocentric-kernel "poisson" (sqrt (current-pop / (2 * pi * km-setup-center-density))) km-setup-center-density "food" current-patch
+    ]
+    
+   ask patches with [food < 1] [set food 0]
     
   ]
   

@@ -1,0 +1,30 @@
+import _parent_.Model._
+
+val analyse = 
+  RTask("""
+    print(food1)
+    print(diffusion)""") set (
+    rInputs += (diffusion, evaporation, food1.array, food2.array, food3.array) 
+  )
+
+val replications = 
+ Replication (
+   evaluation = ants -- FilterTask(food1, food2, food3),
+   seed = seed,
+   replications = 10,
+   aggregation = analyse
+)
+
+val exploration = 
+  DirectSampling(
+    evaluation = replications,
+    sampling =   
+      LHS(
+        500,
+        diffusion in (10.0, 100.0),
+        evaporation in (10.0, 100.0)
+      )
+  )
+
+exploration
+
