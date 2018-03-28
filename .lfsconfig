@@ -1,3 +1,2 @@
 [lfs]
-  #url = https://gitlab.iscpif.fr/openmole/market.git/info/lfs
-  url = ssh://git@gitlab.iscpif.fr:20022/openmole/market.git
+  url = https://gitlab.iscpif.fr/openmole/market.git/info/lfs
