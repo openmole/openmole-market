@@ -1,127 +1,197 @@
-
-
-
-__includes [
-
-  ;;
-  ; setup
-   "setup.nls"
-
-   ;;
-   ; main functions
-   "main.nls"
-
-   ;;
-   ; ants
-   "ants.nls"
-
-
-   ;;
-   ; synthetic configuration generation
-   "embedded-synth-pattern.nls"
-
-   ;;
-   ; indicators
-   "indicators.nls"
-
-   ;;
-   ; embedding in openmole
-   "experiments.nls"
-
-   ;;
-   ; display functions
-   "display.nls"
-
-   ;;
-   ; utils
-   "utils.nls"
-
+patches-own [
+  chemical             ;; amount of chemical on this patch
+  food                 ;; amount of food on this patch (0, 1, or 2)
+  nest?                ;; true on nest patches, false elsewhere
+  nest-scent           ;; number that is higher closer to the nest
+  food-source-number   ;; number (1, 2, or 3) to identify the food sources
 ]
-
 
 globals [
-
- ;;
- ; numbers of ants
- gpopulation
-
- ;;
- ; diffusion rate
- gdiffusion-rate
-
- ;;
- ; evaporation-rate
- gevaporation-rate
-
-
-  wiggle-angle
-
- ;delayed-start?
-
- ;;
- ; type of setup
- ;setup-type
-
-
- ;;
- ; indicators
- final-ticks-food1
+ final-ticks-food1  
  final-ticks-food2
  final-ticks-food3
-
-
- ;;
- ; synthetic configuration generation parameters
- sp-total-time-steps
- sp-max-pop
- sp-growth-rate
- sp-diffusion-steps
- sp-diffusion
- sp-population
-
- ;;
- ; kernel mixture setup parameters
- km-setup-center-number
- km-setup-max-pop
- km-setup-rank-size-exp
- km-setup-center-density
-
+ gpopulation 
+ gdiffusion-rate
+ gevaporation-rate
 ]
+;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Setup procedures ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;
+
+to initialize-globals
+ set gpopulation population
+ set gdiffusion-rate diffusion-rate
+ set gevaporation-rate evaporation-rate
+end
+
+to setup
+  clear-all
+  initialize-globals
+  setup-ants
+end
+
+to setup-ants
+  set-default-shape turtles "bug"
+  crt gpopulation
+  [ set size 2         ;; easier to see
+    set color red  ]   ;; red = not carrying food
+  setup-patches
+  reset-ticks
+end
+
+to setup-patches
+  ask patches
+  [ setup-nest
+    setup-food
+    recolor-patch ]
+end
+
+to-report go-stop? 
+  ifelse (count-food > 0)[
+    report true
+  ][
+    report false
+  ]
+end
+
+to compute-fitness 
+  if ((sum [food] of patches with [food-source-number = 1] = 0) and (final-ticks-food1 = 0)) [
+   set final-ticks-food1 ticks ]
+ if ((sum [food] of patches with [food-source-number = 2] = 0) and (final-ticks-food2 = 0)) [
+   set final-ticks-food2 ticks ]
+  if ((sum [food] of patches with [food-source-number = 3] = 0) and (final-ticks-food3 = 0)) [
+   set final-ticks-food3 ticks ]
+end
+
+to run-to-grid 
+    setup-ants
+    while [go-stop? = true ]
+     [go
+
+     ]
+end
+
+to-report count-food
+  report sum [food] of patches
+end
+
+to setup-nest  ;; patch procedure
+  ;; set nest? variable to true inside the nest, false elsewhere
+  set nest? (distancexy 0 0) < 5
+  ;; spread a nest-scent over the whole world -- stronger near the nest
+  set nest-scent 200 - distancexy 0 0
+end
+
+to setup-food  ;; patch procedure
+  ;; setup food source one on the right
+  if (distancexy (0.6 * max-pxcor) 0) < 5
+  [ set food-source-number 1 ]
+  ;; setup food source two on the lower-left
+  if (distancexy (-0.6 * max-pxcor) (-0.6 * max-pycor)) < 5
+  [ set food-source-number 2 ]
+  ;; setup food source three on the upper-left
+  if (distancexy (-0.8 * max-pxcor) (0.8 * max-pycor)) < 5
+  [ set food-source-number 3 ]
+  ;; set "food" at sources to either 1 or 2, randomly
+  if food-source-number > 0
+  [ set food one-of [1 2] ]
+end
+
+to recolor-patch  ;; patch procedure
+  ;; give color to nest and food sources
+  ifelse nest?
+  [ set pcolor violet ]
+  [ ifelse food > 0
+    [ if food-source-number = 1 [ set pcolor cyan ]
+      if food-source-number = 2 [ set pcolor sky  ]
+      if food-source-number = 3 [ set pcolor blue ] ]
+    ;; scale color to show chemical concentration
+    [ set pcolor scale-color green chemical 0.1 5 ] ]
+end
+
+;;;;;;;;;;;;;;;;;;;;;
+;;; Go procedures ;;;
+;;;;;;;;;;;;;;;;;;;;;
+
+to go  ;; forever button
+  ask turtles
+  [ if who >= ticks [ stop ] ;; delay initial departure
+    ifelse color = red
+    [ look-for-food  ]       ;; not carrying food? look for it
+    [ return-to-nest ]       ;; carrying food? take it back to nest
+    wiggle
+    fd 1 ]
+  diffuse chemical (gdiffusion-rate / 100)
+  ask patches
+  [ set chemical chemical * (100 - gevaporation-rate) / 100  ;; slowly evaporate chemical
+    recolor-patch ]
+        compute-fitness
+  tick
+end
+
+to return-to-nest  ;; turtle procedure
+  ifelse nest?
+  [ ;; drop food and head out again
+    set color red
+    rt 180 ]
+  [ set chemical chemical + 60  ;; drop some chemical
+    uphill-nest-scent ]         ;; head toward the greatest value of nest-scent
+end
+
+to look-for-food  ;; turtle procedure
+  if food > 0
+  [ set color orange + 1     ;; pick up food
+    set food food - 1        ;; and reduce the food source
+    rt 180                   ;; and turn around
+    stop ]
+  ;; go in the direction where the chemical smell is strongest
+  if (chemical >= 0.05) and (chemical < 2)
+  [ uphill-chemical ]
+end
+
+;; sniff left and right, and go where the strongest smell is
+to uphill-chemical  ;; turtle procedure
+  let scent-ahead chemical-scent-at-angle   0
+  let scent-right chemical-scent-at-angle  45
+  let scent-left  chemical-scent-at-angle -45
+  if (scent-right > scent-ahead) or (scent-left > scent-ahead)
+  [ ifelse scent-right > scent-left
+    [ rt 45 ]
+    [ lt 45 ] ]
+end
+
+;; sniff left and right, and go where the strongest smell is
+to uphill-nest-scent  ;; turtle procedure
+  let scent-ahead nest-scent-at-angle   0
+  let scent-right nest-scent-at-angle  45
+  let scent-left  nest-scent-at-angle -45
+  if (scent-right > scent-ahead) or (scent-left > scent-ahead)
+  [ ifelse scent-right > scent-left
+    [ rt 45 ]
+    [ lt 45 ] ]
+end
+
+to wiggle  ;; turtle procedure
+  rt random 40
+  lt random 40
+  if not can-move? 1 [ rt 180 ]
+end
+
+to-report nest-scent-at-angle [angle]
+  let p patch-right-and-ahead angle 1
+  if p = nobody [ report 0 ]
+  report [nest-scent] of p
+end
+
+to-report chemical-scent-at-angle [angle]
+  let p patch-right-and-ahead angle 1
+  if p = nobody [ report 0 ]
+  report [chemical] of p
+end
 
 
-patches-own [
-  ;;
-  ; amount of chemical on this patch
-  chemical
-
-  ;;
-  ; amount of food on this patch
-  food
-
-  ;;
-  ; true on nest patches, false elsewhere
-  nest?
-
-  ;;
-  ; number that is higher closer to the nest
-  nest-scent
-
-  ;;
-  ; number (1, 2, or 3) to identify the food sources
-  food-source-number
-
-  ;;
-  ; synthetic conf
-  sp-density
-  sp-occupants
-  sp-alpha-localization
-
-]
-
-
-breed [ants ant]
-
-
+; Copyright 1997 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 257
@@ -151,12 +221,12 @@ ticks
 30.0
 
 BUTTON
-33
-409
-113
-442
+46
+71
+126
+104
+NIL
 setup
-setup:setup
 NIL
 1
 T
@@ -168,40 +238,40 @@ NIL
 1
 
 SLIDER
-28
-197
-218
-230
+31
+106
+221
+139
 diffusion-rate
 diffusion-rate
 0.0
 99.0
-2
+21
 1.0
 1
 NIL
 HORIZONTAL
 
 SLIDER
-28
-232
-218
-265
+31
+141
+221
+174
 evaporation-rate
 evaporation-rate
 0.0
 99.0
-18
+9
 1.0
 1
 NIL
 HORIZONTAL
 
 BUTTON
-123
-409
-198
-442
+136
+71
+211
+104
 NIL
 go
 T
@@ -215,25 +285,25 @@ NIL
 1
 
 SLIDER
-28
-127
-218
-160
+31
+36
+221
+69
 population
 population
 0.0
-1000.0
-531
+200.0
+125
 1.0
 1
 NIL
 HORIZONTAL
 
 PLOT
-844
-40
-1087
-319
+5
+197
+248
+476
 Food in each pile
 time
 food
@@ -250,10 +320,10 @@ PENS
 "food-in-pile3" 1.0 0 -13345367 true "" "plotxy ticks sum [food] of patches with [pcolor = blue]"
 
 MONITOR
-846
-328
-928
-373
+7
+485
+89
+530
 NIL
 count-food
 17
@@ -261,10 +331,10 @@ count-food
 11
 
 MONITOR
-846
-424
-963
-469
+806
+198
+923
+243
 NIL
 final-ticks-food1
 17
@@ -272,10 +342,10 @@ final-ticks-food1
 11
 
 MONITOR
-847
-479
-964
-524
+807
+253
+924
+298
 NIL
 final-ticks-food2
 17
@@ -283,47 +353,15 @@ final-ticks-food2
 11
 
 MONITOR
-847
-533
-964
-578
+807
+307
+924
+352
 NIL
 final-ticks-food3
 17
 1
 11
-
-CHOOSER
-29
-17
-203
-62
-setup-type
-setup-type
-"fixed" "kernel-mixture" "reaction-diffusion"
-1
-
-SWITCH
-26
-311
-185
-344
-delayed-start?
-delayed-start?
-0
-1
--1000
-
-SWITCH
-25
-349
-185
-382
-infinite-food?
-infinite-food?
-0
-1
--1000
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -377,11 +415,12 @@ If you mention this model in a publication, we ask that you include these citati
 ## COPYRIGHT AND LICENSE
 
 Copyright 1997 Uri Wilensky.
-Copyright 2018 Openmole-team.
 
-<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License</a>.
+![CC BY-NC-SA 3.0](http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png)
 
-This model was modified and extended to be included in the openmole-market.
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
 
 This model was created as part of the project: CONNECTED MATHEMATICS: MAKING SENSE OF COMPLEX PHENOMENA THROUGH BUILDING OBJECT-BASED PARALLEL MODELS (OBPML).  The project gratefully acknowledges the support of the National Science Foundation (Applications of Advanced Technologies Program) -- grant numbers RED #9552950 and REC #9632612.
 
@@ -672,7 +711,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.3.1
+NetLogo 5.0.4
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -680,9 +719,9 @@ NetLogo 5.3.1
 @#$#@#$#@
 default
 0.0
--0.2 0 0.0 1.0
+-0.2 0 1.0 0.0
 0.0 1 1.0 0.0
-0.2 0 0.0 1.0
+0.2 0 1.0 0.0
 link direction
 true
 0

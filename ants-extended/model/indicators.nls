@@ -14,3 +14,12 @@ to compute-fitness
   if ((sum [food] of patches with [food-source-number = 3] = 0) and (final-ticks-food3 = 0)) [
    set final-ticks-food3 ticks ]
 end
+
+
+to-report carrying-efficiency
+  ifelse total-ant-steps = 0 [
+    report 0 
+  ][
+    report carrying-food-ant-steps / total-ant-steps
+  ]
+end

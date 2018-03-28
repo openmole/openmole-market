@@ -1,0 +1,41 @@
+
+
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;
+;;; Go procedures ;;;
+;;;;;;;;;;;;;;;;;;;;;
+
+to main:go  ;; forever button
+  
+  main:move-ants
+  
+  diffuse chemical (gdiffusion-rate / 100)
+  ask patches[
+    set chemical chemical * (100 - gevaporation-rate) / 100  ;; slowly evaporate chemical
+  ]
+  compute-fitness
+  display:color-patches
+  tick
+end
+
+
+to main:move-ants
+  ask ants [
+    ;; delay initial departure
+    if who >= ticks and delayed-start? [ stop ] 
+    ifelse color = red [
+      ;; not carrying food? look for it
+      ant:look-for-food  
+    ][
+    ;; carrying food? take it back to nest
+      ant:return-to-nest
+      set carrying-food-ant-steps carrying-food-ant-steps + 1
+    ]       
+    ant:wiggle
+    fd 1 set total-ant-steps total-ant-steps + 1
+  ]
+end

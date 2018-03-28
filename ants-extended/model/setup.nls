@@ -17,7 +17,7 @@ to setup:setup-globals
  set gdiffusion-rate diffusion-rate
  set gevaporation-rate evaporation-rate
 
- set wiggle-angle 90
+ ;set wiggle-angle 90
 
  ;set setup-type "fixed"
 
@@ -37,13 +37,13 @@ to setup:setup-ants
   create-ants gpopulation
   [ set size 2         ;; easier to see
     set color red  ]   ;; red = not carrying food
-  setup-patches
+  setup:setup-patches
   reset-ticks
 end
 
 
 
-to setup-patches
+to setup:setup-patches
   setup:setup-nest
   setup:setup-food
   display:color-patches

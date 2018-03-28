@@ -1,0 +1,27 @@
+
+
+
+;;
+; set parameters
+to experiments:setup-experiment
+  
+end
+
+
+
+to-report go-stop? 
+  ifelse (count-food > 0)[
+    report true
+  ][
+    report false
+  ]
+end
+
+
+
+to experiments:run-experiment
+    setup:setup-ants
+    while [go-stop? = true ][
+       main:go
+    ]
+end
