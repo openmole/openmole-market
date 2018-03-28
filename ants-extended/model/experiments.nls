@@ -1,0 +1,41 @@
+
+
+
+;;
+; set parameters
+to experiments:setup-experiment [setuptype antpop wangle diffrate evaprate]
+  
+  show (word "Experiment : setup = " setuptype " ; population = " antpop " ; wiggleAngle = " wangle " ; diffusion = " diffrate " ; evaporation = " evaprate)
+  
+  clear-all
+  
+  set setup-type setuptype
+  
+  set population antpop  ; \in [1,1000]
+  set wiggle-angle wangle ; \in [0,90]
+  set diffusion-rate diffrate ; \in [0,99]
+  set evaporation-rate evaprate ; \in [0,99]
+  
+  set headless? true
+  
+  setup:setup
+  
+end
+
+
+
+to experiments:run-experiment
+    while [main:still-food? = true ][
+       main:go
+    ]
+end
+
+
+
+to experiments:test-experiment
+  experiments:setup-experiment "fixed" 200 40 10 20
+  experiments:run-experiment
+  
+  ;show time-avg "carrying-efficency"
+  
+end
