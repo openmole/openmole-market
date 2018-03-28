@@ -4,41 +4,58 @@
 
 
 to setup:setup
-  clear-all
+  
+  if headless? = 0 [clear-all]
+  
+  setup:setup-headless
+  
   setup:setup-globals
+  
   setup:setup-ants
+  
+  setup:setup-patches
+  
+  ;setup:setup-indicators
+  
+  setup:setup-display
+  
+  reset-ticks
+
 end
 
 
 ;;
 ; setup global vars
 to setup:setup-globals
- set gpopulation population
- set gdiffusion-rate diffusion-rate
- set gevaporation-rate evaporation-rate
 
+ ; default random kernel mixture setup
+ set km-setup-max-pop 200
+ set km-setup-rank-size-exp 0.5
+ set km-setup-center-density 5
+ set km-setup-center-number 4
+ 
+ set tracked-indicators (list "carrying-efficiency")
+ 
+end
+
+;;
+; global headless variables
+to setup:setup-headless
+  
  ;set wiggle-angle 90
 
  ;set setup-type "fixed"
 
  ;set delayed-start? true
-
-
- set km-setup-max-pop 200
- set km-setup-rank-size-exp 0.5
- set km-setup-center-density 5
- set km-setup-center-number 4
+  
+  set delayed-start? true
+  set infinite-food? false
 end
-
 
 
 to setup:setup-ants
   set-default-shape ants "bug"
-  create-ants gpopulation
-  [ set size 2         ;; easier to see
-    set color red  ]   ;; red = not carrying food
-  setup:setup-patches
-  reset-ticks
+  create-ants population [ant:new-ant]   
 end
 
 
@@ -46,7 +63,6 @@ end
 to setup:setup-patches
   setup:setup-nest
   setup:setup-food
-  display:color-patches
 end
 
 
@@ -98,3 +114,24 @@ to setup:setup-food
     ]
   ]
 end
+
+
+to setup:setup-display
+  display:color-patches
+end
+
+
+
+;to setup:setup-indicators
+;  set time-indicators table:make
+;  foreach tracked-indicators [table:put time-indicators ? (list 0)]
+;end
+
+
+
+
+
+
+
+
+

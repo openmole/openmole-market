@@ -35,3 +35,15 @@ to apply-poisson-kernel [r0 k0 patch-variable-name center-patch]
     run (word "set " patch-variable-name " " patch-variable-name " + k0 * exp (- (distance center-patch) / r0)")
   ]
 end
+
+
+
+to-report seq [start en]
+  let res []
+  let i start
+  while [i <= en][
+    set res lput i res
+    set i i + 1 
+  ]
+  report res
+end

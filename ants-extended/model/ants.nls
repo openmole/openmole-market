@@ -68,3 +68,11 @@ to-report ant:chemical-scent-at-angle [angle]
 end
 
 
+
+;;
+; ant constructor
+to ant:new-ant
+    set size 2      ;; easier to see
+    set color red   ;; red = not carrying food
+    set carried-food 0
+end

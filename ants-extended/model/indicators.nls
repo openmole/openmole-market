@@ -1,5 +1,27 @@
 
 
+;to indicators:update-indicators
+;  foreach tracked-indicators [
+;    show ?
+;    let val run-result ?
+;    table:put time-indicators ? (lput (table:get time-indicators ?) val)
+;  ]
+;end
+
+
+;to-report time-avg [indic]
+  ;let vals []
+  ;foreach seq 0 ticks [
+  ;  ;show (list ? indic)
+  ;  show table:has-key? time-indicators (word ? indic)
+  ;  if table:has-key? time-indicators (word ? indic) [set vals lput (table:get time-indicators (word ? indic)) vals] 
+  ;]
+  ;ifelse length vals > 0 [report mean vals][report 0]
+  
+  ;ifelse table:has-key? time-indicators indic [report mean table:get time-indicators indic][report 0]
+  
+;end
+
 
 to-report count-food
   report sum [food] of patches
@@ -23,3 +45,4 @@ to-report carrying-efficiency
     report carrying-food-ant-steps / total-ant-steps
   ]
 end
+

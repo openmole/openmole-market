@@ -1,4 +1,4 @@
-
+;extensions [table]
 
 
 __includes [
@@ -41,17 +41,14 @@ __includes [
 
 globals [
 
- ;;
- ; numbers of ants
- gpopulation
 
  ;;
  ; diffusion rate
- gdiffusion-rate
+ diffusion-rate
 
  ;;
  ; evaporation-rate
- gevaporation-rate
+ evaporation-rate
 
 
  ;;
@@ -74,6 +71,8 @@ globals [
  carrying-food-ant-steps
  total-ant-steps
 
+ tracked-indicators
+ time-indicators
 
  ;;
  ; synthetic configuration generation parameters
@@ -90,6 +89,23 @@ globals [
  km-setup-max-pop
  km-setup-rank-size-exp
  km-setup-center-density
+
+
+
+ ;;
+ ; Headless parameters
+ headless?
+
+ setup-type
+
+ delayed-start?
+ infinite-food?
+
+ wiggle-angle
+
+ ;;
+ ; numbers of ants
+ population
 
 ]
 
@@ -125,6 +141,15 @@ patches-own [
 
 
 breed [ants ant]
+
+
+ants-own [
+  ;;
+  ; quantity of food currently carried
+  carried-food
+]
+
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 257
@@ -152,85 +177,6 @@ GRAPHICS-WINDOW
 1
 ticks
 30.0
-
-BUTTON
-33
-409
-113
-442
-setup
-setup:setup
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-SLIDER
-35
-307
-225
-340
-diffusion-rate
-diffusion-rate
-0.0
-99.0
-24
-1.0
-1
-NIL
-HORIZONTAL
-
-SLIDER
-35
-342
-225
-375
-evaporation-rate
-evaporation-rate
-0.0
-99.0
-9
-1.0
-1
-NIL
-HORIZONTAL
-
-BUTTON
-116
-409
-191
-442
-go
-main:go
-T
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-SLIDER
-35
-237
-225
-270
-population
-population
-0.0
-1000.0
-531
-1.0
-1
-NIL
-HORIZONTAL
 
 PLOT
 844
@@ -296,53 +242,6 @@ final-ticks-food3
 1
 11
 
-CHOOSER
-29
-17
-203
-62
-setup-type
-setup-type
-"fixed" "kernel-mixture" "reaction-diffusion"
-1
-
-SWITCH
-39
-80
-198
-113
-delayed-start?
-delayed-start?
-0
-1
--1000
-
-SWITCH
-38
-118
-198
-151
-infinite-food?
-infinite-food?
-1
-1
--1000
-
-SLIDER
-34
-273
-226
-306
-wiggle-angle
-wiggle-angle
-0
-90
-10
-1
-1
-NIL
-HORIZONTAL
-
 MONITOR
 1018
 424
@@ -371,6 +270,23 @@ false
 "" ""
 PENS
 "default" 1.0 0 -16777216 true "" "plot carrying-efficiency"
+
+BUTTON
+40
+51
+186
+84
+test experiment
+experiments:test-experiment
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
