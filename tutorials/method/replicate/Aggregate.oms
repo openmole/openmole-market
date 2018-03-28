@@ -13,7 +13,7 @@ val medians =
     val medFood1 = food1.median
     val medFood2 = food2.median
     val medFood3 = food3.median""") set (
-    inputs += (food1Vector, food2Vector, food3Vector),
+    inputs += (food1.array, food2.array, food3.array),
     outputs += (medFood1, medFood2, medFood3)
   )
 

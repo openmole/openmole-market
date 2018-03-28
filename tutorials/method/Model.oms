@@ -24,7 +24,6 @@ val ants =
     netLogoOutputs += ("final-ticks-food3", food3),
     // The seed is used to control the initialisation of the random number generator of NetLogo
     inputs += seed,
-    outputs += (population, diffusion, evaporation, maxsteps),
     // Define default values for inputs of the model
     seed := 42,
     diffusion := 10.0,

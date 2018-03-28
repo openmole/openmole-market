@@ -1,5 +1,26 @@
 import _parent_.Model._
-import _parent_.replicate.Aggregate._
+
+val medFood1 = Val[Double]
+val medFood2 = Val[Double]
+val medFood3 = Val[Double]
+
+val medians =
+  ScalaTask("""
+    val medFood1 = food1.median
+    val medFood2 = food2.median
+    val medFood3 = food3.median""") set (
+    inputs += (food1.array, food2.array, food3.array),
+    outputs += (medFood1, medFood2, medFood3),
+    (inputs, outputs) += (diffusion, evaporation)
+  )
+
+val replications =
+ Replication (
+   evaluation = ants,
+   seed = seed,
+   replications = 10,
+   aggregation = medians hook ToStringHook()
+)
 
 val exploration = 
   DirectSampling(
