@@ -401,7 +401,7 @@ CHOOSER
 display-var
 display-var
 "chemical" "ants-passed"
-0
+1
 
 BUTTON
 28

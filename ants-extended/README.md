@@ -13,4 +13,27 @@ The model ants is extended, in particular on the following points :
 
 ## Distribution of indicators
 
-![histograms food1](results/hists_food1.png)
+*Script* `Exploration.oms`
+
+At fixed initial configuration, we sample 10 points in the parameter space (4 dimensions : `population`, `wiggle-angle`,`evaporation-rate`,`diffusion-rate`) with a basic LHS sampling, with 64 repetitions for each point. Below are the corresponding indicators distribution for food exhaustion times :
+
+![histograms food1](results/hists_food1.png) ![histograms food2](results/hists_food2.png) ![histograms food3](results/hists_food3.png)
+
+*Script* `ExploreDistribution.oms`
+
+With the same *simple* experience plan, we plug a RTask to inline perform a statistical analysis : which type of distribution has a better fit ?
+
+*Note : this could be done within a scala task, but R libraries are sometimes more powerful for precise tasks : here the goodness-of-fit functions, datamining, spatial analysis, etc.*
+
+id  |   food1  |  food2   |   food3
+:--:|:--------:|:--------:|:---------:
+ 0  |  lnorm   |   norm   |  lnorm  
+ 1  |  gamma   |   lnorm  |  lnorm
+ 2  |  lnorm   |   logis  |  gamma
+ 3  |  lnorm   |   norm   |  lnorm
+ 4  |  lnorm   |   unif   |  lnorm
+ 6     5 lnorm  unif   lnorm 
+ 7     6 lnorm  unif   norm  
+ 8     7 gamma  unif   logis
+ 9     8 lnorm  lnorm  lnorm
+10     9 gamma  lnorm  norm

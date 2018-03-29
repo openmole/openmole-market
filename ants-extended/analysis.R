@@ -14,4 +14,8 @@ for(indic in c("food1","food2","food3")){
 }
 
 
+# estimate type of distribs
+source('fitdistr.R')
+
+sres = res %>% group_by(id)%>%summarize(dfood1 = getDistribType(food1),dfood2 = getDistribType(food2),dfood3 = getDistribType(food3))
 
