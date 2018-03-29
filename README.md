@@ -19,6 +19,7 @@ All the accepted submissions will be part of the market place and will be compil
 
   - [Advanced methods](https://github.com/guillaumecherel/TutorialEAForModelling): advanced methods for calibrating, validating and analyzing complex systems models.
   - [Ants model](ants): a NetLogo model calibrated using the Evolutionary/Genetic Algorithms.
+  - [Extended ants model](ants-extended): using a RTask to do statistics on the extended NetLogo ant model.
   - [Fire simulation](fire): a fire simulation model in NetLogo with a design of experiments studying its density factor
   - [FSL segmentation](fsl-fast): brain segmentation using [FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki)
   - [Java hello world](java-hello): an example of how to embed Java code in OpenMOLE

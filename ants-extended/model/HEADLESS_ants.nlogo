@@ -107,6 +107,10 @@ globals [
  ; numbers of ants
  population
 
+
+
+display-var
+
 ]
 
 
@@ -128,6 +132,10 @@ patches-own [
   nest-scent
 
   ;;
+  ;
+  ants-passed
+
+  ;;
   ; number (1, 2, or 3) to identify the food sources
   food-source-number
 
@@ -136,6 +144,8 @@ patches-own [
   sp-density
   sp-occupants
   sp-alpha-localization
+
+
 
 ]
 
@@ -148,7 +158,6 @@ ants-own [
   ; quantity of food currently carried
   carried-food
 ]
-
 
 @#$#@#$#@
 GRAPHICS-WINDOW

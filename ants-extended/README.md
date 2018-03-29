@@ -1,6 +1,6 @@
 # Extended exploration of ants
 
-This market entry extends the ants NetLogo model (see the [corresponding market entry](https://github.com/openmole/openmole-market/tree/8-dev/ants)) and illustrates some questions can be asked to a simple model, using simple sampling methods but with heterogenous tasks. In particular, we show the coupling of the exploration task with an RTask.
+This market entry extends the ants NetLogo model (see the [corresponding market entry](../ants)) and illustrates some questions can be asked to a simple model, using simple sampling methods but with heterogenous tasks. In particular, we show the coupling of the exploration task with an RTask.
 
 ## Extended model
 
