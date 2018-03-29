@@ -4,8 +4,12 @@
 to ant:return-to-nest  ;; ant procedure
   ifelse nest?
   [ ;; drop food and head out again
+    set carried-food 0
     set color red
-    rt 180 ]
+    
+    ;rt 180 ; should be random : independant restarts for research
+    rt random 360
+  ]
   [ set chemical chemical + 60  ;; drop some chemical
     ant:uphill-nest-scent ]         ;; head toward the greatest value of nest-scent
 end
@@ -13,6 +17,7 @@ end
 to ant:look-for-food  ;; ant procedure
   if food > 0 [
     ;; pick up food
+    set carried-food carried-food + 1
     set color orange + 1     
     ;; reduce the food source
     if not infinite-food? [set food food - 1]

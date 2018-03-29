@@ -30,7 +30,7 @@ to main:move-ants
   ask ants [
     ;; delay initial departure
     if who >= ticks and delayed-start? [ stop ] 
-    ifelse color = red [
+    ifelse carried-food = 0 [
       ;; not carrying food? look for it
       ant:look-for-food  
     ][
@@ -39,7 +39,10 @@ to main:move-ants
       set carrying-food-ant-steps carrying-food-ant-steps + 1
     ]       
     ant:wiggle
-    fd 1 set total-ant-steps total-ant-steps + 1
+    fd 1
+    ;; update indicator variables
+    set total-ant-steps total-ant-steps + 1
+    set ants-passed ants-passed + 1
   ]
 end
 
