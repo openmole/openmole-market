@@ -145,7 +145,6 @@ ants-own [
   ; quantity of food currently carried
   carried-food
 ]
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 257

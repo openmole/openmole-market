@@ -24,3 +24,5 @@ release/*
 .DS_Store
 *.history
 *.class
+.Rhistory
+

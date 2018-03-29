@@ -42,16 +42,23 @@ end
 
 ;; sniff left and right, and go where the strongest smell is
 to ant:uphill-nest-scent  ;; ant procedure
-  let scent-ahead ant:nest-scent-at-angle   0
-  let scent-right ant:nest-scent-at-angle  45
-  let scent-left  ant:nest-scent-at-angle -45
-  if (scent-right > scent-ahead) or (scent-left > scent-ahead)[
-     ifelse scent-right > scent-left[
-       rt 45
-     ][
-       lt 45
-     ]
-  ]
+  ;let scent-ahead ant:nest-scent-at-angle   0
+  ;let scent-right ant:nest-scent-at-angle  45
+  ;let scent-left  ant:nest-scent-at-angle -45
+  
+ ; if (scent-right > scent-ahead) or (scent-left > scent-ahead)[
+ ;    ifelse scent-right > scent-left[
+ ;      rt 45
+ ;    ][
+ ;      lt 45
+ ;    ]
+ ; ]
+ 
+ ; sniffing radius : chemicals in-radius -> can test precise hypotheses on the movement of ants
+  ; use in-cone
+ 
+ 
+ 
 end
 
 to ant:wiggle  ;; ant procedure
@@ -72,6 +79,9 @@ to-report ant:chemical-scent-at-angle [angle]
   report [chemical] of p
 end
 
+to-report ant:gradient-direction [variable]
+
+end
 
 
 ;;
