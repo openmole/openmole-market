@@ -7,8 +7,6 @@ to setup:setup
   
   if headless? = 0 [clear-all]
   
-  setup:setup-headless
-  
   setup:setup-globals
   
   setup:setup-ants

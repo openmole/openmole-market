@@ -1,0 +1,62 @@
+import java.text.SimpleDateFormat
+import java.util.Date
+
+// Define the input variables
+val population = Val[Double]
+val diffusionRate = Val[Double]
+val evaporationRate = Val[Double]
+val wiggleAngle = Val[Double]
+
+// Define the output variables
+val food1 = Val[Double]
+val food2 = Val[Double]
+val food3 = Val[Double]
+
+val obj = Val[Double]
+val seed = Val[Int]
+
+val env = LocalEnvironment(64)
+
+val purpose = "LHS_REPETS_LOCAL"
+
+val indics_hook = CSVHook(workDirectory / "exploration" / ((new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss")).format(new Date()))+"_"+purpose+".csv") set (arraysOnSingleRow=true)
+
+
+
+// Define the NetlogoTask
+// experiments:setup-experiment [setuptype antpop wangle diffrate evaprate]
+val cmds = Seq("experiments:setup-experiment \"fixed\" ${population} ${wiggleAngle} ${diffusionRate} ${evaporationRate}","experiments:run-experiment")
+
+val ants =
+  NetLogo5Task(workDirectory / "model" / "HEADLESS_ants.nlogo", cmds, seed = seed,embedWorkspace=true) set (
+    // Map the OpenMOLE variables to NetLogo variables
+    inputs += (population,diffusionRate,evaporationRate,wiggleAngle),
+    netLogoOutputs += ("final-ticks-food1", food1),
+    netLogoOutputs += ("final-ticks-food2", food2),
+    netLogoOutputs += ("final-ticks-food3", food3)
+  )
+
+
+  val replications =
+   Replication (
+     evaluation = (ants on env hook indics_hook),
+     seed = seed,
+     replications = 256
+  )
+
+
+
+  val exploration =
+    DirectSampling(
+      evaluation = replications,
+      sampling =
+        LHS(
+          1,
+          diffusionRate in (1.0, 100.0),
+          evaporationRate in (1.0, 100.0),
+          population in (100.0,200.0),
+          wiggleAngle in (5.0,90.0)
+        )
+    )
+
+  exploration

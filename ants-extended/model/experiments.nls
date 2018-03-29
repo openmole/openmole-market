@@ -18,6 +18,8 @@ to experiments:setup-experiment [setuptype antpop wangle diffrate evaprate]
   
   set headless? true
   
+  setup:setup-headless
+  
   setup:setup
   
 end

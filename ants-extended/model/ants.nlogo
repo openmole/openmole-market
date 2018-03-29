@@ -74,6 +74,7 @@ globals [
  carrying-food-ant-steps
  total-ant-steps
 
+ tracked-indicators
 
  ;;
  ; synthetic configuration generation parameters
@@ -90,6 +91,13 @@ globals [
  km-setup-max-pop
  km-setup-rank-size-exp
  km-setup-center-density
+
+
+
+ ;;
+ ; headless
+ headless?
+
 
 ]
 
@@ -125,6 +133,16 @@ patches-own [
 
 
 breed [ants ant]
+
+
+
+ants-own [
+  ;;
+  ; quantity of food currently carried
+  carried-food
+]
+
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 257
@@ -194,7 +212,7 @@ evaporation-rate
 evaporation-rate
 0.0
 99.0
-9
+64
 1.0
 1
 NIL
@@ -226,7 +244,7 @@ population
 population
 0.0
 1000.0
-531
+1000
 1.0
 1
 NIL
@@ -337,7 +355,7 @@ wiggle-angle
 wiggle-angle
 0
 90
-10
+0
 1
 1
 NIL
