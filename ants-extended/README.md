@@ -1,6 +1,6 @@
 # Extended exploration of ants
 
-This market entry extends the [Ants](http://ccl.northwestern.edu/netlogo/models/Ants) NetLogo model (see the corresponding market entry) and illustrates some questions can be asked to a simple model, using simple sampling methods but with heterogenous tasks. In particular, we show the coupling of the exploration task with an RTask.
+This market entry extends the ants NetLogo model (see the [corresponding market entry](https://github.com/openmole/openmole-market/tree/8-dev/ants)) and illustrates some questions can be asked to a simple model, using simple sampling methods but with heterogenous tasks. In particular, we show the coupling of the exploration task with an RTask.
 
 ## Extended model
 
@@ -17,7 +17,7 @@ The model ants is extended, in particular on the following points :
 
 At fixed initial configuration, we sample 10 points in the parameter space (4 dimensions : `population`, `wiggle-angle`,`evaporation-rate`,`diffusion-rate`) with a basic LHS sampling, with 64 repetitions for each point. Below are the corresponding indicators distribution for food exhaustion times :
 
-![histograms food1](results/hists_food1.png | width=100) ![histograms food2](results/hists_food2.png | width=100) ![histograms food3](results/hists_food3.png | width=100)
+![histograms food1](results/hists_food1.png) ![histograms food2](results/hists_food2.png) ![histograms food3](results/hists_food3.png)
 
 *Script* `ExploreDistribution.oms`
 
@@ -37,3 +37,14 @@ id  |   food1  |  food2   |   food3
  7  |  gamma   |   unif   |  logis
  8  |  lnorm   |  lnorm   |  lnorm
  9  |  gamma   |  lnorm   |  norm
+
+
+## Optimizing the ant nest
+
+*How to calibrate the model to have a maximal efficiency ?*
+
+
+## Using the model as a network planner
+
+ - network abstraction
+ - network evaluation indicators
