@@ -17,7 +17,7 @@ The model ants is extended, in particular on the following points :
 
 At fixed initial configuration, we sample 10 points in the parameter space (4 dimensions : `population`, `wiggle-angle`,`evaporation-rate`,`diffusion-rate`) with a basic LHS sampling, with 64 repetitions for each point. Below are the corresponding indicators distribution for food exhaustion times :
 
-![histograms food1](results/hists_food1.png) ![histograms food2](results/hists_food2.png) ![histograms food3](results/hists_food3.png)
+![histograms food1](results/hists_food1.png | width=100) ![histograms food2](results/hists_food2.png | width=100) ![histograms food3](results/hists_food3.png | width=100)
 
 *Script* `ExploreDistribution.oms`
 
@@ -32,8 +32,8 @@ id  |   food1  |  food2   |   food3
  2  |  lnorm   |   logis  |  gamma
  3  |  lnorm   |   norm   |  lnorm
  4  |  lnorm   |   unif   |  lnorm
- 6     5 lnorm  unif   lnorm 
- 7     6 lnorm  unif   norm  
- 8     7 gamma  unif   logis
- 9     8 lnorm  lnorm  lnorm
-10     9 gamma  lnorm  norm
+ 5  |  lnorm   |   unif   |  lnorm
+ 6  |  lnorm   |   unif   |  norm  
+ 7  |  gamma   |   unif   |  logis
+ 8  |  lnorm   |  lnorm   |  lnorm
+ 9  |  gamma   |  lnorm   |  norm
