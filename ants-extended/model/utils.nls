@@ -1,3 +1,49 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:14f37af8f91b93ccf960c307a0309423641a86e6d6e03242e725f8f697edc161
-size 985
+
+
+;;
+; utility functions
+
+
+;;
+; convert an agentset to a list
+to-report to-list [agentset]
+  let res []
+  ask agentset [
+    set res lput self res 
+  ]
+  report res
+end
+
+
+
+;;
+; spatial kernels
+to apply-monocentric-kernel [kernel-type kernel-dispersion kernel-max patch-variable-name center-patch]
+  if kernel-type = "gaussian" [apply-gaussian-kernel kernel-dispersion kernel-max patch-variable-name center-patch]
+  if kernel-type = "poisson" [apply-poisson-kernel kernel-dispersion kernel-max patch-variable-name center-patch]
+end
+
+
+
+to apply-gaussian-kernel [sigma k0 patch-variable-name center-patch]
+  
+end
+
+to apply-poisson-kernel [r0 k0 patch-variable-name center-patch]
+  ; k(x) = k0 * exp(-||x - x_c||/r0)
+  ask patches [
+    run (word "set " patch-variable-name " " patch-variable-name " + k0 * exp (- (distance center-patch) / r0)")
+  ]
+end
+
+
+
+to-report seq [start en]
+  let res []
+  let i start
+  while [i <= en][
+    set res lput i res
+    set i i + 1 
+  ]
+  report res
+end

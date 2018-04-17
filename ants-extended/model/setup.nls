@@ -1,3 +1,141 @@
+<<<<<<< HEAD
 version https://git-lfs.github.com/spec/v1
-oid sha256:31825937a96837e6efa445c062343e7f0ce6e251a021d072339af0a8d8bd265c
-size 2776
+oid sha256:f0f72b8afc6bb6206611b01c3644e5ab5308b533788569ebd7cb1c4bf722ae0f
+size 2603
+=======
+;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Setup procedures ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+to setup:setup
+  
+  if headless? = 0 [clear-all]
+  
+  setup:setup-globals
+  
+  setup:setup-ants
+  
+  setup:setup-patches
+  
+  ;setup:setup-indicators
+  
+  setup:setup-display
+  
+  reset-ticks
+
+end
+
+
+;;
+; setup global vars
+to setup:setup-globals
+
+ ; default random kernel mixture setup
+ set km-setup-max-pop 200
+ set km-setup-rank-size-exp 0.5
+ set km-setup-center-density 5
+ set km-setup-center-number 4
+ 
+ set tracked-indicators (list "carrying-efficiency")
+ 
+end
+
+;;
+; global headless variables
+to setup:setup-headless
+  
+ ;set wiggle-angle 90
+
+ ;set setup-type "fixed"
+
+ ;set delayed-start? true
+  
+  set delayed-start? true
+  set infinite-food? false
+end
+
+
+to setup:setup-ants
+  set-default-shape ants "bug"
+  create-ants population [ant:new-ant]   
+end
+
+
+
+to setup:setup-patches
+  setup:setup-nest
+  setup:setup-food
+end
+
+
+;;
+; nest 
+to setup:setup-nest 
+  ask patches [
+    ;; set nest? variable to true inside the nest, false elsewhere
+    set nest? (distancexy 0 0) < 5
+    ;; spread a nest-scent over the whole world -- stronger near the nest
+    set nest-scent 200 - distancexy 0 0
+  ]
+end
+
+to setup:setup-food 
+  
+  if setup-type = "reaction-diffusion" [
+     generate-synth-pattern
+  ]
+  
+  if setup-type = "kernel-mixture" [
+    let i 1
+    repeat km-setup-center-number [
+      let current-pop km-setup-max-pop / (i ^ km-setup-rank-size-exp) set i i + 1
+      let current-patch one-of patches
+      ;create-cities 1 [move-to current-patch set city-population current-pop]
+      apply-monocentric-kernel "poisson" (sqrt (current-pop / (2 * pi * km-setup-center-density))) km-setup-center-density "food" current-patch
+    ]
+    
+   ask patches with [food < 1] [set food 0]
+    
+  ]
+  
+  if setup-type = "fixed" [
+    ask patches [
+    ;; patch procedure
+    ;; setup food source one on the right
+    if (distancexy (0.6 * max-pxcor) 0) < 5
+    [ set food-source-number 1 ]
+    ;; setup food source two on the lower-left
+    if (distancexy (-0.6 * max-pxcor) (-0.6 * max-pycor)) < 5
+    [ set food-source-number 2 ]
+    ;; setup food source three on the upper-left
+    if (distancexy (-0.8 * max-pxcor) (0.8 * max-pycor)) < 5
+    [ set food-source-number 3 ]
+    ;; set "food" at sources to either 1 or 2, randomly
+    if food-source-number > 0
+    [ set food one-of [1 2] ]
+    ]
+  ]
+end
+
+
+to setup:setup-display
+  display:color-patches
+end
+
+
+
+;to setup:setup-indicators
+;  set time-indicators table:make
+;  foreach tracked-indicators [table:put time-indicators ? (list 0)]
+;end
+
+
+
+
+
+
+
+
+
+>>>>>>> a2155d63ac5f050e36bad266d645a1146d7ef498

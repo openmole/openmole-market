@@ -1,3 +1,25 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a275151a1a063bca724780bcea6cd8e56b50aed7931defa5be806e62cabe67ed
-size 586
+
+
+
+to display:color-patches  ;; patch procedure
+  
+  let ma max [food] of patches
+  
+  ask patches [
+  ;; give color to nest and food sources
+  ifelse nest?
+  [ set pcolor violet ]
+  [ ifelse food > 0[
+      
+      ifelse setup-type = "fixed" [
+        if food-source-number = 1 [ set pcolor cyan ]
+        if food-source-number = 2 [ set pcolor sky  ]
+        if food-source-number = 3 [ set pcolor blue ]
+      ][
+        set pcolor scale-color red food 0 ma
+      ]
+   ]
+    ;; scale color to show chemical concentration
+    [ set pcolor scale-color green chemical 0.1 5 ] ]
+  ]
+end

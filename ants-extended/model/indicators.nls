@@ -1,3 +1,48 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5d697eee95a9dfe2d679bbc0b0df265d18a6d3f85557ff00a1aef6216591e89b
-size 1245
+
+
+;to indicators:update-indicators
+;  foreach tracked-indicators [
+;    show ?
+;    let val run-result ?
+;    table:put time-indicators ? (lput (table:get time-indicators ?) val)
+;  ]
+;end
+
+
+;to-report time-avg [indic]
+  ;let vals []
+  ;foreach seq 0 ticks [
+  ;  ;show (list ? indic)
+  ;  show table:has-key? time-indicators (word ? indic)
+  ;  if table:has-key? time-indicators (word ? indic) [set vals lput (table:get time-indicators (word ? indic)) vals] 
+  ;]
+  ;ifelse length vals > 0 [report mean vals][report 0]
+  
+  ;ifelse table:has-key? time-indicators indic [report mean table:get time-indicators indic][report 0]
+  
+;end
+
+
+to-report count-food
+  report sum [food] of patches
+end
+
+
+to compute-fitness 
+  if ((sum [food] of patches with [food-source-number = 1] = 0) and (final-ticks-food1 = 0)) [
+   set final-ticks-food1 ticks ]
+ if ((sum [food] of patches with [food-source-number = 2] = 0) and (final-ticks-food2 = 0)) [
+   set final-ticks-food2 ticks ]
+  if ((sum [food] of patches with [food-source-number = 3] = 0) and (final-ticks-food3 = 0)) [
+   set final-ticks-food3 ticks ]
+end
+
+
+to-report carrying-efficiency
+  ifelse total-ant-steps = 0 [
+    report 0 
+  ][
+    report carrying-food-ant-steps / total-ant-steps
+  ]
+end
+

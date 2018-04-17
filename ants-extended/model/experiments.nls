@@ -1,3 +1,49 @@
+<<<<<<< HEAD
 version https://git-lfs.github.com/spec/v1
-oid sha256:1be4bca81abc9382971c17b804c808915d4df50b27d1365e39b3251301d4b585
-size 1005
+oid sha256:f82137b8d20576ffb6256f13374af959c062e3ded9f9a1aabdc46414e3263494
+size 781
+=======
+
+
+
+;;
+; set parameters
+to experiments:setup-experiment [setuptype antpop wangle diffrate evaprate]
+  
+  show (word "Experiment : setup = " setuptype " ; population = " antpop " ; wiggleAngle = " wangle " ; diffusion = " diffrate " ; evaporation = " evaprate)
+  
+  clear-all
+  
+  set setup-type setuptype
+  
+  set population antpop  ; \in [1,1000]
+  set wiggle-angle wangle ; \in [0,90]
+  set diffusion-rate diffrate ; \in [0,99]
+  set evaporation-rate evaprate ; \in [0,99]
+  
+  set headless? true
+  
+  setup:setup-headless
+  
+  setup:setup
+  
+end
+
+
+
+to experiments:run-experiment
+    while [main:still-food? = true ][
+       main:go
+    ]
+end
+
+
+
+to experiments:test-experiment
+  experiments:setup-experiment "fixed" 200 40 10 20
+  experiments:run-experiment
+  
+  ;show time-avg "carrying-efficency"
+  
+end
+>>>>>>> a2155d63ac5f050e36bad266d645a1146d7ef498
