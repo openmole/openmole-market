@@ -12,6 +12,9 @@ val food1 = Val[Double]
 val food2 = Val[Double]
 val food3 = Val[Double]
 
+// output of the rtask
+val distribs = Val[Array[String]]
+
 val obj = Val[Double]
 val seed = Val[Int]
 
@@ -19,7 +22,7 @@ val env = LocalEnvironment(4)
 
 val purpose = "TEST"
 
-val indics_hook = AppendToCSVFileHook(workDirectory / "exploration" / ((new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss")).format(new Date()))+"_"+purpose+".csv")
+val indics_hook = CSVHook(workDirectory / "exploration" / ((new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss")).format(new Date()))+"_"+purpose+".csv") set (arraysOnSingleRow := true)
 
 
 
@@ -39,9 +42,16 @@ val ants =
 
 val analyse =
   RTask("""
-    show(food1)
-    show(diffusionRate)""") set (
-    rInputs += (diffusionRate, evaporationRate, food1.array, food2.array, food3.array)
+        # functions
+        source("fitdistr.R")
+        # get most likely distribution for each indicator
+        distribs = c(getDistribType(food1),getDistribType(food2),getDistribType(food3))
+        """,
+        libraries = Seq("fitdistrplus")
+  ) set (
+    rInputs += (diffusionRate, evaporationRate, food1.array, food2.array, food3.array),
+    rOutputs += ("distribs",distribs),
+    resources += workDirectory / "fitdistr.R"
   )
 
 
@@ -50,7 +60,7 @@ val replications =
  Replication (
    evaluation = (ants on env) -- FilterTask(food1, food2, food3),
    seed = seed,
-   replications = 4,
+   replications = 64,
    aggregation = analyse hook indics_hook
 )
 
@@ -61,7 +71,7 @@ val exploration =
     evaluation = replications,
     sampling =
       LHS(
-        1,
+        2,
         diffusionRate in (10.0, 100.0),
         evaporationRate in (10.0, 100.0),
         population in (100.0,200.0),
