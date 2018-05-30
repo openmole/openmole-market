@@ -1,7 +1,10 @@
 import _parent_.Model._
 
 val pse =
-  PSE(
+  PSEEvolution(
+    evaluation = ants,
+    parallelism = 10,
+    termination = 1000000,
     genome = Seq(
       diffusion in (0.0, 99.0), 
       evaporation in (0.0, 99.0)),
@@ -11,20 +14,11 @@ val pse =
     stochastic = Stochastic(seed = seed)
   )
   
-
-val evolution =
-  SteadyStateEvolution(
-    algorithm = pse,
-    evaluation = ants,
-    parallelism = 10,
-    termination = 1000000
-  )
-
 // Define a hook to save the Pareto frontier
-val savePopulationHook = SavePopulationHook(evolution, workDirectory / "results")
+val savePopulationHook = SavePopulationHook(pse, workDirectory / "results")
 
 // Plug everything together to create the workflow
-(evolution hook savePopulationHook)
+(pse hook savePopulationHook)
   
   
   

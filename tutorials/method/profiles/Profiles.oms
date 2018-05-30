@@ -5,7 +5,9 @@ import _parent_.calibrate.Objective._
 
 def profile(variable: Val[Double]) = {
   val profile =
-    GenomeProfile (
+    GenomeProfileEvolution(
+      evaluation =  ants -- objective,
+      termination = 20000,
       x = variable,
       nX = 100,
       genome = Seq(
@@ -14,17 +16,10 @@ def profile(variable: Val[Double]) = {
       objective = deltaFood,
       stochastic = Stochastic(seed = seed)
     )
-
-  // Calibration profile of 1000 points for the parameter
-  val evolution = SteadyStateEvolution(
-    algorithm = profile,
-    evaluation =  ants -- objective,
-    termination = 20000
-  )
   
-  val savePopulationHook = SavePopulationHook(evolution, workDirectory / s"results/${variable.name}" )
+  val savePopulationHook = SavePopulationHook(profile, workDirectory / s"results/${variable.name}" )
   
-  (evolution hook savePopulationHook)
+  (profile hook savePopulationHook)
 }
 
 EmptyTask() -- (profile(diffusion), profile(evaporation))
