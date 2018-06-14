@@ -12,7 +12,7 @@ val food3 = Val[Double]
 // Define the NetlogoTask
 val cmds = Seq("random-seed ${seed}", "run-to-grid")
 val ants =
-  NetLogo5Task(workDirectory / "ants.nlogo", cmds) set (
+  NetLogo6Task(workDirectory / "ants.nlogo", cmds) set (
     name := "ants",
     // Map the OpenMOLE variables to NetLogo variables
     netLogoInputs += (population, "gpopulation"),
