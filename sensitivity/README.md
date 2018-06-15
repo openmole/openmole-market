@@ -5,7 +5,7 @@ This market entry shows how to use the [Morris sensitivity analysis method](http
 Several OpenMOLE workflows are proposed here:
 * "MorrisVerify.oms" is provided so anyone can ensure the method works as expected (see below for details)
 * "MorrisTraffic.oms" applies the Morris sensitivity analysis to the netlogo Traffic model
-* "MorrisPlot.oms" shows an example of using R to plot the standard Morris diagram
+* "MorrisTrafficWithPlot.oms" shows an example of using R to plot the standard Morris diagram
 
 ## Verify 
 
@@ -58,4 +58,4 @@ Outputs with an impact on mu have a direct impact; if sigma is huge, this impact
 Creating the plots of a method is considered as a *bad practice* in OpenMOLE. It's better to download the CSV file and plot it by yourself, so you can adapt the graph to your needs, your precise experiment, etc. 
 On another hand, screening is supposed to be quick to drive; reproducible research also recommands an automatic chain for building the graphs.
 
-Should you desire a quick plot of the results, you might have a look to the "MorrisPlot.oms" workflow. In this workflow, we add an [RTask](https://www.openmole.org/R+Script.html) which loads the outputs of the sensitivity analysis and relies on R to generate the 2D plots. The underlying R script is generic enough to adapt to your inputs and outputs. The R script might constitute a starting point for plotting your own graphs on your computer. 
+Should you desire a quick plot of the results, you might have a look to the "MorrisTrafficWithPlot.oms" workflow. In this workflow, we add an [RTask](https://www.openmole.org/R+Script.html) which loads the outputs of the sensitivity analysis and relies on R to generate the 2D plots. The underlying R script is generic enough to adapt to your inputs and outputs. The R script might constitute a starting point for plotting your own graphs on your computer. 
