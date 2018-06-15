@@ -4,6 +4,8 @@ This market entry shows how to use the [Morris sensitivity analysis method](http
 
 Several OpenMOLE workflows are proposed here:
 * "MorrisVerify.oms" is provided so anyone can ensure the method works as expected (see below for details)
+* "MorrisTraffic.oms" applies the Morris sensitivity analysis to the netlogo Traffic model
+
 
 ## Verify 
 
@@ -42,6 +44,7 @@ A good way to understand the role of levels and repetitions count is to reproduc
 ## Traffic Basic 
 
 The "MorrisTraffic.oms" workflow applies the Morris method to the [Traffic Basic NetLogo model](http://ccl.northwestern.edu/netlogo/models/TrafficBasic)
+This model is unchanged, except to [make it compliant with OpenMOLE](https://www.openmole.org/Netlogo+Headless.html).
 
 However, as this model is stochastic, the results might be kind of unstable. 
 
