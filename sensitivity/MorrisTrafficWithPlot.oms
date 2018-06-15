@@ -40,8 +40,7 @@ val sensi = SensitivityMorris(
     repetitions = 20,
     levels = 5,
     verbose = true
-    ) hook storeSensitivityCSV
-
+    ) 
 
 // R Task plotting the graphs
 val fileGraphSensitivity = Val[File]
@@ -55,4 +54,4 @@ val drawGraph = RTask("""source("plot_sensitivity.R")""") set(
     outputFiles += ("/tmp/sensitivity.png", fileGraphSensitivity)
 )
 
-(sensi hook storeSensitivityCSV) -- (drawGraph hook CopyFileHook(fileGraphSensitivity, workDirectory / "results_jam" / "sensitivity.png"))
+(sensi hook storeSensitivityCSV) -- (drawGraph hook CopyFileHook(fileGraphSensitivity, workDirectory / "results_traffic" / "sensitivity.png"))
