@@ -198,10 +198,10 @@ end
 GRAPHICS-WINDOW
 257
 10
-764
-538
-35
-35
+762
+516
+-1
+-1
 7.0
 1
 10
@@ -248,7 +248,7 @@ diffusion-rate
 diffusion-rate
 0.0
 99.0
-21
+21.0
 1.0
 1
 NIL
@@ -263,7 +263,7 @@ evaporation-rate
 evaporation-rate
 0.0
 99.0
-9
+9.0
 1.0
 1
 NIL
@@ -295,7 +295,7 @@ population
 population
 0.0
 200.0
-125
+125.0
 1.0
 1
 NIL
@@ -371,7 +371,7 @@ INPUTBOX
 186
 241
 max-steps
-2000
+2000.0
 1
 0
 Number
@@ -722,9 +722,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1
+NetLogo 6.0.3
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -740,7 +739,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@
