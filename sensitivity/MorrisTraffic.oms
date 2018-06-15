@@ -28,7 +28,7 @@ val modelExec = NetLogo6Task(workDirectory / "Traffic Basic.nlogo", launch) set(
   netLogoOutputs += ("compute-speed-min", outputSpeedMin),
   netLogoOutputs += ("compute-speed-max", outputSpeedMax),
 
-  seed := 0,
+  seed := 0
   )
 
 // drive the sensitivity analysis
