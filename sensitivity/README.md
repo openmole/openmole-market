@@ -1,4 +1,4 @@
-# Calibration of a NetLogo model
+# Screening with the Morris method
 
 This market entry shows how to use the [Morris sensitivity analysis method](https://en.wikipedia.org/wiki/Morris_method) for the [screening](https://en.wikipedia.org/wiki/Sensitivity_analysis#Screening) of a model in OpenMOLE.
 
@@ -38,3 +38,12 @@ function y should lead to strong interactions between some variables:
 * d has a direct impact and also depends on another variable (sigma >> 0)
 
 A good way to understand the role of levels and repetitions count is to reproduce this experiment with different parameters. 
+
+## Traffic Basic 
+
+The "MorrisTraffic.oms" workflow applies the Morris method to the [Traffic Basic NetLogo model](http://ccl.northwestern.edu/netlogo/models/TrafficBasic)
+
+However, as this model is stochastic, the results might be kind of unstable. 
+
+Note the impact of changing the parameters for levels and repetitions. Also notice how, when the parameter `verbose = true` is used, messages in the simulation results explain how the computation of the indicators is made. 
+

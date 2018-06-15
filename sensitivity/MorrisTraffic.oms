@@ -1,0 +1,46 @@
+// inputs for our model
+val seed = Val[Int]
+val inputNumberOfCars = Val[Double]
+val inputAcceleration = Val[Double]
+val inputDeceleration = Val[Double]
+
+// model outputs
+val outputSpeedMin = Val[Double]
+val outputSpeedMax = Val[Double]
+
+// run on 4 threads/CPUs on the local computer
+val envLocal = LocalEnvironment(4)
+
+// hooks to save results into the results_traffic subdirectory
+val storeSimuCSV = AppendToCSVFileHook(workDirectory / "results_traffic" / "simu.csv")
+val storeSensitivityCSV = AppendToCSVFileHook(workDirectory / "results_traffic" / "sensitivity.csv")
+
+// run the Traffic Netlogo model
+val launch = List("setup","random-seed ${seed}","while [ticks < 1000] [go]")
+val modelExec = NetLogo6Task(workDirectory / "Traffic Basic.nlogo", launch) set(
+  inputs += (seed),
+  outputs ++= Seq(inputNumberOfCars, inputAcceleration, inputDeceleration),
+  
+  netLogoInputs += (inputNumberOfCars, "number-of-cars"),
+  netLogoInputs += (inputAcceleration, "acceleration"),
+  netLogoInputs += (inputDeceleration, "deceleration"),
+  
+  netLogoOutputs += ("compute-speed-min", outputSpeedMin),
+  netLogoOutputs += ("compute-speed-max", outputSpeedMax),
+
+  seed := 0,
+  )
+
+// drive the sensitivity analysis
+SensitivityMorris(
+    evaluation = modelExec on envLocal hook storeSimuCSV,
+    inputs = Seq(inputNumberOfCars in (1.0, 41.0), 
+                inputAcceleration in (0.0, 0.0099),
+                inputDeceleration in (0.0, 0.099)
+                ),
+    outputs = Seq(outputSpeedMin, outputSpeedMax),
+    repetitions = 100,
+    levels = 5,
+    verbose = true
+    ) hook storeSensitivityCSV
+
