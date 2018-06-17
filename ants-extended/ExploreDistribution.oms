@@ -29,12 +29,12 @@ val indics_hook = CSVHook(workDirectory / "exploration" / ((new SimpleDateFormat
 
 // Define the NetlogoTask
 // experiments:setup-experiment [setuptype antpop wangle diffrate evaprate]
-val cmds = Seq("experiments:setup-experiment \"fixed\" ${population} ${wiggleAngle} ${diffusionRate} ${evaporationRate}","experiments:run-experiment")
+val cmds = Seq("experiments:setup-experiment \"fixed\" ${population} ${wiggleAngle} ${diffusionRate} ${evaporationRate} ${seed}","experiments:run-experiment")
 
 val ants =
   NetLogo5Task(workDirectory / "model" / "HEADLESS_ants.nlogo", cmds, seed = seed,embedWorkspace=true) set (
     // Map the OpenMOLE variables to NetLogo variables
-    inputs += (population,diffusionRate,evaporationRate,wiggleAngle),
+    inputs += (population,diffusionRate,evaporationRate,wiggleAngle,seed),
     netLogoOutputs += ("final-ticks-food1", food1),
     netLogoOutputs += ("final-ticks-food2", food2),
     netLogoOutputs += ("final-ticks-food3", food3)

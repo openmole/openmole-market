@@ -4,8 +4,12 @@
 to ant:return-to-nest  ;; ant procedure
   ifelse nest?
   [ ;; drop food and head out again
+    set carried-food 0
     set color red
-    rt 180 ]
+    
+    ;rt 180 ; should be random : independant restarts for research
+    rt random 360
+  ]
   [ set chemical chemical + 60  ;; drop some chemical
     ant:uphill-nest-scent ]         ;; head toward the greatest value of nest-scent
 end
@@ -13,6 +17,7 @@ end
 to ant:look-for-food  ;; ant procedure
   if food > 0 [
     ;; pick up food
+    set carried-food carried-food + 1
     set color orange + 1     
     ;; reduce the food source
     if not infinite-food? [set food food - 1]
@@ -37,16 +42,23 @@ end
 
 ;; sniff left and right, and go where the strongest smell is
 to ant:uphill-nest-scent  ;; ant procedure
-  let scent-ahead ant:nest-scent-at-angle   0
-  let scent-right ant:nest-scent-at-angle  45
-  let scent-left  ant:nest-scent-at-angle -45
-  if (scent-right > scent-ahead) or (scent-left > scent-ahead)[
-     ifelse scent-right > scent-left[
-       rt 45
-     ][
-       lt 45
-     ]
-  ]
+  ;let scent-ahead ant:nest-scent-at-angle   0
+  ;let scent-right ant:nest-scent-at-angle  45
+  ;let scent-left  ant:nest-scent-at-angle -45
+  
+ ; if (scent-right > scent-ahead) or (scent-left > scent-ahead)[
+ ;    ifelse scent-right > scent-left[
+ ;      rt 45
+ ;    ][
+ ;      lt 45
+ ;    ]
+ ; ]
+ 
+ ; sniffing radius : chemicals in-radius -> can test precise hypotheses on the movement of ants
+  ; use in-cone
+ 
+ 
+ 
 end
 
 to ant:wiggle  ;; ant procedure
@@ -67,6 +79,9 @@ to-report ant:chemical-scent-at-angle [angle]
   report [chemical] of p
 end
 
+to-report ant:gradient-direction [variable]
+
+end
 
 
 ;;

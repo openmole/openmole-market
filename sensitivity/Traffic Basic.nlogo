@@ -1,292 +1,138 @@
-;extensions [table]
-
-
-__includes [
-
-  ;;
-  ; setup
-   "setup.nls"
-
-   ;;
-   ; main functions
-   "main.nls"
-
-   ;;
-   ; ants
-   "ants.nls"
-
-
-   ;;
-   ; synthetic configuration generation
-   "embedded-synth-pattern.nls"
-
-   ;;
-   ; indicators
-   "indicators.nls"
-
-   ;;
-   ; embedding in openmole
-   "experiments.nls"
-
-   ;;
-   ; display functions
-   "display.nls"
-
-   ;;
-   ; utils
-   "utils.nls"
-
-]
-
-
 globals [
-
-
- ;;
- ; diffusion rate
- diffusion-rate
-
- ;;
- ; evaporation-rate
- evaporation-rate
-
-
- ;;
- ; ants wiggle angle
-  ;wiggle-angle
-
- ;delayed-start?
-
- ;;
- ; type of setup
- ;setup-type
-
-
- ;;
- ; indicators
- final-ticks-food1
- final-ticks-food2
- final-ticks-food3
-
- carrying-food-ant-steps
- total-ant-steps
-
- tracked-indicators
- time-indicators
-
- ;;
- ; synthetic configuration generation parameters
- sp-total-time-steps
- sp-max-pop
- sp-growth-rate
- sp-diffusion-steps
- sp-diffusion
- sp-population
-
- ;;
- ; kernel mixture setup parameters
- km-setup-center-number
- km-setup-max-pop
- km-setup-rank-size-exp
- km-setup-center-density
-
-
-
- ;;
- ; Headless parameters
- headless?
-
- setup-type
-
- delayed-start?
- infinite-food?
-
- wiggle-angle
-
- ;;
- ; numbers of ants
- population
-
-
-
-display-var
-
+  sample-car
+  my-number-of-cars
+  my-acceleration
+  my-deceleration
 ]
 
-
-patches-own [
-  ;;
-  ; amount of chemical on this patch
-  chemical
-
-  ;;
-  ; amount of food on this patch
-  food
-
-  ;;
-  ; true on nest patches, false elsewhere
-  nest?
-
-  ;;
-  ; number that is higher closer to the nest
-  nest-scent
-
-  ;;
-  ;
-  ants-passed
-
-  ;;
-  ; number (1, 2, or 3) to identify the food sources
-  food-source-number
-
-  ;;
-  ; synthetic conf
-  sp-density
-  sp-occupants
-  sp-alpha-localization
-
-
-
+turtles-own [
+  speed
+  speed-limit
+  speed-min
 ]
 
+to init-global
+  set my-number-of-cars number-of-cars
+  set my-acceleration acceleration
+  set my-deceleration deceleration
+end
 
-breed [ants ant]
+to setup
+  ;; clear-all
+  init-global
+  ask patches [ setup-road ]
+  setup-cars
+  watch sample-car
+  reset-ticks
+end
+
+to setup-road ;; patch procedure
+  if pycor < 2 and pycor > -2 [ set pcolor white ]
+end
+
+to setup-cars
+  if my-number-of-cars > world-width [
+    user-message (word
+      "There are too many cars for the amount of road. "
+      "Please decrease the NUMBER-OF-CARS slider to below "
+      (world-width + 1) " and press the SETUP button again. "
+      "The setup has stopped.")
+    stop
+  ]
+  set-default-shape turtles "car"
+  create-turtles my-number-of-cars [
+    set color blue
+    set xcor random-xcor
+    set heading 90
+    ;; set initial speed to be in range 0.1 to 1.0
+    set speed 0.1 + random-float 0.9
+    set speed-limit 1
+    set speed-min 0
+    separate-cars
+  ]
+  set sample-car one-of turtles
+  ask sample-car [ set color red ]
+end
+
+; this procedure is needed so when we click "Setup" we
+; don't end up with any two cars on the same patch
+to separate-cars ;; turtle procedure
+  if any? other turtles-here [
+    fd 1
+    separate-cars
+  ]
+end
+
+to-report compute-speed-min
+  report min [speed] of turtles
+end
+
+to-report compute-speed-max
+  report max [speed] of turtles
+end
+
+to go
+  ;; if there is a car right ahead of you, match its speed then slow down
+  ask turtles [
+    let car-ahead one-of turtles-on patch-ahead 1
+    ifelse car-ahead != nobody
+      [ slow-down-car car-ahead ]
+      [ speed-up-car ] ;; otherwise, speed up
+    ;; don't slow down below speed minimum or speed up beyond speed limit
+    if speed < speed-min [ set speed speed-min ]
+    if speed > speed-limit [ set speed speed-limit ]
+    fd speed
+  ]
+  tick
+end
+
+to slow-down-car [ car-ahead ] ;; turtle procedure
+  ;; slow down so you are driving more slowly than the car ahead of you
+  set speed [ speed ] of car-ahead - my-deceleration
+end
+
+to speed-up-car ;; turtle procedure
+  set speed speed + my-acceleration
+end
 
 
-ants-own [
-  ;;
-  ; quantity of food currently carried
-  carried-food
-]
-
+; Copyright 1997 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
-257
-10
-764
-538
-35
-35
-7.0
+14
+251
+685
+377
+-1
+-1
+13.0
 1
 10
 1
 1
 1
 0
-0
+1
 0
 1
--35
-35
--35
-35
+-25
+25
+-4
+4
 1
 1
 1
 ticks
 30.0
 
-PLOT
-844
-40
-1087
-319
-Food in each pile
-time
-food
-0.0
-50.0
-0.0
-120.0
-true
-false
-"" ""
-PENS
-"food-in-pile1" 1.0 0 -11221820 true "" "plotxy ticks sum [food] of patches with [pcolor = cyan]"
-"food-in-pile2" 1.0 0 -13791810 true "" "plotxy ticks sum [food] of patches with [pcolor = sky]"
-"food-in-pile3" 1.0 0 -13345367 true "" "plotxy ticks sum [food] of patches with [pcolor = blue]"
-
-MONITOR
-846
-328
-928
-373
-NIL
-count-food
-17
-1
-11
-
-MONITOR
-846
-424
-963
-469
-NIL
-final-ticks-food1
-17
-1
-11
-
-MONITOR
-847
-479
-964
-524
-NIL
-final-ticks-food2
-17
-1
-11
-
-MONITOR
-847
-533
-964
-578
-NIL
-final-ticks-food3
-17
-1
-11
-
-MONITOR
-1018
-424
-1143
-469
-NIL
-carrying-efficiency
-17
-1
-11
-
-PLOT
-1164
-39
-1419
-222
-carrying efficiency
-NIL
-NIL
-0.0
-10.0
-0.0
-1.0
-true
-false
-"" ""
-PENS
-"default" 1.0 0 -16777216 true "" "plot carrying-efficiency"
-
 BUTTON
-40
-51
-186
-84
-test experiment
-experiments:test-experiment
+36
+72
+108
+113
+NIL
+setup
 NIL
 1
 T
@@ -297,69 +143,215 @@ NIL
 NIL
 1
 
+BUTTON
+119
+73
+190
+113
+NIL
+go
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+0
+
+SLIDER
+12
+34
+216
+67
+number-of-cars
+number-of-cars
+1
+41
+19.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+121
+180
+266
+213
+deceleration
+deceleration
+0
+.099
+0.017
+.001
+1
+NIL
+HORIZONTAL
+
+SLIDER
+121
+145
+266
+178
+acceleration
+acceleration
+0
+.0099
+0.0035
+.0001
+1
+NIL
+HORIZONTAL
+
+PLOT
+286
+20
+704
+217
+Car speeds
+time
+speed
+0.0
+300.0
+0.0
+1.1
+true
+true
+"" ""
+PENS
+"red car" 1.0 0 -2674135 true "" "plot [speed] of sample-car"
+"min speed" 1.0 0 -13345367 true "" "plot compute-speed-min"
+"max speed" 1.0 0 -10899396 true "" "plot compute-speed-max"
+
+MONITOR
+17
+145
+114
+190
+red car speed
+ifelse-value any? turtles\n  [   [speed] of sample-car  ]\n  [  0 ]
+3
+1
+11
+
 @#$#@#$#@
 ## WHAT IS IT?
 
-In this project, a colony of ants forages for food. Though each ant follows a set of simple rules, the colony as a whole acts in a sophisticated way.
-
-## HOW IT WORKS
-
-When an ant finds a piece of food, it carries the food back to the nest, dropping a chemical as it moves. When other ants "sniff" the chemical, they follow the chemical toward the food. As more ants carry food to the nest, they reinforce the chemical trail.
+This model models the movement of cars on a highway. Each car follows a simple set of rules: it slows down (decelerates) if it sees a car close ahead, and speeds up (accelerates) if it doesn't see a car ahead. The model demonstrates how traffic jams can form even without any accidents, broken bridges, or overturned trucks.  No "centralized cause" is needed for a traffic jam to form.
 
 ## HOW TO USE IT
 
-Click the SETUP button to set up the ant nest (in violet, at center) and three piles of food. Click the GO button to start the simulation. The chemical is shown in a green-to-white gradient.
+Click on the SETUP button to set up the cars.
 
-The EVAPORATION-RATE slider controls the evaporation rate of the chemical. The DIFFUSION-RATE slider controls the diffusion rate of the chemical.
+Set the NUMBER-OF-CARS slider to change the number of cars on the road.
 
-If you want to change the number of ants, move the POPULATION slider before pressing SETUP.
+Click on GO to start the cars moving.  Note that they wrap around the world as they move, so the road is like a continuous loop.
+
+The ACCELERATION slider controls the rate at which cars accelerate (speed up) when there are no cars ahead.
+
+When a car sees another car right in front, it matches that car's speed and then slows down a bit more.  How much slower it goes than the car in front of it is controlled by the DECELERATION slider.
 
 ## THINGS TO NOTICE
 
-The ant colony generally exploits the food source in order, starting with the food closest to the nest, and finishing with the food most distant from the nest. It is more difficult for the ants to form a stable trail to the more distant food, since the chemical trail has more time to evaporate and diffuse before being reinforced.
+Traffic jams can start from small "seeds."  These cars start with random positions and random speeds. If some cars are clustered together, they will move slowly, causing cars behind them to slow down, and a traffic jam forms.
 
-Once the colony finishes collecting the closest food, the chemical trail to that food naturally disappears, freeing up ants to help collect the other food sources. The more distant food sources require a larger "critical number" of ants to form a stable trail.
+Even though all of the cars are moving forward, the traffic jams tend to move backwards. This behavior is common in wave phenomena: the behavior of the group is often very different from the behavior of the individuals that make up the group.
 
-The consumption of the food is shown in a plot.  The line colors in the plot match the colors of the food piles.
+The plot shows three values as the model runs:
+
+* the fastest speed of any car (this doesn't exceed the speed limit!)
+
+* the slowest speed of any car
+
+* the speed of a single car (turtle 0), painted red so it can be watched.
+
+Notice not only the maximum and minimum, but also the variability -- the "jerkiness" of one vehicle.
+
+Notice that the default settings have cars decelerating much faster than they accelerate. This is typical of traffic flow models.
+
+Even though both ACCELERATION and DECELERATION are very small, the cars can achieve high speeds as these values are added or subtracted at each tick.
+
+## THINGS TO TRY
+
+In this model there are three sliders that can affect the tendency to create traffic jams: the initial NUMBER-OF-CARS, ACCELERATION, and DECELERATION.
+
+Look for patterns in how these settings affect the traffic flow.  Which variable has the greatest effect?  Do the patterns make sense?  Do they seem to be consistent with your driving experiences?
+
+Set DECELERATION to zero.  What happens to the flow?  Gradually increase DECELERATION while the model runs.  At what point does the flow "break down"?
 
 ## EXTENDING THE MODEL
 
-Try different placements for the food sources. What happens if two food sources are equidistant from the nest? When that happens in the real world, ant colonies typically exploit one source then the other (not at the same time).
+Try other rules for speeding up and slowing down.  Is the rule presented here realistic? Are there other rules that are more accurate or represent better driving strategies?
 
-In this project, the ants use a "trick" to find their way back to the nest: they follow the "nest scent." Real ants use a variety of different approaches to find their way back to the nest. Try to implement some alternative strategies.
+In reality, different vehicles may follow different rules. Try giving different rules or ACCELERATION/DECELERATION values to some of the cars.  Can one bad driver mess things up?
 
-The ants only respond to chemical levels between 0.05 and 2.  The lower limit is used so the ants aren't infinitely sensitive.  Try removing the upper limit.  What happens?  Why?
+The asymmetry between acceleration and deceleration is a simplified representation of different driving habits and response times. Can you explicitly encode these into the model?
 
-In the `uphill-chemical` procedure, the ant "follows the gradient" of the chemical. That is, it "sniffs" in three directions, then turns in the direction where the chemical is strongest. You might want to try variants of the `uphill-chemical` procedure, changing the number and placement of "ant sniffs."
+What could you change to minimize the chances of traffic jams forming?
+
+What could you change to make traffic jams move forward rather than backward?
+
+Make a model of two-lane traffic.
 
 ## NETLOGO FEATURES
 
-The built-in `diffuse` primitive lets us diffuse the chemical easily without complicated code.
+The plot shows both global values and the value for a single car, which helps one watch overall patterns and individual behavior at the same time.
 
-The primitive `patch-right-and-ahead` is used to make the ants smell in different directions without actually turning.
+The `watch` command is used to make it easier to focus on the red car.
 
+The `speed-limit` and `speed-min` variables are set to constant values. Since they are the same for every car, these variables could have been defined as globals rather than turtle variables. We have specified them as turtle variables since modifications or extensions to this model might well have every car with its own speed-limit values.
+
+## RELATED MODELS
+
+- "Traffic Basic Utility": a version of "Traffic Basic" including a utility function for the cars.
+
+- "Traffic Basic Adaptive": a version of "Traffic Basic" where cars adapt their acceleration to try and maintain a smooth flow of traffic.
+
+- "Traffic Basic Adaptive Individuals": a version of "Traffic Basic Adaptive" where each car adapts individually, instead of all cars adapting in unison.
+
+- "Traffic 2 Lanes": a more sophisticated two-lane version of the "Traffic Basic" model.
+
+- "Traffic Intersection": a model of cars traveling through a single intersection.
+
+- "Traffic Grid": a model of traffic moving in a city grid, with stoplights at the intersections.
+
+- "Traffic Grid Goal": a version of "Traffic Grid" where the cars have goals, namely to drive to and from work.
+
+- "Gridlock HubNet": a version of "Traffic Grid" where students control traffic lights in real-time.
+
+- "Gridlock Alternate HubNet": a version of "Gridlock HubNet" where students can enter NetLogo code to plot custom metrics.
 
 ## HOW TO CITE
 
-If you mention this model in a publication, we ask that you include these citations for the model itself and for the NetLogo software:
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
 
-* Wilensky, U. (1997).  NetLogo Ants model.  http://ccl.northwestern.edu/netlogo/models/Ants.  Center for Connected Learning and Computer-Based Modeling, Northwestern Institute on Complex Systems, Northwestern University, Evanston, IL.
-* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern Institute on Complex Systems, Northwestern University, Evanston, IL.
+For the model itself:
+
+* Wilensky, U. (1997).  NetLogo Traffic Basic model.  http://ccl.northwestern.edu/netlogo/models/TrafficBasic.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
 
 ## COPYRIGHT AND LICENSE
 
 Copyright 1997 Uri Wilensky.
-Copyright 2018 Openmole-team.
 
-<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License</a>.
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
 
-This model was modified and extended to be included in the openmole-market.
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
 
 This model was created as part of the project: CONNECTED MATHEMATICS: MAKING SENSE OF COMPLEX PHENOMENA THROUGH BUILDING OBJECT-BASED PARALLEL MODELS (OBPML).  The project gratefully acknowledges the support of the National Science Foundation (Applications of Advanced Technologies Program) -- grant numbers RED #9552950 and REC #9632612.
 
 This model was developed at the MIT Media Lab using CM StarLogo.  See Resnick, M. (1994) "Turtles, Termites and Traffic Jams: Explorations in Massively Parallel Microworlds."  Cambridge, MA: MIT Press.  Adapted to StarLogoT, 1997, as part of the Connected Mathematics Project.
 
-This model was converted to NetLogo as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227. Converted from StarLogoT to NetLogo, 1998.
+This model was converted to NetLogo as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227. Converted from StarLogoT to NetLogo, 2001.
+
+<!-- 1997 2001 MIT -->
 @#$#@#$#@
 default
 true
@@ -642,10 +634,11 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.3.1
+NetLogo 6.0.3
 @#$#@#$#@
+setup
+repeat 180 [ go ]
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -660,7 +653,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
-0
+1
 @#$#@#$#@

@@ -124,6 +124,10 @@ patches-own [
   food-source-number
 
   ;;
+  ; number of ants passed
+  ants-passed
+
+  ;;
   ; synthetic conf
   sp-density
   sp-occupants
@@ -141,8 +145,6 @@ ants-own [
   ; quantity of food currently carried
   carried-food
 ]
-
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 257
@@ -197,7 +199,7 @@ diffusion-rate
 diffusion-rate
 0.0
 99.0
-24
+4
 1.0
 1
 NIL
@@ -212,7 +214,7 @@ evaporation-rate
 evaporation-rate
 0.0
 99.0
-64
+5
 1.0
 1
 NIL
@@ -244,7 +246,7 @@ population
 population
 0.0
 1000.0
-1000
+543
 1.0
 1
 NIL
@@ -322,7 +324,7 @@ CHOOSER
 setup-type
 setup-type
 "fixed" "kernel-mixture" "reaction-diffusion"
-1
+0
 
 SWITCH
 39
@@ -331,7 +333,7 @@ SWITCH
 113
 delayed-start?
 delayed-start?
-0
+1
 1
 -1000
 
@@ -342,7 +344,7 @@ SWITCH
 151
 infinite-food?
 infinite-food?
-1
+0
 1
 -1000
 
@@ -355,7 +357,7 @@ wiggle-angle
 wiggle-angle
 0
 90
-0
+4
 1
 1
 NIL
@@ -389,6 +391,33 @@ false
 "" ""
 PENS
 "default" 1.0 0 -16777216 true "" "plot carrying-efficiency"
+
+CHOOSER
+41
+522
+180
+567
+display-var
+display-var
+"chemical" "ants-passed"
+1
+
+BUTTON
+28
+591
+142
+624
+toggle ants
+display:toggle-ants
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?

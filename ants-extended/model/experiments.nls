@@ -8,12 +8,14 @@ size 781
 
 ;;
 ; set parameters
-to experiments:setup-experiment [setuptype antpop wangle diffrate evaprate]
+to experiments:setup-experiment [setuptype antpop wangle diffrate evaprate seed]
   
   show (word "Experiment : setup = " setuptype " ; population = " antpop " ; wiggleAngle = " wangle " ; diffusion = " diffrate " ; evaporation = " evaprate)
   
   clear-all
   
+  random-seed seed
+
   set setup-type setuptype
   
   set population antpop  ; \in [1,1000]
@@ -40,7 +42,7 @@ end
 
 
 to experiments:test-experiment
-  experiments:setup-experiment "fixed" 200 40 10 20
+  experiments:setup-experiment "fixed" 200 40 10 20 (random 10000)
   experiments:run-experiment
   
   ;show time-avg "carrying-efficency"

@@ -3,9 +3,11 @@
 
 to display:color-patches  ;; patch procedure
   
-  let ma max [food] of patches
+  let maf max [food] of patches
+  let mi min [ants-passed] of patches let ma max [ants-passed] of patches
   
   ask patches [
+    
   ;; give color to nest and food sources
   ifelse nest?
   [ set pcolor violet ]
@@ -16,10 +18,19 @@ to display:color-patches  ;; patch procedure
         if food-source-number = 2 [ set pcolor sky  ]
         if food-source-number = 3 [ set pcolor blue ]
       ][
-        set pcolor scale-color red food 0 ma
+        set pcolor scale-color red food 0 maf
       ]
    ]
     ;; scale color to show chemical concentration
-    [ set pcolor scale-color green chemical 0.1 5 ] ]
+    [ 
+      if display-var = "chemical" [set pcolor scale-color green chemical 0.1 5 ]
+      if display-var = "ants-passed" [ ifelse mi < ma [set pcolor scale-color blue ants-passed mi ma][set pcolor black]]
+      ] ]
   ]
 end
+
+
+to display:toggle-ants
+  ask ants [set hidden? (not hidden?)]
+end
+
