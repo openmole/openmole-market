@@ -36,8 +36,6 @@ SensitivityMorris(
                 ),
     outputs = Seq(outputX, outputY, outputZ),
     repetitions = 10,
-    levels = 5,
-    verbose = true
-    ) hook storeSensitivityCSV
+    levels = 5) hook storeSensitivityCSV
 
 
