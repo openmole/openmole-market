@@ -1,20 +1,23 @@
 
-val i = Val[Int]
-val output = Val[File]
+val x = Val[Int]
+val data = Val[Array[Array[Double]]]
 
-val rTask = CARETask(workDirectory / "care.bin", "R --slave -f test.R --args ${i}") set (
-  (inputs, outputs) += i,
-  outputFiles += ("results.csv", output)
-)
+val rTask = 
+  RTask("""
+    data = read.csv("data.csv",header=T,sep=",")
+    data<-as.matrix(data)
+    data<-data*x""") set (
+    rInputs += x,
+    rOutputs += (data, x),
+    resources += workDirectory / "data.csv"
+  )
 
-val copyHook = CopyFileHook(output, workDirectory / "results/results${i}.csv")
-
-val multiThread = LocalEnvironment(5)
+val multiThread = LocalEnvironment(2)
 
 val exploration = 
   DirectSampling(
-    evaluation = rTask on multiThread hook copyHook,
-    sampling = i in (0 to 100)
+    evaluation = rTask on multiThread hook ToStringHook(),
+    sampling = x in (0 to 100)
   )
 
 exploration
