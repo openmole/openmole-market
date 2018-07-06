@@ -1,4 +1,4 @@
-import Model._
+import _file_.Model._
 
 val aggregatedFitness = Val[Double]
 
