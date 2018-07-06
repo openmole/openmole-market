@@ -7,8 +7,8 @@ val rTask =
     data = read.csv("data.csv",header=T,sep=",")
     data<-as.matrix(data)
     data<-data*x""") set (
-    rInputs += x,
-    rOutputs += (data, x),
+    inputs += x.mapped,
+    outputs += (data.mapped, x),
     resources += workDirectory / "data.csv"
   )
 
