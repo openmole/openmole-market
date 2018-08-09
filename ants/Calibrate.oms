@@ -36,23 +36,20 @@ val aggregate =
 val modelCapsule = Capsule(ants)
 
 val evolution =
-  SteadyStateEvolution(
-    algorithm =
-      NSGA2(
-        mu = 10,
-        genome = Seq(gDiffusionRate in (0.0, 99.0), gEvaporationRate in (0.0, 99.0)),
-        objectives = Seq(obj),
-        stochastic = Stochastic(seed = seed)
-      ),
+  NSGA2Evolution(
+    mu = 10,
+    genome = Seq(gDiffusionRate in (0.0, 99.0), gEvaporationRate in (0.0, 99.0)),
+    objectives = Seq(obj),
+    stochastic = Stochastic(seed = seed),
     evaluation = modelCapsule -- aggregate,
     parallelism = 10,
-    termination = 100
+    termination = 10000
   )
 
 // Define a hook to save the Pareto frontier
 val savePopulationHook = SavePopulationHook(evolution, workDirectory / "calibration")
 
-val env = LocalEnvironment(5)
+val env = LocalEnvironment(4)
 
 // Plug everything together to create the workflow
 (evolution hook savePopulationHook on env)

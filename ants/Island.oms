@@ -1,29 +1,23 @@
 import _file_.Calibrate._
 
-// Define the population (200) and the computation time (1h)
-// The remaining is the same as above
-val evolution =
-  SteadyStateEvolution(
-    algorithm =   
-      NSGA2(
-        mu = 200,
-        genome = Seq(gDiffusionRate in (0.0, 99.0), gEvaporationRate in (0.0, 99.0)),
-        objectives = Seq(obj),
-        stochastic = Stochastic(seed = seed)
-      ),
-    evaluation = modelCapsule -- aggregate,
-    termination = 1 hour
-  )
-
 // Define the island model with 2,000 concurrent islands.
 // The algorithm stops after 200,000 islands evaluations.
-val island = IslandEvolution(evolution, parallelism = 2000, termination = 200000)
+val evolution =
+  NSGA2Evolution(
+    genome = Seq(gDiffusionRate in (0.0, 99.0), gEvaporationRate in (0.0, 99.0)),
+    objectives = Seq(obj),
+    stochastic = Stochastic(seed = seed),
+    evaluation = modelCapsule -- aggregate,
+    parallelism = 2000,
+    termination = 2000000
+    distribution = Island(10 minutes)
+  )
 
-val savePopulationHook = SavePopulationHook(island, workDirectory / "results")
+val savePopulationHook = SavePopulationHook(evolution, workDirectory / "results")
 
 // Define the execution environment
 val env = LocalEnvironment(4)
 
 // Define the workflow
-(island on env hook savePopulationHook)
+(evolution on env hook savePopulationHook)
 
