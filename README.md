@@ -28,4 +28,5 @@ All the accepted submissions will be part of the market place and will be compil
   - [R hello world](R-hello): an example of how to embed R code in OpenMole.  This workflow executes an R program with 100 different inputs, makes a computation, and saves to a file.
   - [Random Forest classifier](randomforest): This workflow explores the parameters of a random forest image classifier written in Python using scikit-learn.
   - [SimPopLocal model](simpoplocal): a geographical model calibrated using genetic algorithms.
-  - [Sensitivity-Screening analysis](sensitivity): a method to quickly analyze which inputs are influential on large spaces of parameters.
+  - [Sensitivity-Screening analysis](sensitivity/morris): a method to quickly analyze which inputs are influential on large spaces of parameters.
+  - [Global Sensitivity Analysis](sensitivity/saltelli): a variance based sensitivity analysis of model output.
