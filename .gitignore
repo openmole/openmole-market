@@ -25,4 +25,5 @@ release/*
 *.history
 *.class
 .Rhistory
+abc/posteriorSample/
 
