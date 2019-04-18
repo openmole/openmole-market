@@ -15,13 +15,13 @@ val ants =
   NetLogo6Task(workDirectory / "ants.nlogo", cmds) set (
     name := "ants",
     // Map the OpenMOLE variables to NetLogo variables
-    netLogoInputs += (population, "gpopulation"),
-    netLogoInputs += (diffusion, "gdiffusion-rate"),
-    netLogoInputs += (evaporation, "gevaporation-rate"),
-    netLogoInputs += (maxsteps, "gmax-steps"),
-    netLogoOutputs += ("final-ticks-food1", food1),
-    netLogoOutputs += ("final-ticks-food2", food2),
-    netLogoOutputs += ("final-ticks-food3", food3),
+    inputs += (population mapped "gpopulation"),
+    inputs += (diffusion mapped "gdiffusion-rate"),
+    inputs += (evaporation mapped "gevaporation-rate"),
+    inputs += (maxsteps mapped "gmax-steps"),
+    outputs += (food1 mapped "final-ticks-food1"),
+    outputs += (food2 mapped "final-ticks-food2"),
+    outputs += (food3 mapped "final-ticks-food3"),
     // The seed is used to control the initialisation of the random number generator of NetLogo
     inputs += seed,
     // Define default values for inputs of the model
@@ -32,5 +32,5 @@ val ants =
     maxsteps := 2000
  )
  
-ants
+ants hook ToStringHook()
  

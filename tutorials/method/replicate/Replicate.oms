@@ -3,9 +3,9 @@ import _parent_.Model._
 
 val replications = 
  Replication (
-  evaluation = ants hook ToStringHook(),
+  evaluation = ants,
   seed = seed,
   replications = 10
 )
 
-replications
+replications hook ToStringHook()
