@@ -53,15 +53,15 @@ val gaussianMix2D = ScalaTask ("""
 //both dimensions.
 
 val priors = Seq(
-  ABCPrior(theta1, -10.0, 10.0),
-  ABCPrior(theta2, -10.0, 10.0),
+  ABC.Prior(theta1, -10.0, 10.0),
+  ABC.Prior(theta2, -10.0, 10.0),
 )
 
 //The observed value is `(0, 0)`.
 
 val observed = Seq(
-  ABCObserved(o1, 0.0),
-  ABCObserved(o2, 0.0)
+  ABC.Observed(o1, 0.0),
+  ABC.Observed(o2, 0.0)
 )
 
 val step = Val[Int]
