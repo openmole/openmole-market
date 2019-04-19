@@ -1,0 +1,64 @@
+val x1 = Val[Double]
+val x2 = Val[Double]
+val y1 = Val[Double]
+val y2 = Val[Double]
+
+// First order sensitivity indices
+val fosi = Val[Array[Array[Double]]]
+// Total order sensitivity indices
+val tosi = Val[Array[Array[Double]]]
+
+/* Expected values of first order (SI) and total order (STI) sensitivity indices.
+ *
+ * - y1, x1: SI1 = 4/5, STI1 = 4/5
+ * - y1, x2: SI2 = 1/5, STI2 = 1/5
+ * - y2, x1: SI1 = (9 / 4) * (12 / 42) ~= 0.643, 
+ *           STI1 = (7.0 / 36.0) / (40.0 / 144.0) = 0.7
+ * - y2, x2: SI2 = 12 / 42 ~= 0.286, 
+ *           STI2 = (13.0 / 144.0) / (40.0 / 144.0) ~= 0.325
+ */
+
+val fosiMean = Val[Array[Array[Double]]]
+val tosiMean = Val[Array[Array[Double]]]
+
+val model = ScalaTask("""val y1 = x1 + 0.5 * x2;
+                         val y2 = x1 + 0.5 * x2 + x1 * x2""") set (
+  inputs += (x1, x2),
+  outputs += (y1, y2)
+)
+
+val sen = SensitivitySaltelli( 
+  evaluation = model,
+  samples = 1000,
+  modelInputs = Seq(x1 in (0.0,1.0),
+                    x2 in (0.0,1.0)),
+  modelOutputs = Seq(y1, y2),
+  firstOrderSI = fosi,
+  totalOrderSI = tosi
+)
+
+val mySeed = Val[Int]
+
+val mean = ScalaTask("""
+  def sumTerms(a: Array[Array[Double]], b: Array[Array[Double]]): Array[Array[Double]] = 
+    (a zip b).map{case (ai, bi) => 
+      (ai zip bi).map {case (aij, bij) => 
+        aij + bij
+      }
+    }
+  val reps = fosi.size 
+  val fosiMean = fosi.reduce(sumTerms).map{_.map{_/reps}}
+  val tosiMean = tosi.reduce(sumTerms).map{_.map{_/reps}}
+""") set (
+  inputs += (fosi.toArray, tosi.toArray),
+  outputs += (fosiMean, tosiMean)
+)
+
+val rep = Replication(
+  evaluation = sen,
+  replications = 100,
+  seed = mySeed,
+  aggregation = mean
+)
+
+rep hook ToStringHook()
