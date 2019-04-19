@@ -19,12 +19,12 @@ val replications =
    evaluation = ants,
    seed = seed,
    replications = 10,
-   aggregation = medians hook ToStringHook()
-)
+   aggregation = medians 
+) 
 
 val exploration = 
   DirectSampling(
-    evaluation = replications hook CSVHook(workDirectory / "result.csv"),
+    evaluation = replications,
     sampling =   
       LHS(
         500,
@@ -33,5 +33,5 @@ val exploration =
       )
   )
 
-exploration
+exploration hook ToStringHook() hook CSVHook(workDirectory / "result.csv") 
 

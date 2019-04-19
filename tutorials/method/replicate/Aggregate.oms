@@ -22,8 +22,8 @@ val replications =
    evaluation = ants,
    seed = seed,
    replications = 10,
-   aggregation = medians hook ToStringHook()
+   aggregation = medians
 )
 
-replications
+replications hook ToStringHook()
 
