@@ -17,13 +17,10 @@ val medians =
     outputs += (medFood1, medFood2, medFood3)
   )
 
-val replications = 
- Replication (
-   evaluation = ants,
-   seed = seed,
-   replications = 10,
-   aggregation = medians
-)
-
-replications hook ToStringHook()
+Replication (
+  evaluation = ants,
+  seed = seed,
+  replications = 10,
+  aggregation = medians
+) hook DisplayHook()
 

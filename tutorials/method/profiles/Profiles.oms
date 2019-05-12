@@ -2,24 +2,16 @@
 import _parent_.Model._
 import _parent_.calibrate.Objective._
 
-
-def profile(variable: Val[Double]) = {
-  val profile =
-    GenomeProfileEvolution(
-      evaluation =  ants -- objective,
-      termination = 20000,
-      x = variable,
-      nX = 100,
-      genome = Seq(
-        diffusion in (0.0, 99.0), 
-        evaporation in (0.0, 99.0)),
-      objective = deltaFood,
-      stochastic = Stochastic(seed = seed)
-    )
-  
-  val savePopulationHook = SavePopulationHook(profile, workDirectory / s"results/${variable.name}" )
-  
-  (profile hook savePopulationHook)
-}
+def profile(variable: Val[Double]) =
+  ProfileEvolution(
+    evaluation = ants -- objective,
+    termination = 20000,
+    x = variable,
+    genome = Seq(
+      diffusion in (0.0, 99.0), 
+      evaporation in (0.0, 99.0)),
+    objective = deltaFood,
+    stochastic = Stochastic(seed = seed)
+  ) hook (workDirectory / s"results/${variable.name}" )
 
 EmptyTask() -- (profile(diffusion), profile(evaporation))

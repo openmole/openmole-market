@@ -32,5 +32,5 @@ val ants =
     maxsteps := 2000
  )
  
-ants hook ToStringHook()
+ants hook DisplayHook()
  

@@ -22,16 +22,13 @@ val replications =
    aggregation = medians 
 ) 
 
-val exploration = 
-  DirectSampling(
-    evaluation = replications,
-    sampling =   
-      LHS(
-        500,
-        diffusion in (10.0, 100.0),
-        evaporation in (10.0, 100.0)
-      )
-  )
-
-exploration hook ToStringHook() hook CSVHook(workDirectory / "result.csv") 
+DirectSampling(
+  evaluation = replications,
+  sampling =   
+    LHS(
+      500,
+      diffusion in (10.0, 100.0),
+      evaporation in (10.0, 100.0)
+    )
+) hook CSVHook(workDirectory / "result.csv") hook DisplayHook() 
 

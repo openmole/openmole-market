@@ -1,11 +1,8 @@
 
 import _parent_.Model._
 
-val replications = 
- Replication (
+Replication (
   evaluation = ants,
   seed = seed,
   replications = 10
-)
-
-replications hook ToStringHook()
+) hook DisplayHook()

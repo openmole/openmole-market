@@ -10,23 +10,17 @@ val env = LocalEnvironment(2)
 // Define the objectives to minimize.
 // Assign 1 percent of the computing time to reevaluating
 // parameter settings to eliminate over-evaluated individuals.
-val nsga2 = 
-  NSGA2Evolution(
-    evaluation = ants -- objective,
-    genome = Seq(
-      diffusion in (0.0, 99.0),
-      evaporation in (0.0, 99.0)),
-    objectives = Seq(deltaFood),
-    termination = 1000,
-    parallelism = 100,
-    stochastic = Stochastic(seed = seed),
-    distribution = Island(1 hour)
-  )
-// Define a hook to save the Pareto frontier
-val savePopulationHook = SavePopulationHook(nsga2, workDirectory / "results")
-
-// Plug everything together to create the workflow
-(nsga2 hook savePopulationHook on env)
+NSGA2Evolution(
+  evaluation = ants -- objective,
+  genome = Seq(
+    diffusion in (0.0, 99.0),
+    evaporation in (0.0, 99.0)),
+  objectives = Seq(deltaFood),
+  termination = 1000,
+  parallelism = 100,
+  stochastic = Stochastic(seed = seed),
+  distribution = Island(1 hour)
+) hook (workDirectory / "results") on env
   
   
   
