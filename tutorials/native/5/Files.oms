@@ -1,27 +1,28 @@
-val input = Val[File]
-val inputName = Val[String]
+val data = Val[File]
+val dataName = Val[String]
 val output = Val[File]
 val i = Val[Int]
 
-val pyTask = 
-  CARETask(
-    workDirectory / "../python.tgz.bin",
-    "python matrix.py data.csv ${i} out.csv"
+val pyTask =
+  UDockerTask(
+    "python:3",
+    "python matrix.py data.csv ${i} out.csv",
+    install = Seq("pip install scipy")
   ) set (
-    inputFiles += (input, "data.csv"),
-    outputFiles += ("out.csv", output),
-    input := workDirectory / "../data/data1.csv",
-    (inputs, outputs) += (i, inputName)
+    (inputs, outputs) += (i, dataName),
+    resources += workDirectory / "../matrix.py",
+    inputFiles += (data, "data.csv"),
+    outputFiles += ("out.csv", output)
   )
-
-val copyHook = CopyFileHook(output, workDirectory / "results/${inputName.dropRight(4)}/result${i}.csv")
+  
+val copyHook = CopyFileHook(output, workDirectory / "results/${dataName.dropRight(4)}/result${i}.csv")
 
 val exploration = 
   DirectSampling (
     evaluation = pyTask hook copyHook,
     sampling = 
       (i in (1 to 10)) x 
-      (input in (workDirectory / "../data/") withName inputName)
+      (data in (workDirectory / "../data/") withName dataName)
   )
 
 exploration

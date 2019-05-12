@@ -1,14 +1,16 @@
 val input = Val[File]
-val output = Val[File]
+val data = Val[File]
 
-val pyTask = 
-  CARETask(
-    workDirectory / "../python.tgz.bin",
-    "python matrix.py data.csv 2 out.csv"
+val pyTask =
+  UDockerTask(
+    "python:3",
+    "python matrix.py data.csv 2 out.csv",
+    install = Seq("pip install scipy")
   ) set (
-    inputFiles += (input, "data.csv"),
+    resources += workDirectory / "../matrix.py",
+    inputFiles += (data, "data.csv"),
     outputFiles += ("out.csv", output),
-    input := workDirectory / "../data/data1.csv"
+    data := workDirectory / "../data/data1.csv"
   )
 
 val copyHook = CopyFileHook(output, workDirectory / "result.csv")
