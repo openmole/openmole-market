@@ -1,0 +1,85 @@
+import java.text.SimpleDateFormat
+import java.util.Date
+
+// generate basic binary data with 
+// the modified fire model
+
+val density = Val[Double]
+val resistance = Val[Double]
+val replication = Val[Int]
+
+val burnt = Val[Double]
+val binaryburnt = Val[Double]
+val traversed = Val[Double]
+
+val simmodel = NetLogo6Task(workDirectory / "Fire.nlogo",Seq("setup","runfire")) set (
+    (inputs,outputs) += (density,resistance,replication),
+      inputs += density mapped "density",
+      inputs += resistance mapped "resistance",
+      inputs += replication mapped "seed",
+      outputs += burnt mapped "burnt",
+      outputs += binaryburnt mapped "binary-burnt",
+      outputs += traversed mapped "traversed"
+    )
+
+val training = Val[File]
+val validation = Val[File]
+
+def datagen(outputfile: Val[File]) = {
+
+  val explo = DirectSampling (
+    evaluation = simmodel,
+    sampling = (
+        (density in (0.1 to 0.9 by 0.1))
+       x (resistance in (0.1 to 0.9 by 0.1))
+       x (replication in (UniformDistribution[Int](10000) take 5))
+        )
+  )
+  
+  // Q : is it the appropriate level of reflexivity here - proto name injection : ?
+  val aggregtofile = ScalaTask(
+     "val "+outputfile.name+" = newFile(); "+outputfile.name+".content = (Seq(\"density,resistance,replication,burnt,binaryburnt,traversed\")++((Seq(density.toSeq,resistance.toSeq, replication.toSeq,burnt.toSeq,binaryburnt.toSeq,traversed.toSeq).transpose).map(_.mkString(\",\")))).mkString(\"\\n\")"
+  ) set (
+    inputs += (density.toArray,resistance.toArray,replication.toArray,burnt.toArray,binaryburnt.toArray,traversed.toArray),
+    outputs += outputfile
+  )
+  
+  //explo >- (aggregtofile hook CopyFileHook(outputfile,workDirectory / "data" / outputfile.name+".csv"))
+  explo >- aggregtofile
+
+}
+
+ // dummy teet for python ml task
+/*val dummy = ScalaTask("println(training.content);println(validation.content)") set (
+    inputs += (training,validation)
+)*/
+
+
+val errdensity = Val[Array[Double]]
+val errresistance = Val[Array[Double]]
+val score = Val[Double]
+
+val sklearnclassifier = PythonTask(
+    workDirectory / "logisticregression.py",3,
+    libraries = Seq("pandas","numpy","sklearn")
+) set (
+  //inputFiles += (training,"data/training.csv"),
+  //inputFiles += (validation,"data/validation.csv"),
+  inputs += training mapped "data/training.csv",
+  inputs += validation mapped "data/validation.csv",
+  outputs += errdensity mapped "errdensity",
+  outputs += errresistance mapped "errresistance",
+  outputs += score mapped "score"
+)
+
+val indics_hook = AppendToCSVFileHook(workDirectory / "exploration" / (((new SimpleDateFormat("yyyyMMdd_HHmmss")).format(new Date()))+"_classiferrors.csv"))
+
+EmptyTask() -- Seq(training,validation).map{datagen} -- (sklearnclassifier hook indics_hook)
+
+
+
+
+
+
+
+
