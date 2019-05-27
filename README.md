@@ -26,6 +26,7 @@ All the accepted submissions will be part of the market place and will be compil
   - [Java hello world](java-hello): an example of how to embed Java code in OpenMOLE
   - [OpenMOLE plugin](hello-plugin): two workflows using two different OpenMOLE plugins
   - [Pi Monte Carlo approximation](pi): a workflow using a ScalaTask to approximate the value of pi. The Design of Experiments changes the seed of the random number generator.
+  - [Python sklearn](python-sklearn): python task using the machine learning library sklearn.
   - [R hello world](R-hello): an example of how to embed R code in OpenMole.  This workflow executes an R program with 100 different inputs, makes a computation, and saves to a file.
   - [Random Forest classifier](randomforest): This workflow explores the parameters of a random forest image classifier written in Python using scikit-learn.
   - [SimPopLocal model](simpoplocal): a geographical model calibrated using genetic algorithms.
