@@ -14,66 +14,60 @@
 // by the user, and the likelihood `f(Output | Theta)` is determined by
 // the model.
 
-// In this example, the model takes a 2-dimensional input `theta` and
-// outputs a random value also 2-dimensional. The output value is drawn
-// randomly from a 2D gaussian mixture whose mean is set to `theta`. (The
+// In this example, the model takes a 3-dimensional input `theta` and
+// outputs a random value also 3-dimensional. The output value is drawn
+// randomly from a 3D gaussian mixture whose mean is set to `theta`. (The
 // covariance is fixed to make the density bimodal.)
 
 val theta1 = Val[Double]
 val theta2 = Val[Double]
-val o1 = Val[Double]
-val o2 = Val[Double]
+val theta3 = Val[Double]
+val o1 = Val[Array[Double]]
 
-val gaussianMix2D = ScalaTask ("""
+val model = ScalaTask ("""
     import org.apache.commons.math3.distribution.MixtureMultivariateNormalDistribution
-    val theta = Vector(theta1, theta2)
+    val theta = Vector(theta1, theta2, theta3)
     
     val cov1: Array[Array[Double]] = Array(
-      Array(1.0 / 2.0, -0.4),
-      Array(-0.4, 1.0 / 2.0))
-    
+      Array(1.0 / 2.0, -0.4, 0),
+      Array(-0.4, 1.0 / 2.0, 0),
+      Array(0, 0, 1.0/2.0))
+
     val cov2: Array[Array[Double]] = Array(
-      Array(1 / 100.0, 0.0),
-      Array(0.0, 1 / 100.0))
-    
+      Array(1 / 100.0, 0.0, 0.0),
+      Array(0.0, 1 / 100.0, 0.0),
+      Array(0.0, 0.0, 1/100.0))
+
     val mixtureWeights = Array(0.5, 0.5)
-    val translate = 1
-    val mean1 = theta.map { _ - translate }.toArray
-    val mean2 = theta.map { _ + translate }.toArray
+    val mean1 = Array(theta1 - 1, theta2 - 1, theta3)
+    val mean2 = Array(theta1 + 1, theta2 + 1, theta3).toArray
     val dist = new MixtureMultivariateNormalDistribution(
       mixtureWeights, Array(mean1, mean2), Array(cov1, cov2))
     
-    val Array(o1, o2) = dist.sample
+    //val Array(o1, o2, o3) = dist.sample
+    val o1 = dist.sample
 """) set(
-  inputs += (theta1, theta2),
-  outputs += (o1, o2)
+  inputs += (theta1, theta2, theta3),
+  outputs += (o1),
+  outputs += (theta1, theta2, theta3)
 )
-
-//The parameters prior distribution is uniform between -10 and 10 for
-//both dimensions.
-
-val priors = Seq(
-  ABC.Prior(theta1, -10.0, 10.0),
-  ABC.Prior(theta2, -10.0, 10.0),
-)
-
-//The observed value is `(0, 0)`.
-
-val observed = Seq(
-  ABC.Observed(o1, 0.0),
-  ABC.Observed(o2, 0.0)
-)
-
-val step = Val[Int]
 
 val abc =
-  ABC(
-    evaluation = gaussianMix2D,
-    prior = priors,
-    observed =  observed,
-    sample = 500,
+  IslandABC(
+    evaluation = model,
+    //The parameters prior distribution is uniform between -10 and 10 for
+    //all dimensions.
+    prior = Seq(
+    theta1 in (-10.0, 10.0),
+    theta2 in (-10.0, 10.0),
+    theta3 in (-10.0, 10.0)),
+    //The observed value is `(0, 0, 0)`.
+    observed = Seq(o1 -> Array(0.0,0.0,0.0)),
+    sample = 1000,
     generated = 5000,
-    minAcceptedRatio = 0.01
+    minAcceptedRatio = 0.01,
+    stopSampleSizeFactor = 5,
+    parallelism=4
   )
   
 // The script writes results in csv files in the directory
@@ -87,3 +81,4 @@ val abc =
 val h = ABCHook(abc, workDirectory / "posteriorSample")  
   
 abc hook h
+
