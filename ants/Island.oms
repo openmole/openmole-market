@@ -11,13 +11,11 @@ val evolution =
     parallelism = 2000,
     termination = 2000000
     distribution = Island(10 minutes)
-  )
-
-val savePopulationHook = SavePopulationHook(evolution, workDirectory / "results")
+  ) hook (workDirectory / "results")
 
 // Define the execution environment
 val env = LocalEnvironment(4)
 
 // Define the workflow
-(evolution on env hook savePopulationHook)
+evolution on env 
 

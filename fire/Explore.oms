@@ -17,11 +17,9 @@ val fireTask =
     netLogoOutputs += ("burned-trees", burned)
   )
 
-val csvHook = CSVHook(workDirectory / "result.csv", density, burned, seed)
-
 val exploration = 
   DirectSampling(
-    evaluation = Replication(fireTask hook csvHook, seed, 10),
+    evaluation = Replication(fireTask hook (workDirectory / "result.csv", density, burned, seed), seed, 10),
     sampling = density in (20.0 to 80.0 by 10.0)
   )
 

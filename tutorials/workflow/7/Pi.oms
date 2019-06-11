@@ -35,6 +35,6 @@ val average =
 
 // Complete the workflow to average the values of Pi and 
 // distribute the model execution on a multi-threaded environment
-exploration -< (model hook DisplayHook())
+exploration -< (model hook display)
 
 

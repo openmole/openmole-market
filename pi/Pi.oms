@@ -32,10 +32,10 @@ val env = LocalEnvironment(4)
 
 val exploration = 
   Replication(
-    evaluation = model on env hook ToStringHook(),
+    evaluation = model on env hook display,
     seed = seed,
     replications = 100,
-    aggregation = average hook ToStringHook()
+    aggregation = average hook display
   )
 
 exploration 

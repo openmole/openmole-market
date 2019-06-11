@@ -19,11 +19,9 @@ val evolution =
 // The algorithm stops after 200,000 islands evaluations.
 val island = IslandEvolution(evolution, parallelism = 2000, termination = 200000)
 
-val savePopulationHook = SavePopulationHook(island, workDirectory / "results")
-
 // Define the execution environment
 val env = LocalEnvironment(4)
 
 // Define the workflow
-(island on env hook savePopulationHook)
+(island on env hook (workDirectory / "results"))
 

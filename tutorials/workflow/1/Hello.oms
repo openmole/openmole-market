@@ -11,8 +11,5 @@ val by2 =
     i := 10.0
   )
 
-// Output
-val display = DisplayHook()
-
 // Workflow, here it is a workflow with 1 task
 by2 hook display

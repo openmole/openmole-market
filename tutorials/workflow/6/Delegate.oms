@@ -33,4 +33,4 @@ val env = LocalEnvironment(4)
 // val env =  CondorEnvironment("login", "machine.domain")
 
 // The on keyword is used to delgate tasks to execution environmens
-exploration -< (by2 on env) -- (plus1 on env) >- (average hook DisplayHook())
+exploration -< (by2 on env) -- (plus1 on env) >- (average hook display)

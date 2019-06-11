@@ -47,12 +47,9 @@ val evolution =
     evaluation = modelCapsule -- aggregate,
     parallelism = 10,
     termination = 100
-  )
-
-// Define a hook to save the Pareto frontier
-val savePopulationHook = SavePopulationHook(evolution, workDirectory / "calibration")
+  ) hook ( workDirectory / "evolution")
 
 val env = LocalEnvironment(5)
 
 // Plug everything together to create the workflow
-(evolution hook savePopulationHook on env)
+(evolution on env)

@@ -18,4 +18,4 @@ val plus1 =
 
 // A workflow with a sequence of task, they communicate through the variables
 // here the value of the variable j is transfered from "by2" to "plus1"
-(by2 hook DisplayHook()) -- (plus1 hook DisplayHook())
+(by2 hook display) -- (plus1 hook display)
