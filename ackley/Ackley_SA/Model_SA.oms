@@ -1,0 +1,45 @@
+//Parameters to tune for the Simulated Annealing (genotype of the NSGA2)
+val T0 = Val[Double]          //Initiale temperature
+val cexp = Val[Double]        //Coefficient for exponential decrease of temperature
+val pas = Val[Double]         //Size of a step along x and y dimensions
+val niter = Val[Double]       //Number of iteration of the algorithm
+
+//In these two variables is catched the value of the Ackley function at the end of the algorithm
+val strValue = Val[String]    //Output value as string
+val doubleValue = Val[Double] //Output value as float
+
+//These variables are use at the replication stage (phenotype of the NSGA2)
+val meanValue = Val[Double]
+val varValue = Val[Double]
+
+//A seed have to be declared for the replication task, but we do not need it.
+val seed = Val[Int]
+
+//MODEL
+val AckleyFunction =
+ PythonTask( workDirectory / "Ackley_SA.py", libraries = Seq("numpy"), arguments = "${T0} ${cexp} ${pas} ${niter} ${abs(seed)}", stdOut = strValue) set (
+   inputs += (T0, cexp, pas, niter, seed),               //These inputs are the same as the inputs of the python script
+   outputs += (T0, cexp, pas, niter, strValue),    //Only strValue is mandatory as output, the others are for debug
+ )
+
+//This scalaTask convert the string output of the CARETask in double
+val toDouble = 
+  ScalaTask("val doubleValue = strValue.toDouble") set (
+    inputs += (strValue, niter),
+    outputs += (doubleValue, niter)
+  )
+
+val env = LocalEnvironment(2)
+
+//Configuration of the genetic algorithm 
+NSGA2Evolution(
+  mu = 50,  //Size of the population
+  genome = Seq(T0 in (0.0, 3.0), cexp in (0.5, 1.0), pas in (0.1, 5.0), niter in (100.0, 10000.0)), //Space in which the population is sampled, values are rough estimations
+  objectives = Seq(doubleValue aggregate average as "average", doubleValue aggregate meanSquaredError as "mse", niter aggregate head),  //We want to optimize over three parameters
+  stochastic = Stochastic(seed = seed),
+  evaluation = AckleyFunction -- toDouble,
+  parallelism = 10,
+  termination = 10000
+ ) hook (workDirectory / "result", frequency = 100) on env
+
+

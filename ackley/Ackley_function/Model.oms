@@ -1,0 +1,26 @@
+//Variables of the two dimensional position of the algorithm
+val x = Val[Double]
+val y = Val[Double]
+
+//In these two variables is catched the value of the Ackley function at the end of the algorithm
+val strValue = Val[String]
+val doubleValue = Val[Double]
+
+//MODEL
+val AckleyFunction =
+  PythonTask( workDirectory / "Ackley_function.py", libraries = Seq("numpy"), arguments = "${x} ${y}", stdOut = strValue) set (
+    inputs += (x, y),   //Inputs of the the model
+    outputs += (x, y),  //Outputs of the model, only strValue is mandatory
+    
+    x := 0.0,
+    y := 0.0
+)
+
+//This scalaTask convert the string output of the CARETask in double
+val toDouble = 
+  ScalaTask("val doubleValue = strValue.toDouble") set (
+    inputs += (x, y, strValue),
+    outputs += (x, y, doubleValue)
+  )
+
+AckleyFunction -- (toDouble hook display) //Uncomment here to test the CARETask

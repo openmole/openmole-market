@@ -1,15 +1,18 @@
 """
 This script is an implementation of the Simulated Annealing algorithm (SA) on the Ackley function
 The goal here is to use NSGA2 to look for the best hyperparameters of the SA algorithm
-NSGA2 will look for the set of hyperparameters (T0, cexp, pas, niter)
+NSGA2 will look for the set of hyperparameters (T0, cexp, pas, niter, seed)
 such that (cost, niter) are minimum.
 """
 
-#CARE command : 
-#care -o Ackley_SA.tgz.bin python Ackley_SA.py 0 0 0 0
+# Command : 
+# python Ackley_SA.py 0 0 0 0 42
 
 import sys
 import numpy as np
+
+#Set the random seed for numpy
+np.random.seed(int(sys.argv[5]))
 
 #Returns the value of the Ackley function in a point (x,y)
 #Please refer to http://benchmarkfcns.xyz/benchmarkfcns/ackleyfcn.html for more informations

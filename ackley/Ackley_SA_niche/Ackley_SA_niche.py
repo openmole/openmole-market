@@ -6,11 +6,14 @@ NichedNSGA2 will look for the set of hyperparameters (T0, cexp, pas, niter)
 such that (cost, niter) are minimum in the space of the parameters (a, b, c)
 """
 
-#CARE command : 
-#care -o Ackley_SA_niche.tgz.bin python Ackley_SA_niche.py 0 0 0 0 1 1 1
+# command : 
+# python Ackley_SA_niche.py 0 0 0 0 1 1 1 42
 
 import sys
 import numpy as np
+
+#Set the random seed for numpy
+np.random.seed(int(sys.argv[8]))
 
 #Returns the value of the Ackley function in a point (x,y)
 #Please refer to http://benchmarkfcns.xyz/benchmarkfcns/ackleyfcn.html for more informations
