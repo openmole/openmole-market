@@ -9,7 +9,7 @@ val evolution =
     stochastic = Stochastic(seed = seed),
     evaluation = modelCapsule -- aggregate,
     parallelism = 2000,
-    termination = 2000000
+    termination = 2000000,
     distribution = Island(10 minutes)
   ) hook (workDirectory / "results")
 

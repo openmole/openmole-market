@@ -7,12 +7,13 @@ patches-own [
 ]
 
 globals [
- final-ticks-food1  
+ final-ticks-food1
  final-ticks-food2
  final-ticks-food3
- gpopulation 
+ gpopulation
  gdiffusion-rate
  gevaporation-rate
+ gmax-steps
 ]
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Setup procedures ;;;
@@ -22,6 +23,7 @@ to initialize-globals
  set gpopulation population
  set gdiffusion-rate diffusion-rate
  set gevaporation-rate evaporation-rate
+ set gmax-steps max-steps
 end
 
 to setup
@@ -46,24 +48,24 @@ to setup-patches
     recolor-patch ]
 end
 
-to-report go-stop? 
-  ifelse (count-food > 0)[
+to-report go-stop?
+  ifelse ((count-food > 0) and (ticks < gmax-steps))[
     report true
   ][
     report false
   ]
 end
 
-to compute-fitness 
-  if ((sum [food] of patches with [food-source-number = 1] = 0) and (final-ticks-food1 = 0)) [
+to compute-fitness
+  if (sum [food] of patches with [food-source-number = 1] > 0) [
    set final-ticks-food1 ticks ]
- if ((sum [food] of patches with [food-source-number = 2] = 0) and (final-ticks-food2 = 0)) [
+ if (sum [food] of patches with [food-source-number = 2] > 0) [
    set final-ticks-food2 ticks ]
-  if ((sum [food] of patches with [food-source-number = 3] = 0) and (final-ticks-food3 = 0)) [
+  if (sum [food] of patches with [food-source-number = 3] > 0) [
    set final-ticks-food3 ticks ]
 end
 
-to run-to-grid 
+to run-to-grid
     setup-ants
     while [go-stop? = true ]
      [go
@@ -196,10 +198,10 @@ end
 GRAPHICS-WINDOW
 257
 10
-764
-538
-35
-35
+762
+516
+-1
+-1
 7.0
 1
 10
@@ -246,7 +248,7 @@ diffusion-rate
 diffusion-rate
 0.0
 99.0
-21
+21.0
 1.0
 1
 NIL
@@ -261,7 +263,7 @@ evaporation-rate
 evaporation-rate
 0.0
 99.0
-9
+9.0
 1.0
 1
 NIL
@@ -293,17 +295,17 @@ population
 population
 0.0
 200.0
-125
+125.0
 1.0
 1
 NIL
 HORIZONTAL
 
 PLOT
-5
-197
-248
-476
+8
+247
+251
+526
 Food in each pile
 time
 food
@@ -320,10 +322,10 @@ PENS
 "food-in-pile3" 1.0 0 -13345367 true "" "plotxy ticks sum [food] of patches with [pcolor = blue]"
 
 MONITOR
-7
-485
-89
-530
+10
+535
+92
+580
 NIL
 count-food
 17
@@ -362,6 +364,17 @@ final-ticks-food3
 17
 1
 11
+
+INPUTBOX
+31
+181
+186
+241
+max-steps
+2000.0
+1
+0
+Number
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -709,9 +722,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.0.4
+NetLogo 6.0.3
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -719,15 +731,14 @@ NetLogo 5.0.4
 @#$#@#$#@
 default
 0.0
--0.2 0 1.0 0.0
+-0.2 0 0.0 1.0
 0.0 1 1.0 0.0
-0.2 0 1.0 0.0
+0.2 0 0.0 1.0
 link direction
 true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

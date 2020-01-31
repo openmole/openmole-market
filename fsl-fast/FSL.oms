@@ -1,20 +1,16 @@
 
-// This is the dir where to find the executable in the archive fsl.bin.
-// It depends on the machine where the archive has been generated.
-// Change that if you repackage fsl on you computer.
-val fslPackagingPath = "/home/reuillon/Documents/Recherche/Work/OpenMOLE/fsl/"
-
 val dataFile = Val[File]
 val dataFileName = Val[String]
 val resultDir = Val[File]
 val smoothness = Val[Double]
 
 // Run fsl
-val fslTask = CARETask(
-  workDirectory / "./fsl.bin",
-  "fsl5.0-fast -t 1 -n 3 -H ${smoothness} -I 4 -l 20.0 -o 'result/output.nii.gz' 'input.nii.gz'") set (
-  inputFiles += (dataFile, fslPackagingPath + "/input.nii.gz"),
-  outputFiles += (fslPackagingPath + "/result", resultDir),
+val fslTask = 
+  ContainerTask(
+    "vistalab/fsl-v5.0",
+    "fsl5.0-fast -t 1 -n 3 -H ${smoothness} -I 4 -l 20.0 -o 'result/output.nii.gz' 'input.nii.gz'") set (
+  inputFiles += (dataFile, "input.nii.gz"),
+  outputFiles += ("result", resultDir),
   inputs += (smoothness, dataFileName),
   outputs += (smoothness, dataFileName)
 )
@@ -26,7 +22,7 @@ val exploration =
   DirectSampling(
     evaluation = fslTask hook copyHook,
     sampling = 
-      (dataFile in ListFilesDomain(workDirectory / "data") withName dataFileName) x
+      (dataFile in (workDirectory / "data") withName dataFileName) x
       (smoothness in (0.05 to 0.3 by 0.05))
   )
 

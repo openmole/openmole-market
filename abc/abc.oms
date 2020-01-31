@@ -52,15 +52,16 @@ val model = ScalaTask ("""
   outputs += (theta1, theta2, theta3)
 )
 
+
 val abc =
   IslandABC(
     evaluation = model,
     //The parameters prior distribution is uniform between -10 and 10 for
     //all dimensions.
     prior = Seq(
-    theta1 in (-10.0, 10.0),
-    theta2 in (-10.0, 10.0),
-    theta3 in (-10.0, 10.0)),
+      theta1 in (-10.0, 10.0),
+      theta2 in (-10.0, 10.0),
+      theta3 in (-10.0, 10.0)),
     //The observed value is `(0, 0, 0)`.
     observed = Seq(o1 -> Array(0.0,0.0,0.0)),
     sample = 1000,
@@ -68,7 +69,7 @@ val abc =
     minAcceptedRatio = 0.01,
     stopSampleSizeFactor = 5,
     parallelism=4
-  )
+  ) 
   
 // The script writes results in csv files in the directory
 // `posteriorSample`. Each file contains a weighted sample. The
