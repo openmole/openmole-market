@@ -19,12 +19,12 @@ val model = ScalaTask("""val y1 = x1 + 0.5 * x2;
   outputs += (y1, y2)
 )
 
-val sen = SensitivitySaltelli( 
+SensitivitySaltelli( 
   evaluation = model,
   samples = 100,
-  inputs = Seq(x1 in (0.0,1.0), x2 in (0.0,1.0)),
+  inputs = Seq(x1 in (0.0, 1.0), x2 in (0.0, 1.0)),
   outputs = Seq(y1, y2)
-)
+) hook display
 
 /*val mySeed = Val[Int]
 
@@ -49,5 +49,3 @@ val rep = Replication(
   seed = mySeed,
   aggregation = mean
 )*/
-
-sen hook SaltelliHook(sen, workDirectory/"out")

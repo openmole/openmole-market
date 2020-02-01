@@ -8,10 +8,8 @@ val javaTask = ScalaTask("val o = hello.Hello.run(i)") set (
   outputs += o
 )
 
-val exploration = 
-  DirectSampling(
-    evaluation = javaTask hook display,
-    sampling = i in (0 to 10)
-  )
+DirectSampling(
+  evaluation = javaTask hook display,
+  sampling = i in (0 to 10)
+)
 
-exploration

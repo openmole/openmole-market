@@ -3,13 +3,14 @@ import hellocode._
 val name = Val[String]
 val output = Val[String]
 
-val exploration = ExplorationTask(name in List("Richard", "Martin", "Benjamin"))
-
 val hello = ScalaTask("val output = hellocode.Hello(name)") set (
   om.name := "hello",
   plugins += pluginsOf(Hello),
   inputs += name,
   outputs += output)
 
-exploration -< (hello hook ToStringHook())
+DirectSampling(
+  sampling = name in List("Richard", "Martin", "Benjamin"),
+  evaluation = hello
+) hook display
 

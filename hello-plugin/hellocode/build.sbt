@@ -2,9 +2,9 @@ name := "hellocode"
 
 version := "1.0"
 
-scalaVersion := "2.11.11"
+scalaVersion := "2.12.10"
 
-osgiSettings
+enablePlugins(SbtOsgi)
 
 OsgiKeys.exportPackage := Seq("hellocode.*")
 
@@ -12,6 +12,5 @@ OsgiKeys.importPackage := Seq("*")
 
 OsgiKeys.privatePackage := Seq("")
 
-scalariformSettings
 
 

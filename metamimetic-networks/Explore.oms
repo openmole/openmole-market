@@ -76,20 +76,18 @@ val coopHook = CopyFileHook(coop, workDirectory / "output/plots/coop/coop_${rewi
 val agesHook = CopyFileHook(ages, workDirectory / "output/plots/ages/ages_${rewiringProbability}_${inicoop}_${seed}_${strengthOfDilemma}_${culturalConstant}_${initialNeighbours}_${filein}.csv" )
 
 
-val exploration = 
-  DirectSampling (
-    evaluation = model hook (fileHook , populHook , coopHook, agesHook),
-    sampling = 
-      (seed in (UniformDistribution[Int]() take 50 )) x
-        SobolSampling (
-          200,
-          rewiringProbability in (0.0 , 1.0),
-          strengthOfDilemma in (0.00, 0.50),
-          initialNeighbours in (8.0 , 90.0),      
-          inicoop in (0.0, 100.0)
-        )
-  )
+DirectSampling (
+  evaluation = model hook (fileHook , populHook , coopHook, agesHook),
+  sampling = 
+    (seed in (UniformDistribution[Int]() take 50 )) x
+      SobolSampling (
+        200,
+        rewiringProbability in (0.0 , 1.0),
+        strengthOfDilemma in (0.00, 0.50),
+        initialNeighbours in (8.0 , 90.0),      
+        inicoop in (0.0, 100.0)
+      )
+ )
 
-exploration
 
 

@@ -7,33 +7,26 @@ val random = new util.Random(42)
 val imagesArrays = 
   (0 until kFold).map(i => random.shuffle((workDirectory / "images").listFiles.toSeq).toArray)
 
-val parameterExploration = 
-  ExplorationTask(
-    (nbTrees in (5 to 25 by 5)) x
-    (treeDepth in (3 to 18 by 3))
-  )
-  
-val imagesExploration = 
-  ExplorationTask(images in imagesArrays) set (
-    inputs  += (nbTrees, treeDepth),
-    outputs += (nbTrees, treeDepth)
-  )
-
 val learningOutput = Val[String]
 
-val learning = CARETask(
-  workDirectory / "archive_python2.bin",
-  "python forest.py /home/jopasserat/Downloads/images ${nbTrees} ${treeDepth}"
+val learning = PythonTask(
+  workDirectory / "forest.py",
+  arguments = "images ${nbTrees} ${treeDepth}",
+  stdOut = learningOutput,
+  libraries = Seq("matplotlib", "sklearn", "pillow", "scikit-image")
 ) set (
   inputs += (nbTrees, treeDepth),
-  inputFileArrays += (images, "/home/jopasserat/Downloads/images/image", ".jpg"),
-  stdOut := learningOutput,
+  inputFileArrays += (images, "images/image", ".jpg"),
   outputs += (nbTrees, treeDepth)
 )
 
-val pointsHook = 
-  AppendToCSVFileHook(
-    workDirectory / "points.csv",
-    nbTrees, treeDepth, learningOutput)
-
-parameterExploration -< imagesExploration -< (learning hook pointsHook)
+DirectSampling(
+  sampling =   
+    (nbTrees in (5 to 25 by 5)) x
+    (treeDepth in (3 to 18 by 3)),
+  evaluation = 
+    DirectSampling(
+      sampling = (images in imagesArrays),
+      evaluation = learning hook (workDirectory / "points.csv", Seq(nbTrees, treeDepth, learningOutput))
+    )
+)

@@ -20,11 +20,11 @@ matplotlib.use('Agg')  # to be imported before pyplot
 import matplotlib.pyplot as plt
 from sklearn import datasets, metrics
 from sklearn.ensemble import RandomForestClassifier
-import Image
+from PIL import Image
 import os
 import numpy as np
 import random
-from sklearn.cross_validation import cross_val_score
+from sklearn.model_selection import cross_val_score
 from skimage.feature import hog
 from skimage import data, color, exposure
 from sklearn.externals import joblib
@@ -54,7 +54,7 @@ for name_image in name_images:
     image_loaded = Image.open(name_image).convert("L").resize([100,100])
     image_np.append(np.array(image_loaded))
 
-    fd, hog_image = hog(image_loaded, orientations=8, pixels_per_cell=(16, 16),cells_per_block=(1, 1), visualise=True)
+    fd, hog_image = hog(image_loaded, orientations=8, pixels_per_cell=(16, 16),cells_per_block=(1, 1), visualize=True)
     features.append(hog_image.flatten())
 
 
@@ -104,7 +104,7 @@ classifier = RandomForestClassifier(max_depth=trees_depth, n_estimators=num_tree
 #print 'cross validation result: %f' % scores.mean()
 
 # We learn the leaves on the first 80% of the dataset
-training_share = 4 * n_samples / 5
+training_share = int(4 * n_samples / 5)
 classifier.fit(data[:training_share], labels[:training_share])
 
 # Export the trained classifier
