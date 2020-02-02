@@ -1,0 +1,19 @@
+/// Declare the variable
+val arg = Val[Int]
+val output = Val[File]
+
+// python task
+val pythonTask =
+  PythonTask(workDirectory / "hello.py") set (
+    inputs += arg.mapped,
+    outputs += arg,
+    outputs += output mapped "output.txt",
+  )
+
+val copy = CopyFileHook(output, workDirectory / "result/hello${arg}.txt")
+val env = LocalEnvironment(2)
+
+DirectSampling(
+  evaluation = pythonTask,
+  sampling = arg in (0 to 10)
+) hook copy on env
