@@ -1,4 +1,4 @@
-UDockerTask(
+ContainerTask(
   "python:3",
   "python matrix.py data1.csv 2 out.csv",
   install = Seq("pip install scipy")

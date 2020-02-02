@@ -3,7 +3,7 @@ val output = Val[File]
 val i = Val[Int]
 
 val pyTask =
-  UDockerTask(
+  ContainerTask(
     "python:3",
     "python matrix.py data.csv ${i} out.csv",
     install = Seq("pip install scipy")
@@ -17,10 +17,8 @@ val pyTask =
 
 val copyHook = CopyFileHook(output, workDirectory / "results/result${i}.csv")
 
-val exploration = 
-  DirectSampling (
-    evaluation = pyTask hook copyHook,
-    sampling = i in (1 to 10)
-  )
+DirectSampling (
+  evaluation = pyTask hook copyHook,
+  sampling = i in (1 to 10)
+)
 
-exploration
