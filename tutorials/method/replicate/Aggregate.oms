@@ -1,26 +1,9 @@
 import _parent_.Model._
 
-val medFood1 = Val[Double]
-val medFood2 = Val[Double]
-val medFood3 = Val[Double]
-
-val food1Vector = Vec(food1)
-val food2Vector = Vec(food2)
-val food3Vector = Vec(food3)
-
-val medians = 
-  ScalaTask("""
-    val medFood1 = food1.median
-    val medFood2 = food2.median
-    val medFood3 = food3.median""") set (
-    inputs += (food1.array, food2.array, food3.array),
-    outputs += (medFood1, medFood2, medFood3)
-  )
-
 Replication (
   evaluation = ants,
   seed = seed,
   replications = 10,
-  aggregation = medians
-) hook DisplayHook()
+  aggregation = Seq(food1 aggregate median, food3 aggregate median)
+) hook display
 

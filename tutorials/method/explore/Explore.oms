@@ -1,26 +1,12 @@
 import _parent_.Model._
 
-val medFood1 = Val[Double]
-val medFood2 = Val[Double]
-val medFood3 = Val[Double]
-
-val medians =
-  ScalaTask("""
-    val medFood1 = food1.median
-    val medFood2 = food2.median
-    val medFood3 = food3.median""") set (
-    inputs += (food1.array, food2.array, food3.array),
-    outputs += (medFood1, medFood2, medFood3),
-    (inputs, outputs) += (diffusion, evaporation)
-  )
-
 val replications =
- Replication (
-   evaluation = ants,
-   seed = seed,
-   replications = 10,
-   aggregation = medians 
-) 
+  Replication (
+    evaluation = ants,
+    seed = seed,
+    replications = 10,
+    aggregation = Seq(food1 aggregate median, food3 aggregate median)
+  ) 
 
 DirectSampling(
   evaluation = replications,
@@ -30,5 +16,5 @@ DirectSampling(
       diffusion in (10.0, 100.0),
       evaporation in (10.0, 100.0)
     )
-) hook CSVHook(workDirectory / "result.csv") hook DisplayHook() 
+) hook (workDirectory / "result.csv") hook display 
 
