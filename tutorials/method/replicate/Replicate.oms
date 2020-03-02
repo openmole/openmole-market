@@ -5,4 +5,4 @@ Replication (
   evaluation = ants,
   seed = seed,
   replications = 10
-) hook DisplayHook()
+) hook display
