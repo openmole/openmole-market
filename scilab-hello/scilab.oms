@@ -3,9 +3,8 @@ val dArray = Val[Array[Double]]
 
 val m = 
   ScilabTask("dArray = dArray * x") set (
-    scilabInputs += (x, dArray),
-    scilabOutputs += (dArray),
-    outputs += x,
+    inputs += (x.mapped, dArray.mapped),
+    outputs += (dArray.mapped, x),
     dArray := Array(9.0, 8.0)
   )
 
