@@ -14,10 +14,8 @@ val rTask =
 
 val multiThread = LocalEnvironment(2)
 
-val exploration = 
-  DirectSampling(
-    evaluation = rTask on multiThread hook ToStringHook(),
-    sampling = x in (0 to 100)
-  )
+DirectSampling(
+  evaluation = rTask,
+  sampling = x in (0 to 100)
+) on multiThread hook display
 
-exploration
