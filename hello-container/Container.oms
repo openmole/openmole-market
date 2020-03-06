@@ -1,0 +1,24 @@
+val i = Val[Int]
+val result = Val[String]
+val resultInt = Val[Int]
+
+val container = 
+  ContainerTask(
+    "debian:stable-slim",
+    "echo $((${i}*2))",
+    install = Seq("apt update", "apt install -y bash"),
+    stdOut = result
+  ) set (
+    inputs += i
+  )
+ 
+val normalise = 
+  ScalaTask("""val resultInt = result.split("\n").last.toInt""") set (
+    inputs += result,
+    outputs += resultInt
+  )
+ 
+DirectSampling(
+  sampling = i in (0 to 10),
+  evaluation = container -- normalise
+) hook (workDirectory / "result.csv")
