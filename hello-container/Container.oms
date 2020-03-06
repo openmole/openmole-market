@@ -12,7 +12,7 @@ val container =
     inputs += i
   )
  
-val normalise = 
+val parse = 
   ScalaTask("""val resultInt = result.split("\n").last.toInt""") set (
     inputs += result,
     outputs += resultInt
@@ -20,5 +20,5 @@ val normalise =
  
 DirectSampling(
   sampling = i in (0 to 10),
-  evaluation = container -- normalise
+  evaluation = container -- parse
 ) hook (workDirectory / "result.csv")
