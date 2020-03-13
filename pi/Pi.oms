@@ -20,13 +20,6 @@ val model =
       outputs += pi
     )
     
-// Define the average task that average several estimation of pi
-val average = 
-  ScalaTask("val piAvg = pi.sum / pi.size") set (
-    inputs += pi.toArray,
-    outputs += piAvg
-  )
-
 // Define the execution environment, here it is a local execution environment with 4 threads
 val env = LocalEnvironment(4)
 
@@ -35,8 +28,8 @@ val exploration =
     evaluation = model on env hook display,
     seed = seed,
     replications = 100,
-    aggregation = Seq(average hook display)
-  )
+    aggregation = Seq(pi aggregate average)
+  ) hook display
 
 exploration 
 
