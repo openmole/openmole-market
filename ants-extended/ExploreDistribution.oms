@@ -34,10 +34,10 @@ val cmds = Seq("experiments:setup-experiment \"fixed\" ${population} ${wiggleAng
 val ants =
   NetLogo5Task(workDirectory / "model" / "HEADLESS_ants.nlogo", cmds, seed = seed,embedWorkspace=true) set (
     // Map the OpenMOLE variables to NetLogo variables
-    inputs += (population,diffusionRate,evaporationRate,wiggleAngle,seed),
-    netLogoOutputs += ("final-ticks-food1", food1),
-    netLogoOutputs += ("final-ticks-food2", food2),
-    netLogoOutputs += ("final-ticks-food3", food3)
+    inputs += (population, diffusionRate, evaporationRate, wiggleAngle, seed),
+    outputs += food1 mapped "final-ticks-food1",
+    outputs += food2 mapped "final-ticks-food2",
+    outputs += food3 mapped "final-ticks-food3" 
   )
 
 val analyse =
@@ -49,8 +49,8 @@ val analyse =
         """,
         libraries = Seq("fitdistrplus")
   ) set (
-    rInputs += (diffusionRate, evaporationRate, food1.array, food2.array, food3.array),
-    rOutputs += ("distribs",distribs),
+    inputs += (diffusionRate.mapped, evaporationRate.mapped, food1.array.mapped, food2.array.mapped, food3.array.mapped),
+    outputs += distribs mapped "distribs",
     resources += workDirectory / "fitdistr.R"
   )
 
@@ -60,7 +60,7 @@ val replications =
  Replication (
    evaluation = (ants on env) -- FilterTask(food1, food2, food3),
    seed = seed,
-   replications = 64,
+   sample = 64,
    aggregation = analyse hook indics_hook
 )
 

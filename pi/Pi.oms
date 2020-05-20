@@ -27,7 +27,7 @@ val exploration =
   Replication(
     evaluation = model on env hook display,
     seed = seed,
-    replications = 100,
+    sample = 100,
     aggregation = Seq(pi aggregate average)
   ) hook display
 

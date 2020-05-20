@@ -4,5 +4,5 @@ import _parent_.Model._
 Replication (
   evaluation = ants,
   seed = seed,
-  replications = 10
+  sample = 10
 ) hook display

@@ -4,7 +4,7 @@ val replications =
   Replication (
     evaluation = ants,
     seed = seed,
-    replications = 10,
+    sample = 10,
     aggregation = Seq(food1 aggregate median, food3 aggregate median)
   ) 
 
