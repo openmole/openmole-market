@@ -1,0 +1,33 @@
+//model inputs
+val x = Val[Double]
+val y = Val[Double]
+
+//model outputs
+val f1 = Val[Double]
+val f2 = Val[Double]
+
+val testFunctionCPT1 =
+    ScalaTask("""
+        val f1 = x;
+        val f2 = (1 + y) * Math.exp( -x / (1 + y) );
+        """) set (
+    inputs += x,
+    inputs += y,
+    outputs += f1,
+    outputs += f2
+    )
+val evolutionCPT1 =
+  NSGA2Evolution(
+    genome = Seq(
+      x in (0.0, 10000.0),
+      y in (-10000.0, 1.0)
+    ),
+    objective = Seq(f1, f2),
+    evaluation = testFunctionCPT1, 
+    parallelism = 10,
+    termination = 1000
+  )
+val savePopulation = SavePopulationHook(evolutionCPT1, workDirectory/"results/CPT1")
+evolutionCPT1 hook savePopulation on LocalEnvironment(4)
+
+

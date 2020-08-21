@@ -32,3 +32,5 @@ All the accepted submissions will be part of the market place and will be compil
   - [SimPopLocal model](simpoplocal): a geographical model calibrated using genetic algorithms.
   - [Sensitivity-Screening analysis](sensitivity/morris): a method to quickly analyze which inputs are influential on large spaces of parameters.
   - [Global Sensitivity Analysis](sensitivity/saltelli): a variance based sensitivity analysis of model output.
+  - [Test Functions for NSGA2](nsga2-test-functions): reference functions to double check the correctedness of the NSGA2 algorithm, and also view examples of usage of NSGA2
+  

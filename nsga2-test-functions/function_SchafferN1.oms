@@ -1,0 +1,32 @@
+//model inputs
+val x = Val[Double]
+
+//model outputs
+val f1 = Val[Double]
+val f2 = Val[Double]
+
+// explored space
+val A = 1000.0 // up to 10^5
+
+val testFunctionSchafferN1 =
+    ScalaTask("""
+        val f1 = Math.pow(x, 2);
+        val f2 = Math.pow(x - 2, 2);        
+        """) set (
+    inputs += x,
+    outputs += f1,
+    outputs += f2
+    )
+val evolutionSchafferN1 =
+  NSGA2Evolution(
+    genome = Seq(
+      x in (-A, A)
+    ),
+    objective = Seq(f1, f2),
+    evaluation = testFunctionSchafferN1, 
+    parallelism = 10,
+    termination = 1000
+  )
+val savePopulation = SavePopulationHook(evolutionSchafferN1, workDirectory/"results/SchafferN1")
+evolutionSchafferN1 hook savePopulation on LocalEnvironment(4)
+
