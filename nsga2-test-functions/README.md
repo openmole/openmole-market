@@ -10,7 +10,8 @@ Why should you, as a user, trust this implementation?
 The answer is simple: you should not. 
 Any implementation in scientific computing should be verified. 
 
-## Test Functions
+
+## Test Functions
 
 Many functions named "Test Functions" were proposed over time to test and compare multi-objective optimization algorithmls.
 The [wikipedia page](https://en.wikipedia.org/wiki/Test_functions_for_optimization) lists several of them.
@@ -25,7 +26,8 @@ Test tunctions enable the testing of several aspects including:
   - coverage of the Pareto front,
   - speed of convergence
 
-Once a test function was explored by an implementation of an algorithm, you should compare the Pareto front obtained withou your implementation with the one expected in literature.  
+Once a test function was explored by an implementation of an algorithm, you should compare the Pareto front obtained withou your implementation with the one expected in literature.
+
 
 ## Test and Learn 
 
