@@ -15,6 +15,8 @@ Still they should be easily reusable and any material required by the workflow (
 
 All the accepted submissions will be part of the market place and will be compiled against the last version of OpenMOLE. The available entries are also available from the OpenMOLE website: [http://next.openmole.org/Documentation_Market%20Place_All.html](http://next.openmole.org/Documentation_Market%20Place_All.html)
 
+Note: if you are asked for a password for "gitlab.openmole.org" when pushing your changes into your fork of the repository, you might simply add the `--no-verify` flag to your git push.
+
 ## Available workflows ##
 
   - [Advanced methods](https://github.com/guillaumecherel/TutorialEAForModelling): advanced methods for calibrating, validating and analyzing complex systems models.
