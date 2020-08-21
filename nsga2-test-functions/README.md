@@ -43,4 +43,6 @@ For each workflow:
   - Choose a test function.
   - Run the workflow.
   - Open the files with the solutions, check you understand them. 
-  - Graph them and compare them with the literature. 
+  - Graph them and compare them with the literature (you have these results in the [wikipedia page](https://en.wikipedia.org/wiki/Test_functions_for_optimization)).
+
+
