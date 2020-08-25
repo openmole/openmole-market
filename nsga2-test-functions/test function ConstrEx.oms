@@ -1,0 +1,47 @@
+import _file_.plottingFunctions._
+import _file_.execEnvironment._
+
+//model inputs
+val x = Val[Double]
+val y = Val[Double]
+
+//model outputs
+val f1 = Val[Double]
+val f2 = Val[Double]
+
+// about the current experiment
+val relativePath = "results/ConstrEx"
+
+// the test function 
+val testFunctionConstrEx =
+    ScalaTask("""
+        val g1 = y + 9*x 
+        val g2 = -y + 9*x
+        val constrained = g1 < 6 || g2 < 1
+
+        val f1 = if (constrained) Double.NaN else x;
+        val f2 = if (constrained) Double.NaN else (1 + y) / x;        
+        """) set (
+    inputs += x, 
+    inputs += y,
+    outputs += f1, 
+    outputs += f2
+    )
+
+// the optimisation algorithm under test 
+val evolutionConstrEx =
+  NSGA2Evolution(
+    genome = Seq(
+      x in (0.1, 1.0),
+      y in (0.0, 5.0)
+    ),
+    objective = Seq(f1, f2),
+    evaluation = testFunctionConstrEx, 
+    parallelism = threads * 2,
+    termination = 5000
+  )
+
+// compute evolution on the test Function
+(evolutionConstrEx on envMultiThread hook SavePopulationHook(evolutionConstrEx, workDirectory/relativePath)
+// then plot the last Pareto front
+) -- (taskPlotLastParetoFront set ( directoryWithResults := workDirectory/relativePath)  hook CopyFileHook(last_pareto, workDirectory/"last Pareto front ConstrEx.png" ) )
