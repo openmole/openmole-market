@@ -15,6 +15,8 @@ Still they should be easily reusable and any material required by the workflow (
 
 All the accepted submissions will be part of the market place and will be compiled against the last version of OpenMOLE. The available entries are also available from the OpenMOLE website: [http://next.openmole.org/Documentation_Market%20Place_All.html](http://next.openmole.org/Documentation_Market%20Place_All.html)
 
+Note: if you are asked for a password for "gitlab.openmole.org" when pushing your changes into your fork of the repository, you might simply add the `--no-verify` flag to your git push.
+
 ## Available workflows ##
 
   - [Advanced methods](https://github.com/guillaumecherel/TutorialEAForModelling): advanced methods for calibrating, validating and analyzing complex systems models.
@@ -30,5 +32,7 @@ All the accepted submissions will be part of the market place and will be compil
   - [R hello world](R-hello): an example of how to embed R code in OpenMole.  This workflow executes an R program with 100 different inputs, makes a computation, and saves to a file.
   - [Random Forest classifier](randomforest): This workflow explores the parameters of a random forest image classifier written in Python using scikit-learn.
   - [SimPopLocal model](simpoplocal): a geographical model calibrated using genetic algorithms.
-  - [Sensitivity-Screening analysis](sensitivity/morris): a method to quickly analyze which inputs are influential on large spaces of parameters.
-  - [Global Sensitivity Analysis](sensitivity/saltelli): a variance based sensitivity analysis of model output.
+  - [Sensitivity-Screening analysis](sensitivity/morris): a method to quickly analyze which inputs are influential on large spaces of parameters.
+  - [Global Sensitivity Analysis](sensitivity/saltelli): a variance based sensitivity analysis of model output
+  - [Test Functions for NSGA2](nsga2-test-functions): reference functions to double check the correctedness of the NSGA2 algorithm, and also view examples of usage of NSGA2
+  

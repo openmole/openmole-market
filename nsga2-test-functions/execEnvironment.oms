@@ -1,0 +1,5 @@
+
+// about the local computer 
+val threads = 4
+
+val envMultiThread = LocalEnvironment(threads, name="multithread") 

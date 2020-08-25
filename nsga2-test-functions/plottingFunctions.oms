@@ -1,0 +1,50 @@
+
+val last_pareto = Val[File]
+val directoryWithResults = Val[File]
+val filesHaveHeaders = Val[Int]
+val countInputs = Val[Int]
+
+val taskPlotLastParetoFront = RTask("""
+    library(ggplot2)
+    
+    colnames <- if (countInputs == 2) c("iteration", "x", "y", "f1", "f2") else c("iteration", "x", "f1", "f2")
+    coltypes <- if (countInputs == 2) c("integer", "numeric", "numeric", "numeric", "numeric") else c("integer", "numeric", "numeric", "numeric") 
+    names(coltypes) <- colnames
+
+    directoryWithResultsName <- "mydirectory"
+    
+    # ensure check the directory exists
+    if (!file.exists(directoryWithResultsName)) { stop(paste("ERROR: the directory", directoryWithResultsName, "does not exists!")) }
+    
+    # get the most recent file (will be the last result)
+    allfiles <- file.info(list.files(directoryWithResultsName, full.names = T))
+    lastfilename <- rownames(allfiles)[which.max(allfiles$mtime)]
+    if (!file.exists(lastfilename)) { stop(paste("ERROR: no file found in", directoryWithResultsName) ) }
+    print(lastfilename)
+    
+    # read the last file 
+    pop <- read.csv(header = filesHaveHeaders>0, col.names=colnames, colClasses=coltypes, file=lastfilename)
+    print(paste("there are", nrow(pop), "points on the last Pareto front"))
+    
+    # plot
+    g <- ggplot(pop, aes(x=f1,y=f2)) + geom_point()
+    ggsave(filename="/tmp/last_pareto.png", plot=g) 
+    
+    """,
+    install = Seq(
+        // install the libs required for the compilation of R packages
+        "fakeroot apt-get install -y libssl-dev libcurl4-openssl-dev libudunits2-dev",
+        // install required R packages in their binary version (quicker, much stable!)
+        "fakeroot apt-get install -y r-cran-ggplot2",
+        ),
+    libraries = Seq()
+) set (
+    inputFiles += (directoryWithResults, "mydirectory"),
+    outputFiles += ("/tmp/last_pareto.png", last_pareto),
+    inputs += filesHaveHeaders.mapped,
+    inputs += countInputs.mapped,
+    (inputs, outputs) += directoryWithResults,
+    filesHaveHeaders := 1,
+    countInputs := 2
+)
+  
