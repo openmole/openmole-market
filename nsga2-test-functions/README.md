@@ -48,7 +48,7 @@ To run a test
   - Choose one of the workflows starting with "test function"
   - Run the workflow
   - Update the view on the left using the "refresh" button
-  - Download the graph of the last Pareto front, and compare it with the literature (you might use the [wikipedia page](https://en.wikipedia.org/wiki/Test_functions_for_optimization) )
+  - Download the graph of the last Pareto front, and compare it with the literature (you might use the [wikipedia page](https://en.wikipedia.org/wiki/Test_functions_for_optimization) as a start)
 
 You might then tune the parameters of the optimization algorithm and analyze the results, to understand how to better use the optimization method.
 
