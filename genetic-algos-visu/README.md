@@ -39,9 +39,7 @@ Note that after the success of the execution, you will have to refresh the list 
 
 ## Plot Every Iteration
 
-![Iteration 1](example_results/iteration0001.png)
-![Iteration 10](example_results/iteration0010.png)
-![Iteration 100](example_results/iteration0100.png)
+![Iteration 1](example_results/iteration0001.png) ![Iteration 10](example_results/iteration0010.png) ![Iteration 100](example_results/iteration0100.png)
 
 The next easier solution is to plot the Pareto front of every iteration. 
 We use the [ggplot](https://ggplot2.tidyverse.org/) and [gganimate](https://gganimate.com/articles/gganimate.html) R packages 
@@ -81,6 +79,8 @@ Download it, extract it on your computer, and open the html file with a web brow
 
 
 ## Display Pairs
+
+![Pairs](example_results/pairs.png)
 
 An easy way to discover the dynamics of any code is to plot a diagram showing the relationship between all the variables of a dataset. 
 We show a simplistic example in [plot_pairs.oms](./plot_pairs.oms) based on the [amazing GGally R package](http://ggobi.github.io/ggally/) which produces this graph into a PNG file.
