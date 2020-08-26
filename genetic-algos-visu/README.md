@@ -1,54 +1,30 @@
-# Test Functions for NSGA2 
+# Genetic Algos Visualizations based on R
 
-## Why Test? 
+## Motivation
 
-Metaheuristics for optimization such as genetic algorithms leave a huge freedom to developers for their implementation.
-Genetic Algorithms such as NSGA2 are even less trivial. 
-Their implementation in the [mgo](https://github.com/openmole/mgo) used in [OpenMole](https://openmole.org/) was adapted so they are efficient for computation on clusters or grids. 
-This leaves a lot of uncertainty to the user on what really happens.
-Why should you, as a user, trust this implementation?
-The answer is simple: you should not.
-Any implementation in scientific computing should be verified to be trusted.
+When using [Genetic Algorithms in OpenMole](https://next.openmole.org/Genetic+Algorithms.html) for calibration or optimization, it is important for the user to understand what happens over time.
+Graphing the evolution of evolutionary methods is also necessary for communication. 
 
+Basic OpenMole features include the exportation of the populations during the evolution as CSV files.
+The web interface of OpenMOLE also helps you to plot these CSV files easily in the user interface. 
 
-## Test Functions
+A simple way for an user to create graphs is to use the [RTask](https://next.openmole.org/R.html) which enables the usage of R 
+from OpenMOLE. The first execution of such a task is slow, because OpenMOLE has to download data from the web and build a local container 
+with the necessary programs. But later executions reuse the same container and are quicker. 
 
-Many functions named "Test Functions" were proposed over time to test and compare multi-objective optimization algorithms.
-The [wikipedia page](https://en.wikipedia.org/wiki/Test_functions_for_optimization) lists several of them.
-
-A test function is an function  you can use as the problem to optimize, for which the expected results are known.
-Test functions might test:
-  - problems with multiple parameters and multiple objectives
-  - problems with constraints: a part of the space of solutions can not be computed, so the algorithm should achieve to deal with it
-  - problems with parts of the space of solution that are tricky to detect, either because they are statistically unlikely to find, or because they are in a part of the space of solutions which is heavily constrained, etc.
-
-The results of a test function are usually compared in both terms of:
-  - coverage of the Pareto front,
-  - speed of convergence
+Producing graphs automatically after exploration and simulation experiments is part of the methodological recommandations for reproducible research.
 
 
-## Test and Learn 
+## Optimization Problem
 
-Test functions have another role: they constitute a simple example of optimization problem.
-As a user, you can also learn to tune the parameters of the genetic algorithm as check when convergence 
-occurs.
+To illustrate visualization, we proposed in the [example_of_optimization.oms](./example_of_optimization.oms) a simple function 
+to optimize, and a simple and quick optimization. 
+This file is imported in other example workflows. 
+So any modification you would produce in this file would impact all the other examples.
 
+## Plot Last Iteration 
 
-## Test Workflows for OpenMole
+In the 
+ 
 
-We provide here a few examples of test functions which you can open with OpenMole. 
-
-  - ConstrEx
-  - CP1
-  - Schaffer N1
-  - Schaffer N2
-
-
-To run a test 
-  - Choose one of the workflows starting with "test function"
-  - Run the workflow
-  - Update the view on the left using the "refresh" button
-  - Download the graph of the last Pareto front, and compare it with the literature (you might use the [wikipedia page](https://en.wikipedia.org/wiki/Test_functions_for_optimization) as a start)
-
-You might then tune the parameters of the optimization algorithm and analyze the results, to understand how to better use the optimization method.
 
