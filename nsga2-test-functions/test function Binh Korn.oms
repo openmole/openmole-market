@@ -42,7 +42,7 @@ val evolutionBinhKorn =
   )
 
 // compute evolution on the test Function
-(evolutionBinhKorn on envMultiThread hook SavePopulationHook(evolutionBinhKorn, workDirectory/relativePath)
+(evolutionBinhKorn on envMultiThread hook (workDirectory/relativePath)
 // then plot the last Pareto front
 ) -- (taskPlotLastParetoFront set ( directoryWithResults := workDirectory/relativePath) hook CopyFileHook(last_pareto, workDirectory/"last Pareto front BinhKorn.png" ) )
 
