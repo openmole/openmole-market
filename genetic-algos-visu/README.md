@@ -25,7 +25,7 @@ So any modification you would produce in this file would impact all the other ex
 
 ## Plot Last Iteration 
 
-![Last Pareto Front](./example_results/last_Pareto.png | width=200)
+![Last Pareto Front](./example_results/last_Pareto.png)
 
 The simplest graphic we can do is to plot the Pareto front in the last iteration of the genetic algorithm. 
 The example workflow [plot_last_iteration.oms](./plot_last_iteration.oms) provides such a [RTask](https://next.openmole.org/R.html)
@@ -39,7 +39,7 @@ Note that after the success of the execution, you will have to refresh the list 
 
 ## Plot Every Iteration
 
-![Iteration 1](./example_results/iteration0001.png | width=100) ![Iteration 10](./example_results/iteration0010.png | width=100) ![Iteration 100](./example_results/iteration0100.png | width=100)
+![Iteration 1](./example_results/iteration0001.png) ![Iteration 10](./example_results/iteration0010.png) ![Iteration 100](./example_results/iteration0100.png)
 
 The next easier solution is to plot the Pareto front of every iteration. 
 We use the [ggplot](https://ggplot2.tidyverse.org/) and [gganimate](https://gganimate.com/articles/gganimate.html) R packages 
