@@ -1,0 +1,101 @@
+
+// this variable will transmit the path where the CSV files to graph will be found 
+val directoryWithResults = Val[File]
+
+// variables used to parameter the graphing function 
+val filesHaveHeaders = Val[Int]
+val countInputs = Val[Int]
+val graphWidth = Val[Int]
+val graphHeight = Val[Int]
+val graphFormat = Val[String]
+
+// this variable will contain the file with the graphical rendering of the last PAreto front
+val lastPareto = Val[File]
+
+val taskPlotLastParetoFront = RTask("""
+    library(ggplot2)
+    
+    colnames <- if (countInputs == 2) c("iteration", "x", "y", "f1", "f2") else c("iteration", "x", "f1", "f2")
+    coltypes <- if (countInputs == 2) c("integer", "numeric", "numeric", "numeric", "numeric") else c("integer", "numeric", "numeric", "numeric") 
+    names(coltypes) <- colnames
+
+    directoryWithResultsName <- "mydirectory"
+    
+    # ensure check the directory exists
+    if (!file.exists(directoryWithResultsName)) { stop(paste("ERROR: the directory", directoryWithResultsName, "does not exists!")) }
+    
+    # get the most recent file (will be the last result)
+    allfiles <- file.info(list.files(directoryWithResultsName, full.names = T))
+    lastfilename <- rownames(allfiles)[which.max(allfiles$mtime)]
+    if (!file.exists(lastfilename)) { stop(paste("ERROR: no file found in", directoryWithResultsName) ) }
+    print(lastfilename)
+    
+    # read the last file 
+    pop <- read.csv(header = filesHaveHeaders>0, col.names=colnames, colClasses=coltypes, file=lastfilename)
+    print(paste("there are", nrow(pop), "points on the last Pareto front"))
+    
+    # plot
+    g <- ggplot(pop, aes(x=f1,y=f2)) + geom_point()
+    dpi <- 72
+    ggsave(filename="/tmp/last_pareto", 
+        device=graphFormat, 
+        plot=g, 
+        width=graphWidth/dpi, height=graphHeight/dpi) 
+    
+    """,
+    install = Seq(
+        "fakeroot sed -i 's/deb.debian.org/linux.pleiade.edf.fr/g' /etc/apt/sources.list",
+        "fakeroot cat /etc/apt/sources.list",
+        // update the list of available packages
+        "fakeroot apt-get -o Acquire::http::proxy=false update ",
+        
+        // required; attempts to update dbus to a newer version would require permissions we do not have
+        "DEBIAN_FRONTEND=noninteractive fakeroot apt-mark hold dbus", 
+        """echo "dbus hold" | fakeroot dpkg --set-selections""",
+
+        // install the libs required for the compilation of R packages
+        "DEBIAN_FRONTEND=noninteractive fakeroot apt-get -o Acquire::http::proxy=false install -y libssl-dev libcurl4-openssl-dev libudunits2-dev",
+        
+        // install required R packages in their binary version (quicker, much stable!)
+        "DEBIAN_FRONTEND=noninteractive fakeroot apt-get -o Acquire::http::proxy=false install -y r-cran-ggplot2 r-cran-gganimate r-cran-ggally r-cran-plotly r-cran-zip",
+        
+        // install external tools in the VM for rendering 
+        "DEBIAN_FRONTEND=noninteractive fakeroot apt-get -o Acquire::http::proxy=false install -y ffmpeg",
+        ), //  
+    libraries = Seq() // "ggplot2","gganimate","plotly","GGally","htmlwidgets"
+    //resources = Seq(workDirectory / "multiobjective/results/ConstrEx")
+) set (
+    inputFiles += (directoryWithResults, "mydirectory"),
+    outputFiles += ("/tmp/last_pareto", lastPareto),
+    inputs += filesHaveHeaders.mapped,
+    inputs += countInputs.mapped,
+    inputs += graphWidth.mapped,
+    inputs += graphHeight.mapped,
+    inputs += graphFormat.mapped,
+    filesHaveHeaders := 1,
+    countInputs := 2,
+    // in pixels
+    graphWidth := 600,
+    graphHeight := 600,
+    graphFormat := "png"
+)
+
+// import from the other file an example of optimization 
+import _file_.example_of_optimization._
+
+    // run the optimization 
+(    evolutionSchafferN2 on envMultiThread hook (workDirectory/relativePath, keepAll=false)
+) -- (
+    // then run the plotting function 
+taskPlotLastParetoFront set (
+    // ... which will read all the results from this file 
+    directoryWithResults := workDirectory / relativePath, 
+    // ... analyze them knowing there is only one input in the files
+    countInputs := 1,
+    // ... parameters of the graph 
+    graphWidth := 500,
+    graphHeight := 500
+    ) hook CopyFileHook(lastPareto, workDirectory/"last Pareto front.png" ) 
+    )
+
+  
