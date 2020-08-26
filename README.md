@@ -35,4 +35,6 @@ Note: if you are asked for a password for "gitlab.openmole.org" when pushing you
   - [Sensitivity-Screening analysis](sensitivity/morris): a method to quickly analyze which inputs are influential on large spaces of parameters.
   - [Global Sensitivity Analysis](sensitivity/saltelli): a variance based sensitivity analysis of model output
   - [Test Functions for NSGA2](nsga2-test-functions): reference functions to double check the correctedness of the NSGA2 algorithm, and also view examples of usage of NSGA2
-  
+  - [Visualization for Genetic Algorithms based on R](genetic-algos-visu): examples of production of graphs automatically after the exploration in many forms: images, videos or interactice diagrams
+
+
