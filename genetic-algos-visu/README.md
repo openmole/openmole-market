@@ -66,6 +66,7 @@ We call it from the RTask using the standard command line, so you can tune it ea
 
 After refreshing the list of files on the left of the OpenMOLE interface, you have to download the video file to view it on your computer.
 
+Here is [an example of result](./example_results/iterations_video.mp4)
 
 ## Render an interactive Plotly Graph
 
