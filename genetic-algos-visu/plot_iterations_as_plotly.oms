@@ -65,7 +65,7 @@ val taskPlotAsVideo = RTask("""
     """,
         install = Seq(
        // update the list of available packages
-        "fakeroot apt-get -o Acquire::http::proxy=false update ",
+        "fakeroot apt-get update ",
         // required; attempts to update dbus to a newer version would require permissions we do not have
         "DEBIAN_FRONTEND=noninteractive fakeroot apt-mark hold dbus", 
         """echo "dbus hold" | fakeroot dpkg --set-selections""",
