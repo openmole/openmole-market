@@ -43,6 +43,6 @@ val evolutionSchafferN2 =
   )
   
 // compute evolution on the test Function
-(evolutionSchafferN2 on envMultiThread hook SavePopulationHook(evolutionSchafferN2, workDirectory/relativePath)
+(evolutionSchafferN2 on envMultiThread hook (workDirectory/relativePath)
 // then plot the last Pareto front
 ) -- (taskPlotLastParetoFront set ( directoryWithResults := workDirectory/relativePath, countInputs := 1) hook CopyFileHook(last_pareto, workDirectory/"last Pareto front SchafferN2.png" ) )
