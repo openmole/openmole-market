@@ -37,8 +37,8 @@ val sensi = SensitivityMorris(
                 inputDeceleration in (0.0, 0.099)
                 ),
     outputs = Seq(outputSpeedMin, outputSpeedMax),
-    repetitions = 20,
-    levels = 5) 
+    sample = 20,
+    level = 5) 
 
 // R Task plotting the graphs
 val fileGraphSensitivity = Val[File]
