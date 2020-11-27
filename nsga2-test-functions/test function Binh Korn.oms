@@ -1,0 +1,48 @@
+import _file_.plottingFunctions._
+import _file_.execEnvironment._
+
+//model inputs
+val x = Val[Double]
+val y = Val[Double]
+
+//model outputs
+val f1 = Val[Double]
+val f2 = Val[Double]
+
+// about the current experiment
+val relativePath = "results/BinhKorn"
+
+// the test function 
+val testFunctionBinhKorn =
+    ScalaTask("""
+        val g1 = Math.pow(x - 5, 2) + Math.pow(y, 2)
+        val g2 = Math.pow(x - 8, 2) + Math.pow(y + 2, 3)
+        val constrained = g1 > 25 || g2 < 7.7
+        
+        val f1 = if (constrained) Double.NaN else 4*Math.pow(x,2) + 4*Math.pow(y,2)
+        val f2 = if (constrained) Double.NaN else Math.pow(x-5,2) + Math.pow(y-5,2)
+        """) set (
+    inputs += x,
+    inputs += y,
+    outputs += f1,
+    outputs += f2
+    )
+    
+// the optimisation algorithm under test 
+val evolutionBinhKorn =
+  NSGA2Evolution(
+    genome = Seq(
+      x in (0.0, 5.0),
+      y in (0.0, 3.0)
+    ),
+    objective = Seq(f1, f2),
+    evaluation = testFunctionBinhKorn,
+    parallelism = threads * 2,
+    termination = 1000
+  )
+
+// compute evolution on the test Function
+(evolutionBinhKorn on envMultiThread hook (workDirectory/relativePath)
+// then plot the last Pareto front
+) -- (taskPlotLastParetoFront set ( directoryWithResults := workDirectory/relativePath) hook CopyFileHook(last_pareto, workDirectory/"last Pareto front BinhKorn.png" ) )
+

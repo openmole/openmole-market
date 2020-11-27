@@ -1,0 +1,104 @@
+
+// this variable will transmit the path where the CSV files to graph will be found 
+val directoryWithResults = Val[File]
+
+// variables used to parameter the graphing function 
+val filesHaveHeaders = Val[Int]
+val countInputs = Val[Int]
+
+// this variable will contain the file with the graphical rendering of the last PAreto front
+val plotlyPage = Val[File]
+
+val taskPlotAsVideo = RTask("""
+    library(ggplot2)
+    library(plotly)
+    library(htmlwidgets)
+
+    colnames <- if (countInputs == 2) c("iteration", "x", "y", "f1", "f2") else c("iteration", "x", "f1", "f2")
+    coltypes <- if (countInputs == 2) c("integer", "numeric", "numeric", "numeric", "numeric") else c("integer", "numeric", "numeric", "numeric") 
+    names(coltypes) <- colnames
+    
+    directoryWithResultsName <- "mydirectory"
+
+    pop <- NULL
+    i <- 1
+    while (TRUE) {
+    	# TODO check creation time of the file
+    	filename <- paste(directoryWithResultsName,"/population",i,".csv", sep="");
+    	if (!file.exists(filename)) {
+    		break
+    	}
+    	#print(filename)
+    	popraw <- read.csv(header = FALSE, col.names=colnames, colClasses=coltypes, file=filename)
+    	#print(head(popraw))
+    
+    	pop <- if (is.null(pop)) popraw else rbind(pop, popraw)
+    		
+    	i <- i + 1
+    }
+    
+    # the ggplot 
+    pop$index <- 1:nrow(pop) # add an index to avoid animation of points which are not at all similar 
+    p <- ggplot(pop, aes(x=f1,y=f2,l1=x)
+        ) + geom_point(
+            alpha=0.7, colour = "#51A0D5", aes(frame=iteration,ids=index)
+        ) + labs(
+            x = "f1", 
+            y = "f2",
+            title = "Evolution of the Pareto front with NSGA2"
+        ) + theme_classic()
+
+    # render as plotly
+    dir.create("/tmp/plotly")
+    fig <- ggplotly(p)
+    saveWidget(fig, selfcontained=F, file = "/tmp/plotly/evolution.html")
+    lf <- list.files("/tmp/plotly/", recursive=T, include.dirs=F)
+    print(lf)
+    
+    # zip resulting files 
+    library(zip)
+    setwd("/tmp/plotly/")
+    zip("/tmp/evolution.zip", lf)
+    
+    print("done")
+    
+    """,
+        install = Seq(
+       // update the list of available packages
+        "fakeroot apt-get update ",
+        // required; attempts to update dbus to a newer version would require permissions we do not have
+        "DEBIAN_FRONTEND=noninteractive fakeroot apt-mark hold dbus", 
+        """echo "dbus hold" | fakeroot dpkg --set-selections""",
+        // install the libs required for the compilation of R packages
+        "DEBIAN_FRONTEND=noninteractive fakeroot apt-get install -y libssl-dev libcurl4-openssl-dev libudunits2-dev",
+        // install required R packages in their binary version (quicker, much stable!)
+        "DEBIAN_FRONTEND=noninteractive fakeroot apt-get install -y r-cran-ggplot2 r-cran-gganimate r-cran-ggally r-cran-plotly r-cran-zip",
+        // install external tools in the VM for rendering
+        "DEBIAN_FRONTEND=noninteractive fakeroot apt-get install -y ffmpeg",
+        ), //  
+    libraries = Seq() // were installed with the binary version earlier
+) set (
+    inputFiles += (directoryWithResults, "mydirectory"),
+    outputFiles += ("/tmp/evolution.zip", plotlyPage),
+    inputs += filesHaveHeaders.mapped,
+    inputs += countInputs.mapped,
+    filesHaveHeaders := 1,
+    countInputs := 2
+)
+
+// import from the other file an example of optimization 
+import _file_.example_of_optimization._
+
+    // run the optimization 
+(    evolutionSchafferN2 on envMultiThread hook (workDirectory/relativePath, keepAll=false)
+) -- (
+    // then run the plotting function 
+taskPlotAsVideo set (
+    // ... which will read all the results from this file 
+    directoryWithResults := workDirectory / relativePath, 
+    // ... analyze them knowing there is only one input in the files
+    countInputs := 1
+    ) hook CopyFileHook(plotlyPage, workDirectory/"evolutionPlotly.zip" ) 
+    )
+
+  

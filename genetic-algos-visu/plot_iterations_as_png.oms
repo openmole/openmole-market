@@ -1,0 +1,97 @@
+
+// this variable will transmit the path where the CSV files to graph will be found 
+val directoryWithResults = Val[File]
+
+// variables used to parameter the graphing function 
+val filesHaveHeaders = Val[Int]
+val countInputs = Val[Int]
+val graphWidth = Val[Int]
+val graphHeight = Val[Int]
+val graphFormat = Val[String]
+
+// this variable will contain the file with the graphical rendering of the last PAreto front
+val pngForIterations = Val[File]
+
+val taskPlotEvereyIteration = RTask("""
+    library(ggplot2)
+    library(gganimate)
+
+    colnames <- if (countInputs == 2) c("iteration", "x", "y", "f1", "f2") else c("iteration", "x", "f1", "f2")
+    coltypes <- if (countInputs == 2) c("integer", "numeric", "numeric", "numeric", "numeric") else c("integer", "numeric", "numeric", "numeric") 
+    names(coltypes) <- colnames
+    
+    directoryWithResultsName <- "mydirectory"
+
+    pop <- NULL
+    i <- 1
+    while (TRUE) {
+    	# TODO check creation time of the file
+    	filename <- paste(directoryWithResultsName,"/population",i,".csv", sep="");
+    	if (!file.exists(filename)) {
+    		break
+    	}
+    	#print(filename)
+    	popraw <- read.csv(header = FALSE, col.names=colnames, colClasses=coltypes, file=filename)
+    	#print(head(popraw))
+    
+    	pop <- if (is.null(pop)) popraw else rbind(pop, popraw)
+    		
+    	i <- i + 1
+    }
+    
+    # the ggplot 
+    p <- ggplot(pop, aes(x=f1,y=f2)) + geom_point() 
+    
+    # render with gganimate
+    gganimation <- p + transition_states(iteration) + transition_time(iteration)# + labs(title="iteration: {iteration}")
+    # ... first render individual PNG frames which are always of use
+    animate(gganimation, 
+        renderer=file_renderer("/tmp/rendered", overwrite=T, prefix="iteration"), 
+        height=graphHeight, width=graphWidth, 
+        device=graphFormat)
+    """,
+    install = Seq(
+       // update the list of available packages
+        "fakeroot apt-get update ",
+        // required; attempts to update dbus to a newer version would require permissions we do not have
+        "DEBIAN_FRONTEND=noninteractive fakeroot apt-mark hold dbus", 
+        """echo "dbus hold" | fakeroot dpkg --set-selections""",
+        // install the libs required for the compilation of R packages
+        "DEBIAN_FRONTEND=noninteractive fakeroot apt-get install -y libssl-dev libcurl4-openssl-dev libudunits2-dev",
+        // install required R packages in their binary version (quicker, much stable!)
+        "DEBIAN_FRONTEND=noninteractive fakeroot apt-get install -y r-cran-ggplot2 r-cran-gganimate r-cran-ggally r-cran-plotly r-cran-zip",
+        // install external tools in the VM for rendering
+        "DEBIAN_FRONTEND=noninteractive fakeroot apt-get install -y ffmpeg",
+        ), //  
+    libraries = Seq() // were installed with the binary version earlier
+) set (
+    inputFiles += (directoryWithResults, "mydirectory"),
+    outputFiles += ("/tmp/rendered", pngForIterations),
+    inputs += filesHaveHeaders.mapped,
+    inputs += countInputs.mapped,
+    inputs += graphWidth.mapped,
+    inputs += graphHeight.mapped,
+    inputs += graphFormat.mapped,
+    filesHaveHeaders := 1,
+    countInputs := 2,
+    graphWidth := 600,
+    graphHeight := 600,
+    graphFormat := "png"
+)
+
+// import from the other file an example of optimization 
+import _file_.example_of_optimization._
+
+    // run the optimization 
+(    evolutionSchafferN2 on envMultiThread hook (workDirectory/relativePath, keepAll=false)
+) -- (
+    // then run the plotting function 
+taskPlotEvereyIteration set (
+    // ... which will read all the results from this file 
+    directoryWithResults := workDirectory / relativePath, 
+    // ... analyze them knowing there is only one input in the files
+    countInputs := 1
+    ) hook CopyFileHook(pngForIterations, workDirectory/"iterations as graphs" ) 
+    )
+
+  
