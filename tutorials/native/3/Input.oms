@@ -1,5 +1,6 @@
 val input = Val[File]
 val data = Val[File]
+val output = Val[File]
 
 val pyTask =
   ContainerTask(

@@ -1,37 +1,29 @@
 import _file_.Model._
 
 val evolution =
-  SteadyStateEvolution(
-    algorithm =   
-      NSGA2(
-        mu = 200,
-        genome = 
-          Seq(
-            rMax in (2.0, 50000.0),
-            distanceDecay in (0.0, 4.0),
-            pCreation in (0.0, 0.01),
-            pDiffusion in (0.0, 0.01),
-            innovationImpact in (0.0, 2.0),
-            innovationLife in (1.0, 4001.0)
-          ),
-        objectives = Seq(ksValue, deltaPop, deltaTime),
-        stochastic = 
-          Stochastic(
-            seed = seed, 
-            aggregation = Seq(average, median, median)
-          )
+  NSGA2Evolution(
+    genome = 
+      Seq(
+        rMax in (2.0, 50000.0),
+        distanceDecay in (0.0, 4.0),
+        pCreation in (0.0, 0.01),
+        pDiffusion in (0.0, 0.01),
+        innovationImpact in (0.0, 2.0),
+        innovationLife in (1.0, 4001.0)
       ),
+    objective = Seq(
+      ksValue aggregate average,
+      deltaPop aggregate median,
+      deltaTime aggregate median),
+    stochastic = Stochastic(seed = seed),
     evaluation = evaluateModel,
-    termination = 15 minutes
-  )
-  
-val island = IslandEvolution(evolution, parallelism = 1000, termination = 200000)
+    parallelism = 1000, 
+    termination = 200000,
+    distribution = Island(5 minutes)
+  ) hook (workDirectory / "populations") 
 
-// Define the hook to save the results
-val savePopulation = SavePopulationHook(island, workDirectory / "populations") 
-
-val grid = DIRACEnvironment("vo.complex-systems.eu")
+val grid = EGIEnvironment("vo.complex-systems.eu")
 
 // Define the execution
-(island on grid hook savePopulation)
+(evolution on grid hook savePopulation)
 

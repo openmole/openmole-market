@@ -20,10 +20,6 @@ val env = LocalEnvironment(64)
 
 val purpose = "LHS_REPETS_LOCAL"
 
-val indics_hook = CSVHook(workDirectory / "exploration" / ((new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss")).format(new Date()))+"_"+purpose+".csv") set (arraysOnSingleRow := true)
-
-
-
 // Define the NetlogoTask
 // experiments:setup-experiment [setuptype antpop wangle diffrate evaprate]
 val cmds = Seq("experiments:setup-experiment \"fixed\" ${population} ${wiggleAngle} ${diffusionRate} ${evaporationRate} ${seed}","experiments:run-experiment")
@@ -40,7 +36,7 @@ val ants =
 
   val replications =
    Replication (
-     evaluation = (ants on env hook indics_hook),
+     evaluation = ants,
      seed = seed,
      sample = 64
   )
@@ -58,6 +54,7 @@ val ants =
           population in (100.0,200.0),
           wiggleAngle in (5.0,90.0)
         ) withIndex id
-    )
+    ) on env hook (workDirectory / "exploration" / ((new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss")).format(new Date()))+"_"+purpose+".csv") 
+
 
   exploration

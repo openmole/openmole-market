@@ -4,9 +4,9 @@ val env = LocalEnvironment(4)
 
 //Configuration of the algorithm NSGA2
 NSGA2Evolution(
-  mu = 50,  //Size of population
+  populationSize = 50,  //Size of population
   genome = Seq(x in (-30.0, 30.0), y in (-30.0, 30.0)), //Space in which the population is sampled
-  objectives = Seq(doubleValue), //We want to minimize the value of the Ackley function
+  objective = Seq(doubleValue), //We want to minimize the value of the Ackley function
   evaluation = AckleyFunction -- toDouble,
   termination = 10000, // Terminate after 10000 evaluation of the function
   parallelism = 10 // Number of solution submitted to parallel evaluation by the optimization algorithm

@@ -20,6 +20,6 @@ val exploration = ExplorationTask(i in (0.0 to 100.0 by 2.0))
 // In OpenMOLE there are different kinds of hooks. This one has been designed
 // to store variables into a CSV file.
 
-exploration -< (by2 hook (workDirectory / "results/by2.csv", i, j)) -- (plus1 hook (workDirectory / "results/plus2.csv", j, k))
+exploration -< (by2 hook (workDirectory / "results/by2.csv")) -- (plus1 hook (workDirectory / "results/plus2.csv"))
 
 

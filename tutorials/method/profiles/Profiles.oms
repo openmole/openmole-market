@@ -6,11 +6,11 @@ def profile(variable: Val[Double]) =
   ProfileEvolution(
     evaluation = ants -- objective,
     termination = 20000,
-    x = variable,
+    profile = Seq(variable),
     genome = Seq(
       diffusion in (0.0, 99.0), 
       evaporation in (0.0, 99.0)),
-    objective = deltaFood,
+    objective = Seq(deltaFood),
     stochastic = Stochastic(seed = seed)
   ) hook (workDirectory / s"results/${variable.name}" )
 

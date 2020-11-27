@@ -72,7 +72,7 @@ NichedNSGA2Evolution(
   //Specify the niche parameters
   niche = Seq(discrete_a, discrete_b, discrete_c),
   //Specify the objective(s)
-  objectives = Seq(doubleValue aggregate median),
+  objective = Seq(doubleValue aggregate median),
   evaluation = mapper -- AckleyFunction -- toDouble,
   parallelism = 10,
   termination = 2000,

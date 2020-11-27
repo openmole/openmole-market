@@ -15,7 +15,7 @@ NSGA2Evolution(
   genome = Seq(
     diffusion in (0.0, 99.0),
     evaporation in (0.0, 99.0)),
-  objectives = Seq(deltaFood),
+  objective = Seq(deltaFood),
   termination = 1000,
   parallelism = 100,
   stochastic = Stochastic(seed = seed),

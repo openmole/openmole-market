@@ -7,7 +7,7 @@ PSEEvolution(
   genome = Seq(
     diffusion in (0.0, 99.0), 
     evaporation in (0.0, 99.0)),
-  objectives =  Seq(
+  objective =  Seq(
     food1 in (0.0 to 4000.0 by 50.0), 
     food3 in (0.0 to 4000.0 by 50.0)),
   stochastic = Stochastic(seed = seed)
