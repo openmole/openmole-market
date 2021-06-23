@@ -9,7 +9,12 @@ val seed = Val[Long]
 // The second argument of the GamaTask is the gama experiment name
 // The third argument is the number of steps
 val gama = 
-  GAMATask(workDirectory / "predatorPrey.gaml", "prey_predatorExp", finalStep = 100, seed = seed) set (
+  GAMATask(
+    project = workDirectory / "model",
+    gaml = "predatorPrey.gaml",
+    experiment = "prey_predatorExp",
+    finalStep = 100,
+    seed = seed) set (
     inputs += (nbPreysInit mapped "nb_preys_init"),
     outputs += (numberOfPreys mapped "Number of preys")
   )
