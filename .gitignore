@@ -26,4 +26,5 @@ release/*
 *.class
 .Rhistory
 abc/posteriorSample/
+*.tgz
 
