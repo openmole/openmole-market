@@ -1,0 +1,21 @@
+// Declare the variable
+val arg = Val[Int]
+val numericaloutput = Val[Int]
+val fileoutput = Val[File]
+
+// julia task
+val juliaTask =
+  JuliaTask(workDirectory / "hello.jl") set (
+    inputs += arg.mapped,
+    outputs += arg,
+    outputs += numericaloutput.mapped,
+    outputs += fileoutput mapped "output.txt"
+  )
+
+val copy = CopyFileHook(fileoutput, workDirectory / "result/hello${arg}.txt")
+val env = LocalEnvironment(2)
+
+DirectSampling(
+  evaluation = juliaTask,
+  sampling = arg in (0 to 10)
+) hook copy on env
