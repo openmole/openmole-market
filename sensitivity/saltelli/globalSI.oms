@@ -25,27 +25,6 @@ SensitivitySaltelli(
   inputs = Seq(x1 in (0.0, 1.0), x2 in (0.0, 1.0)),
   outputs = Seq(y1, y2)
 ) hook display
+// use this hook to get indices in a timestamped directory
+// hook (workDirectory / "sensitivity" /((new java.text.SimpleDateFormat("yyyyMMdd_HHmmss")).format(new java.util.Date())))
 
-/*val mySeed = Val[Int]
-
-val mean = ScalaTask("""
-  def sumTerms(a: Array[Array[Double]], b: Array[Array[Double]]): Array[Array[Double]] = 
-    (a zip b).map{case (ai, bi) => 
-      (ai zip bi).map {case (aij, bij) => 
-        aij + bij
-      }
-    }
-  val reps = fosi.size 
-  val fosiMean = fosi.reduce(sumTerms).map{_.map{_/reps}}
-  val tosiMean = tosi.reduce(sumTerms).map{_.map{_/reps}}
-""") set (
-  inputs += (fosi.toArray, tosi.toArray),
-  outputs += (fosiMean, tosiMean)
-)
-
-val rep = Replication(
-  evaluation = sen,
-  replications = 1,
-  seed = mySeed,
-  aggregation = mean
-)*/
