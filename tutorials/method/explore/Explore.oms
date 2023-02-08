@@ -5,7 +5,7 @@ val replications =
     evaluation = ants,
     seed = seed,
     sample = 10,
-    aggregation = Seq(food1 aggregate median, food3 aggregate median)
+    aggregation = Seq(food1 evaluate median, food3 evaluate median)
   ) 
 
 DirectSampling(

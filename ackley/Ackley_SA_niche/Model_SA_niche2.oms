@@ -49,7 +49,7 @@ NichedNSGA2Evolution(
   // (a in Vector(0.0, 2.0, 5.0, 10.0))  gives 4 segment of different sizes
   niche = Seq((a, 4), (b, 4), (c, 4)),
   //Specify the objective(s)
-  objective = Seq(doubleValue aggregate median),
+  objective = Seq(doubleValue evaluate median),
   stochastic = Stochastic(seed = seed),
   evaluation = AckleyFunction -- toDouble,
   parallelism = 10,

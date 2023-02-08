@@ -35,7 +35,7 @@ val env = LocalEnvironment(2)
 NSGA2Evolution(
   populationSize = 50,  //Size of the population
   genome = Seq(T0 in (0.0, 3.0), cexp in (0.5, 1.0), pas in (0.1, 5.0), niter in (100.0, 10000.0)), //Space in which the population is sampled, values are rough estimations
-  objective = Seq(doubleValue aggregate average as "average", doubleValue aggregate meanSquaredError as "mse", niter aggregate head),  //We want to optimize over three parameters
+  objective = Seq(doubleValue evaluate average as "average", doubleValue evaluate meanSquaredError as "mse", niter evaluate head),  //We want to optimize over three parameters
   stochastic = Stochastic(seed = seed),
   evaluation = AckleyFunction -- toDouble,
   parallelism = 10,

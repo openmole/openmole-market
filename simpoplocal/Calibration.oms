@@ -12,9 +12,9 @@ val evolution =
         innovationLife in (1.0, 4001.0)
       ),
     objective = Seq(
-      ksValue aggregate average,
-      deltaPop aggregate median,
-      deltaTime aggregate median),
+      ksValue evaluate average,
+      deltaPop evaluate median,
+      deltaTime evaluate median),
     stochastic = Stochastic(seed = seed),
     evaluation = evaluateModel,
     parallelism = 1000, 

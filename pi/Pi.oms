@@ -28,7 +28,7 @@ val exploration =
     evaluation = model on env hook display,
     seed = seed,
     sample = 100,
-    aggregation = Seq(pi aggregate average)
+    aggregation = Seq(pi evaluate average)
   ) hook display
 
 exploration 
