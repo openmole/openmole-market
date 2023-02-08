@@ -13,8 +13,10 @@ DirectSampling(
   sampling =   
     LHS(
       500,
-      diffusion in (10.0, 100.0),
-      evaporation in (10.0, 100.0)
+      Seq(
+        diffusion in (10.0, 100.0),
+        evaporation in (10.0, 100.0)
+      )
     )
 ) hook (workDirectory / "result.csv") hook display 
 
