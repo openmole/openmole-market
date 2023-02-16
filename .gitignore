@@ -27,4 +27,4 @@ release/*
 .Rhistory
 abc/posteriorSample/
 *.tgz
-
+*.success

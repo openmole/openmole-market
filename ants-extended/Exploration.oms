@@ -34,27 +34,26 @@ val ants =
   )
 
 
-  val replications =
-   Replication (
-     evaluation = ants,
-     seed = seed,
-     sample = 64
+val replications =
+  Replication (
+    evaluation = ants,
+    seed = seed,
+    sample = 64
   )
 
 
 
-  val exploration =
-    DirectSampling(
-      evaluation = replications,
-      sampling =
-        LHS(
-          10,
-          diffusionRate in (1.0, 100.0),
-          evaporationRate in (1.0, 100.0),
-          population in (100.0,200.0),
-          wiggleAngle in (5.0,90.0)
-        ) withIndex id
-    ) on env hook (workDirectory / "exploration" / ((new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss")).format(new Date()))+"_"+purpose+".csv") 
+DirectSampling(
+  evaluation = replications,
+  sampling =
+    LHS(
+      sample = 10,
+      factor = Seq(
+        diffusionRate in (1.0, 100.0),
+        evaporationRate in (1.0, 100.0),
+        population in (100.0,200.0),
+        wiggleAngle in (5.0,90.0))
+    ) withIndex id
+) on env hook (workDirectory / "exploration" / (experiment.launchDate+"_"+purpose+".csv")) 
 
 
-  exploration

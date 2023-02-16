@@ -4,8 +4,8 @@ val treeDepth = Val[Int]
 val kFold = 10
 
 val random = new util.Random(42)
-val imagesArrays = 
-  (0 until kFold).map(i => random.shuffle((workDirectory / "images").listFiles.toSeq).toArray)
+val imagesArrays: Array[Array[File]] = 
+  (0 until kFold).map(i => random.shuffle((workDirectory / "images").listFiles).toArray[File]).toArray
 
 val learningOutput = Val[String]
 

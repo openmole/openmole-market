@@ -57,7 +57,7 @@ val replications =
    seed = seed,
    sample = 64,
    aggregation = Seq(food1, food2, food3)
-) hook (workDirectory / "exploration" / ((new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss")).format(new Date()))+"_"+purpose+".csv") 
+) hook (workDirectory / "exploration" / (experiment.launchDate+"_"+purpose+".csv")) 
 
 
 
@@ -66,11 +66,12 @@ val exploration =
     evaluation = replications,
     sampling =
       LHS(
-        2,
-        diffusionRate in (10.0, 100.0),
-        evaporationRate in (10.0, 100.0),
-        population in (100.0,200.0),
-        wiggleAngle in (20.0,50.0)
+        sample = 2,
+        factor = Seq(
+          diffusionRate in (10.0, 100.0),
+          evaporationRate in (10.0, 100.0),
+          population in (100.0,200.0),
+          wiggleAngle in (20.0,50.0))
       )
   )
 
