@@ -47,7 +47,10 @@ NichedNSGA2Evolution(
   // (a, 4) means that the interval of a is divided in 4 equal segment.
   // (a in (0.0 to 10.0 by 1.0)) gives 10 equal segment
   // (a in Vector(0.0, 2.0, 5.0, 10.0))  gives 4 segment of different sizes
-  niche = Seq((a, 4), (b, 4), (c, 4)),
+  niche = Seq(
+    a evaluate "(a / 10).floor.toInt",
+    b evaluate "(b / 0.5).floor.toInt", 
+    c evaluate "(c / 5).floor.toInt"),
   //Specify the objective(s)
   objective = Seq(doubleValue evaluate median),
   stochastic = Stochastic(seed = seed),

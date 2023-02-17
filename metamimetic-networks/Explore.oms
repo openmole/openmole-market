@@ -81,11 +81,12 @@ DirectSampling (
   sampling = 
     (seed in (UniformDistribution[Int]() take 50 )) x
       SobolSampling (
-        200,
-        rewiringProbability in (0.0 , 1.0),
-        strengthOfDilemma in (0.00, 0.50),
-        initialNeighbours in (8.0 , 90.0),      
-        inicoop in (0.0, 100.0)
+        sample = 200,
+        factor = Seq(
+          rewiringProbability in (0.0 , 1.0),
+          strengthOfDilemma in (0.00, 0.50),
+          initialNeighbours in (8.0 , 90.0),      
+          inicoop in (0.0, 100.0))
       )
  )
 
