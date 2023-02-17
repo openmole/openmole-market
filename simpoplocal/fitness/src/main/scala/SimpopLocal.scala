@@ -94,7 +94,7 @@ trait SimpopLocal {
    *
    * By design, each settlements cannot acquire innovations with the same rootId.
    */
-  implicit lazy val innovationOrdering = Ordering.by((_: Innovation).rootId)
+  implicit lazy val innovationOrdering: Ordering[Innovation] = Ordering.by((_: Innovation).rootId)
 
   /**
    * Compute the initial state
@@ -269,7 +269,7 @@ trait SimpopLocal {
       newSettlements += newSettlement
     }
 
-    SimpopLocalState(state.step + 1, settlements = newSettlements, currentInnovationId)
+    SimpopLocalState(state.step + 1, settlements = newSettlements.toSeq, currentInnovationId)
   }
 
   /**

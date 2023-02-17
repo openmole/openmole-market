@@ -49,7 +49,7 @@ object Launcher extends App {
 
   val rng = new Random(42)
 
-  val fitnesses = Iterator.continually(rng.nextLong).take(replications).toSeq.par.map {
+  val fitnesses = Iterator.continually(rng.nextLong).take(replications).toSeq.map {
     seed =>
       implicit val threadRng = new Random(seed)
       Fit(m.run)
