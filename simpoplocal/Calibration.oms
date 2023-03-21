@@ -18,12 +18,11 @@ val evolution =
     stochastic = Stochastic(seed = seed),
     evaluation = evaluateModel,
     parallelism = 1000, 
-    termination = 200000,
-    distribution = Island(5 minutes)
-  ) hook (workDirectory / "populations") 
+    termination = 10000000
+  ) hook (workDirectory / "populations") by Island(5 minutes)
 
 val grid = EGIEnvironment("vo.complex-systems.eu")
 
 // Define the execution
-(evolution on grid hook savePopulation)
+(evolution on grid)
 
