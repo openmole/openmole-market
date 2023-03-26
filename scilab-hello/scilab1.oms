@@ -1,0 +1,17 @@
+val x = Val[Double]
+val dArray = Val[Array[Double]]
+
+val m = 
+  ScilabTask("dArray = dArray * x") set (
+    inputs += (x.mapped, dArray.mapped),
+    outputs += (dArray.mapped, x),
+    dArray := Array(9.0, 8.0)
+  )
+
+val env = LocalEnvironment(2)
+
+DirectSampling(
+  evaluation = m hook display on env,
+  sampling = x in (0.0 to 10.0 by 0.2)
+)
+
