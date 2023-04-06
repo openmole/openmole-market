@@ -1,0 +1,12 @@
+val name = Val[String]
+val output = Val[String]
+
+val hello = JVMTask("val output = hellocode.Hello(name)", jars = Seq(workDirectory / "hellocode_3-1.0.jar")) set (
+  inputs += name.mapped,
+  outputs += output.mapped)
+
+DirectSampling(
+  sampling = name in List("Richard", "Martin", "Benjamin"),
+  evaluation = hello
+) hook display
+
