@@ -1,4 +1,5 @@
 val images = Val[Array[File]]
+val imageDirectory = Val[File]
 val nbTrees   = Val[Int]
 val treeDepth = Val[Int]
 val kFold = 10
@@ -9,14 +10,26 @@ val imagesArrays: Array[Array[File]] =
 
 val learningOutput = Val[String]
 
+val prepareFiles = 
+  ScalaTask("""
+  val imageDirectory = newDir("image")
+  for 
+    (f, i) <- images.zipWithIndex
+  do f.copy(imageDirectory / s"image$i.jpg")
+  """) set (
+    (inputs, outputs) += (nbTrees, treeDepth),
+    inputs += images,
+    outputs += imageDirectory
+  )
+
 val learning = PythonTask(
   workDirectory / "forest.py",
   arguments = "images ${nbTrees} ${treeDepth}",
   stdOut = learningOutput,
-  libraries = Seq("matplotlib", "sklearn", "pillow", "scikit-image")
+  libraries = Seq("matplotlib", "scikit-learn", "pillow", "scikit-image")
 ) set (
   inputs += (nbTrees, treeDepth),
-  inputFileArrays += (images, "images/image", ".jpg"),
+  inputFiles += (imageDirectory, "images", true),
   outputs += (nbTrees, treeDepth)
 )
 
@@ -27,6 +40,6 @@ DirectSampling(
   evaluation = 
     DirectSampling(
       sampling = (images in imagesArrays),
-      evaluation = learning hook (workDirectory / "points.csv", Seq(nbTrees, treeDepth, learningOutput))
-    )
+      evaluation = prepareFiles -- learning 
+    ) hook (workDirectory / "points.csv", Seq(nbTrees, treeDepth, learningOutput))
 )

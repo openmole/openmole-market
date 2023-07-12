@@ -27,7 +27,7 @@ import random
 from sklearn.model_selection import cross_val_score
 from skimage.feature import hog
 from skimage import data, color, exposure
-from sklearn.externals import joblib
+import joblib
 import sys
 
 
