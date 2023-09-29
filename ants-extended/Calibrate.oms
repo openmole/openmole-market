@@ -18,12 +18,12 @@ val cmds = Seq("run-to-grid")
 val ants =
   NetLogo5Task(workDirectory / "ants.nlogo", cmds, seed = seed) set (
     // Map the OpenMOLE variables to NetLogo variables
-    inputs += (gPopulation mapped "gpopulation"),
-    inputs += (gDiffusionRate mapped "gdiffusion-rate"),
-    inputs += (gEvaporationRate mapped "gevaporation-rate"),
-    outputs += (food1 mapped "final-ticks-food1"),
-    outputs += (food2 mapped "final-ticks-food2"),
-    outputs += (food3 mapped "final-ticks-food3"),
+    inputs += gPopulation mapped "gpopulation",
+    inputs += gDiffusionRate mapped "gdiffusion-rate",
+    inputs += gEvaporationRate mapped "gevaporation-rate",
+    outputs += food1 mapped "final-ticks-food1",
+    outputs += food2 mapped "final-ticks-food2",
+    outputs += food3 mapped "final-ticks-food3",
     gPopulation := 100
   )
 
