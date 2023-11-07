@@ -1,0 +1,137 @@
+- name: Hello World in Python
+  directory: python-hello
+  tags:
+  - Python
+- name: Hello World in R
+  directory: R-hello
+  tags:
+  - R
+- name: Hello World in Scilab
+  directory: scilab-hello
+  tags:
+  - Scilab
+- name: Hello World in Java
+  directory: hello-jvm
+  tags:
+  - Java
+- name: Hello World in NetLogo
+  directory: fire
+  tags:
+  - NetLogo
+  - Stochastic
+  - Simulation
+- name: Hello World in Julia
+  directory: julia-hello
+  tags:
+  - Julia
+- name: Hello World in GAMA
+  directory: gama
+  tags:
+  - GAMA
+  - Stochastic
+  - Simulation
+- name: Hello World in a Container
+  directory: hello-container
+  tags:
+  - Native Code
+- name: Hello with OpenMOLE plugin
+  directory: hello-plugin
+  tags:
+  - Scala
+  - Java
+  - Plugin
+- name: Model Exploration Tutorial
+  directory: tutorials/method
+  tags:
+  - NetLogo
+  - Genetic Algorithm
+  - Simulation
+  - Calibration
+  - Tutorial
+  - Sensitivity
+  - Diversity
+- name: Native Application Tutorial
+  directory: tutorials/native
+  tags:
+  - Tutorial
+  - Native Code
+  - Data
+  - Python
+- name: Workflow Tutorial
+  directory: tutorials/workflow
+  tags:
+  - Tutorial
+  - Scala
+  - Workflow
+- name: Morris Sensitivity Analysis
+  directory: sensitivity/morris
+  tags:
+  - NetLogo
+  - Sensitivity
+  - Simulation
+- name: Saltelli Sensitivity Analysis
+  directory: sensitivity/saltelli
+  tags:
+  - Sensitivity
+  - Simulation
+- name: ABC
+  directory: abc
+  tags:
+  - ABC
+  - Stochastic
+  - Calibration
+  - Tutorial
+- name: Calibration of Ants
+  directory: ants
+  tags:
+  - NetLogo
+  - Genetic Algorithm
+  - Simulation
+  - Calibration
+- name: Optimise Ackley function in Python
+  directory: ackley
+  tags:
+  - Python
+  - Genetic Algorithm
+  - Native Code
+  - Optimisation
+- name: Pi Computation
+  directory: pi
+  tags:
+  - Stochastic
+  - Simulation
+  - Scala
+- name: SimpopLocal
+  directory: simpoplocal
+  tags:
+  - Stochastic
+  - Simulation
+  - Genetic Algorithm
+  - Scala
+  - Calibration
+- name: Metamimetic Networks
+  directory: metamimetic-networks
+  tags:
+  - Stochastic
+  - Simulation
+  - NetLogo
+- name: Segmentation with FSL
+  directory: fsl-fast
+  tags:
+  - FSL
+  - Data
+  - Native Code
+  - Neuro Science
+- name: NSGA2 Test Functions
+  directory: nsga2-test-functions
+  tags:
+  - Calibration
+  - Optimisation
+  - Scala
+  - Genetic Algorithm
+- name: Generate Visualisation
+  directory: genetic-algos-visu
+  tags:
+  - Genetic Algorithm
+  - R
+
