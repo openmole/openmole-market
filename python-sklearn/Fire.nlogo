@@ -16,8 +16,8 @@ to setup
   ask patches with [(random-float 1) < density]
     [ set pcolor green ]
   ;; make a column of burning trees
-  ask patches with [pxcor = min-pxcor]
-    [ ignite ]
+  ;ask patches with [pxcor = min-pxcor][ ignite ]
+  ask one-of patches [ ignite ]
   ;; set tree counts
   set initial-trees count patches with [pcolor = green]
   set burned-trees 0
@@ -70,7 +70,6 @@ end
 to-report traversed
   ifelse burnt-final-trees > 10 [report 1][report 0]
 end
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 200
@@ -108,7 +107,7 @@ density
 density
 0.0
 1
-0.72
+0.75
 0.01
 1
 NIL
@@ -157,7 +156,7 @@ resistance
 resistance
 0
 1
-0.22
+0.25
 0.01
 1
 NIL
@@ -540,7 +539,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.2
+NetLogo 6.2.0
 @#$#@#$#@
 set density 60.0
 setup
