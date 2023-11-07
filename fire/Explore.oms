@@ -12,9 +12,9 @@ val cmds =
 val fireTask =
   NetLogo6Task(workDirectory / "Fire.nlogo", cmds) set (
     inputs += seed,
-    outputs += (seed, density),
-    netLogoInputs += (density, "density"),
-    netLogoOutputs += ("burned-trees", burned)
+    inputs += density mapped "density",
+    outputs += burned mapped "burned-trees",
+    outputs += (seed, density)
   )
 
 val exploration = 
