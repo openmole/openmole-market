@@ -41,7 +41,7 @@ val sampler= DirectSampling (
 // Python task to embed the analysis method used to evaluate the replications of the ABM
 val sklearnclassifier =
   PythonTask(
-    workDirectory / "logisticregression.py",
+    workDirectory / "logisticregressionbis.py",
     libraries = Seq("pandas","numpy","sklearn")
   ) set (
     inputs += forest_density.Array mapped "forest_density_array",
