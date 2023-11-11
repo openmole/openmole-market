@@ -46,7 +46,7 @@ val sklearnclassifier =
   ) set (
     inputs += forest_density.Array mapped "forest_density_array",
     inputs += tree_resistance.Array mapped "tree_resistance_array",
-    inputs += replication.Array mapped "seed",
+    inputs += replication.Array mapped "replication_array",
     inputs += burnt.Array mapped "burnt_array",
     inputs += binaryburnt.Array mapped "binaryburnt_array",
     inputs += traversed.Array mapped "traversed_array"
