@@ -26,6 +26,8 @@ val simmodel = PythonTask(workDirectory / "fire.py",
     outputs += burnt mapped "burnt",
     outputs += binaryburnt mapped "binary-burnt"
   )
+//TO CHECK: variable names and existance in the python script: what is the variable is mapped to a non existing variable?
+
 
 // Exploration task: DirectSampling. Input: model to evaluate, output: instances of model variables aggregated arrays to map onto the analysis script.
 val sampler= DirectSampling (
