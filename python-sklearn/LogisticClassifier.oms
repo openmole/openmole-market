@@ -24,7 +24,7 @@ val simmodel = PythonTask(workDirectory / "fire.py",libraries=Seq("numpy")
 
 // Exploration task: DirectSampling. Input: model to evaluate, output: instances of model variables aggregated arrays to map onto the analysis script.
 val sampler = DirectSampling(
-    evaluation = simmodel,
+    evaluation = (simmodel hook (workDirectory / "exploration.csv")),
     sampling =
       ((forest_density in (0.1 to 0.9 by 0.2)) x
        (tree_resistance in (0.1 to 0.9 by 0.2)) x
