@@ -1,5 +1,7 @@
 import numpy
 
+numpy.random.seed(seed)
+
 width, height = 252, 252
 
 #density = 0.65#forest_density
