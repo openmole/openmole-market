@@ -11,7 +11,14 @@ val replication = Val[Int]
 val burnt = Val[Double]
 val binaryburnt = Val[Double]
 
-val simmodel = PythonTask(workDirectory / "fire.py") set (
+val errdensity = Val[Array[Double]]
+val errresistance = Val[Array[Double]]
+val score = Val[Double]
+
+// Python task to embed the ABM model we wish to explore
+val simmodel = PythonTask(workDirectory / "fire.py",
+    libraries=("numpy")
+    ) set (
     (inputs,outputs) += (forest_density,tree_resistance,replication),
     inputs += forest_density mapped "forest_density",
     inputs += tree_resistance mapped "tree_resistance",
@@ -19,24 +26,11 @@ val simmodel = PythonTask(workDirectory / "fire.py") set (
     outputs += burnt mapped "burnt",
     outputs += binaryburnt mapped "binary-burnt"
   )
+//TO CHECK: variable names and existance in the python script: what is the variable is mapped to a non existing variable?
 
-val training = Val[File]
-val validation = Val[File]
 
-def datagen(outputfile: Val[File]) = {
-
-  val aggregtofile = ScalaTask(s"""
-    val ${outputfile.name} = newFile()
-    ${outputfile.name}.content = (
-      Seq("forest_density,tree_resistance,replication,burnt,binaryburnt")++
-      ((Seq(forest_density.toSeq,tree_resistance.toSeq,replication.toSeq,burnt.toSeq,binaryburnt.toSeq).transpose).map(_.mkString(",")))).mkString("\\n")
-   """
-  ) set (
-    inputs += (forest_density.toArray, resistance.toArray, replication.toArray, burnt.toArray, binaryburnt.toArray),
-    outputs += outputfile
-  )
-
-  DirectSampling (
+// Exploration task: DirectSampling. Input: model to evaluate, output: instances of model variables aggregated arrays to map onto the analysis script.
+val sampler= DirectSampling (
     evaluation = simmodel,
     sampling =
       ((forest_density in (0.1 to 0.9 by 0.1)) x
@@ -44,21 +38,20 @@ def datagen(outputfile: Val[File]) = {
        (replication in (UniformDistribution[Int](10000) take 5))),
     aggregation = Seq(forest_density, tree_resistance, replication, burnt, binaryburnt, traversed)
 
-  ) -- aggregtofile
+  ) 
 
-}
-
-val errdensity = Val[Array[Double]]
-val errresistance = Val[Array[Double]]
-val score = Val[Double]
-
+// Python task to embed the analysis method used to evaluate the replications of the ABM
 val sklearnclassifier =
   PythonTask(
-    workDirectory / "logisticregression.py",
+    workDirectory / "logisticregressionbis.py",
     libraries = Seq("pandas","numpy","sklearn")
   ) set (
-    inputs += training mapped "data/training.csv",
-    inputs += validation mapped "data/validation.csv",
+    inputs += forest_density.Array mapped "forest_density_array",
+    inputs += tree_resistance.Array mapped "tree_resistance_array",
+    inputs += replication.Array mapped "replication_array",
+    inputs += burnt.Array mapped "burnt_array",
+    inputs += binaryburnt.Array mapped "binaryburnt_array",
+    inputs += traversed.Array mapped "traversed_array"
     outputs += errdensity mapped "errdensity",
     outputs += errresistance mapped "errresistance",
     outputs += score mapped "score"
@@ -66,4 +59,7 @@ val sklearnclassifier =
 
 val indics_hook = AppendToCSVFileHook(workDirectory / "exploration" / "classiferrors.csv")
 
-EmptyTask() -- Seq(training, validation).map(datagen) -- (sklearnclassifier hook indics_hook)
+// Workflow: exploration to sklearn analysis transition 
+sampler -< (sklearnclassifier hook indics_hook)
+
+//EmptyTask() -- Seq(training, validation).map(datagen) -- (sklearnclassifier hook indics_hook)???
