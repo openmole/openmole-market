@@ -1,9 +1,4 @@
-import java.text.SimpleDateFormat
-import java.util.Date
-
-// generate basic binary data with
-// the modified fire model
-
+// generate basic binary data with the modified fire model
 val forest_density = Val[Double]
 val tree_resistance = Val[Double]
 val replication = Val[Int]
@@ -16,50 +11,42 @@ val errresistance = Val[Array[Double]]
 val score = Val[Double]
 
 // Python task to embed the ABM model we wish to explore
-val simmodel = PythonTask(workDirectory / "fire.py",
-    libraries=("numpy")
-    ) set (
+val simmodel = PythonTask(workDirectory / "fire.py",libraries=Seq("numpy")
+  ) set (
     (inputs,outputs) += (forest_density,tree_resistance,replication),
     inputs += forest_density mapped "forest_density",
     inputs += tree_resistance mapped "tree_resistance",
     inputs += replication mapped "seed",
     outputs += burnt mapped "burnt",
-    outputs += binaryburnt mapped "binary-burnt"
+    outputs += binaryburnt mapped "binaryburnt"
   )
-//TO CHECK: variable names and existance in the python script: what is the variable is mapped to a non existing variable?
 
 
 // Exploration task: DirectSampling. Input: model to evaluate, output: instances of model variables aggregated arrays to map onto the analysis script.
-val sampler= DirectSampling (
+val sampler = DirectSampling(
     evaluation = simmodel,
     sampling =
-      ((forest_density in (0.1 to 0.9 by 0.1)) x
-       (tree_resistance in (0.1 to 0.9 by 0.1)) x
-       (replication in (UniformDistribution[Int](10000) take 5))),
-    aggregation = Seq(forest_density, tree_resistance, replication, burnt, binaryburnt, traversed)
+      ((forest_density in (0.1 to 0.9 by 0.2)) x
+       (tree_resistance in (0.1 to 0.9 by 0.2)) x
+       (replication in (UniformDistribution[Int](max = 100000) take 5)))
+  )
 
-  ) 
-
-// Python task to embed the analysis method used to evaluate the replications of the ABM
-val sklearnclassifier =
-  PythonTask(
-    workDirectory / "logisticregressionbis.py",
-    libraries = Seq("pandas","numpy","sklearn")
-  ) set (
-    inputs += forest_density.Array mapped "forest_density_array",
-    inputs += tree_resistance.Array mapped "tree_resistance_array",
-    inputs += replication.Array mapped "replication_array",
-    inputs += burnt.Array mapped "burnt_array",
-    inputs += binaryburnt.Array mapped "binaryburnt_array",
-    inputs += traversed.Array mapped "traversed_array"
+// Python task to embed the machine learning analysis used to evaluate the behavior of the computationnal model
+//  (surrogate logistic regression model)
+val sklearnclassifier = PythonTask(
+    workDirectory / "logisticregression.py",
+    libraries = Seq("pandas","numpy","scikit-learn")
+) set (
+    inputs += forest_density.array mapped "forest_density_array",
+    inputs += tree_resistance.array mapped "tree_resistance_array",
+    inputs += binaryburnt.array mapped "binaryburnt_array",
     outputs += errdensity mapped "errdensity",
     outputs += errresistance mapped "errresistance",
     outputs += score mapped "score"
-  )
+) hook (workDirectory / "classiferrors.csv")
 
-val indics_hook = AppendToCSVFileHook(workDirectory / "exploration" / "classiferrors.csv")
 
-// Workflow: exploration to sklearn analysis transition 
-sampler -< (sklearnclassifier hook indics_hook)
+// Workflow: exploration to sklearn analysis transition
+//(">-" aggregates the sampling as arrays for the sklearnclassifier task, where inputs arrays are retrieved using the ".array" function of prototypes)
+sampler >- sklearnclassifier
 
-//EmptyTask() -- Seq(training, validation).map(datagen) -- (sklearnclassifier hook indics_hook)???
