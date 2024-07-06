@@ -11,6 +11,4 @@ val pyTask =
     outputFiles += ("out.csv", output)
   )
 
-val copyHook = CopyFileHook(output, workDirectory / "result.csv")
-
-(pyTask hook copyHook)
+pyTask hook (workDirectory / "result")

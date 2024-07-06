@@ -15,10 +15,8 @@ val pyTask =
     data := workDirectory / "../data/data1.csv"
   )
 
-val copyHook = CopyFileHook(output, workDirectory / "results/result${i}.csv")
-
 DirectSampling (
   evaluation = pyTask hook copyHook,
   sampling = i in (1 to 10)
-)
+) hook (workDirectory / "result")
 

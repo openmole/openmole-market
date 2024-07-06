@@ -18,5 +18,5 @@ DirectSampling(
         evaporation in (10.0, 100.0)
       )
     )
-) hook (workDirectory / "result.csv") hook display 
+) hook (workDirectory / "result") hook display 
 

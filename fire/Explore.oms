@@ -19,8 +19,9 @@ val fireTask =
 
 val exploration = 
   DirectSampling(
-    evaluation = Replication(fireTask hook (workDirectory / "result.csv", Seq(density, burned, seed)), seed, 10),
+    evaluation = Replication(fireTask, seed, 10),
     sampling = density in (20.0 to 80.0 by 10.0)
   )
 
-exploration
+exploration hook (workDirectory / "result")
+ 
