@@ -41,5 +41,5 @@ DirectSampling(
     DirectSampling(
       sampling = (images in imagesArrays),
       evaluation = prepareFiles -- learning 
-    ) hook (workDirectory / "points.csv", Seq(nbTrees, treeDepth, learningOutput))
-)
+    )
+) hook (workDirectory / "points")
