@@ -25,7 +25,7 @@ val env = LocalEnvironment(4)
 
 val exploration = 
   Replication(
-    evaluation = model,
+    evaluation = model hook display,
     seed = seed,
     sample = 100,
     aggregation = Seq(pi evaluate average)
