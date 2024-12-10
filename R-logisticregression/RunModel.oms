@@ -5,10 +5,6 @@ val replication = Val[Int]
 val burnt = Val[Double]
 val binaryburnt = Val[Double]
 
-val errdensity = Val[Array[Double]]
-val errresistance = Val[Array[Double]]
-val score = Val[Double]
-
 val simmodel = RTask("""
                     source('fire.R')
                     result = fire(seed,forestDensity,treeResistance)
@@ -19,7 +15,7 @@ val simmodel = RTask("""
                     burnt <- result[["burnt"]]
                     binaryburnt <- result[["binaryBurnt"]]
                     """) set (
-    //(inputs,outputs) += (forest_density,tree_resistance,replication),
+    (inputs,outputs) += (forest_density,tree_resistance,replication),
     inputs += forest_density mapped "forestDensity",
     inputs += tree_resistance mapped "treeResistance",
     inputs += replication mapped "seed",
@@ -32,8 +28,8 @@ val simmodel = RTask("""
 DirectSampling(
     evaluation = (simmodel hook (workDirectory / "test")),
     sampling =
-      ((forest_density in (0.1 to 0.9 by 0.8)) x
-       (tree_resistance in (0.1 to 0.9 by 0.8)) x
+      ((forest_density in (0.1 to 0.9 by 0.05)) x
+       (tree_resistance is 0.1) x
        (replication in (UniformDistribution[Int](max = 100000) take 1)))
   )
 
