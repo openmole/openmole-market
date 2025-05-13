@@ -20,4 +20,4 @@ SensitivitySaltelli(
   sample = 1000,
   inputs = Seq(x1 in (-Pi, Pi), x2 in (-Pi, Pi), x3 in (-Pi, Pi)),
   outputs = Seq(y)
-) hook (workDirectory / "Ishgami")
+) hook (workDirectory / "Ishigami")
