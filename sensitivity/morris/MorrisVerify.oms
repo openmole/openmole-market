@@ -11,31 +11,26 @@ val outputZ = Val[Double]
 // run on 4 threads/CPUs on the local computer
 val envLocal = LocalEnvironment(4)
 
-val testFunction = ScalaTask(
-    """val outputX = inputB*2 + inputC*3 - scala.math.pow(inputD,2) + scala.math.pow(inputE,3)
-    val outputY = inputA*10 + inputB*inputC*2 + inputB*inputC*inputD*3
-    val outputZ = inputA
-    """
-    ) set (
-  inputs += (inputA, inputB, inputC, inputD, inputE),
-  outputs += (outputX, outputY, outputZ)
-)
-
-// hooks to save results into the results_verify subdirectory
-val storeSimuCSV = AppendToCSVFileHook(workDirectory / "results_verify" / "simu.csv")
-val storeSensitivityCSV = AppendToCSVFileHook(workDirectory / "results_verify" / "sensitivity.csv")
+val testFunction = ScalaTask("""
+  val outputX = inputB*2 + inputC*3 - scala.math.pow(inputD,2) + scala.math.pow(inputE,3)
+  val outputY = inputA*10 + inputB*inputC*2 + inputB*inputC*inputD*3
+  val outputZ = inputA""") set (
+    inputs += (inputA, inputB, inputC, inputD, inputE),
+    outputs += (outputX, outputY, outputZ)
+  )
 
 // drive the sensitivity analysis
 SensitivityMorris(
-    evaluation = testFunction on envLocal hook storeSimuCSV,
-    inputs = Seq(inputA in (0.0, 10.0), 
-                inputB in (0.0, 10.0),
-                inputC in (0.0, 10.0),
-                inputD in (0.0, 10.0),
-                inputE in (0.0, 10.0)
-                ),
-    outputs = Seq(outputX, outputY, outputZ),
-    sample = 10,
-    level = 5) hook storeSensitivityCSV
+  evaluation = testFunction,
+  inputs = Seq(
+    inputA in (0.0, 10.0), 
+    inputB in (0.0, 10.0),
+    inputC in (0.0, 10.0),
+    inputD in (0.0, 10.0),
+    inputE in (0.0, 10.0)),
+  outputs = Seq(outputX, outputY, outputZ),
+  sample = 10,
+  level = 5
+) hook (workDirectory / "verify.omr")  on envLocal
 
 
