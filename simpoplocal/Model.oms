@@ -69,5 +69,5 @@ val evalModel =
   
 val evaluateModel = runModel -- evalModel
 
-evaluateModel hook ToStringHook()
+evaluateModel hook display
 
