@@ -122,6 +122,13 @@
   - Data
   - Native Code
   - Neuro Science
+- name: Machine learning in Python
+  directory: python-sklearn
+  tags:
+  - Python
+  - Machine learning
+  - Logistic regression
+  - sklearn
 - name: NSGA2 Test Functions
   directory: nsga2-test-functions
   tags:
