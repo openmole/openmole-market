@@ -1,0 +1,69 @@
+import java.text.SimpleDateFormat
+import java.util.Date
+
+// generate basic binary data with
+// the modified fire model
+
+val forest_density = Val[Double]
+val tree_resistance = Val[Double]
+val replication = Val[Int]
+
+val burnt = Val[Double]
+val binaryburnt = Val[Double]
+
+val simmodel = PythonTask(workDirectory / "fire.py") set (
+    (inputs,outputs) += (forest_density,tree_resistance,replication),
+    inputs += forest_density mapped "forest_density",
+    inputs += tree_resistance mapped "tree_resistance",
+    inputs += replication mapped "seed",
+    outputs += burnt mapped "burnt",
+    outputs += binaryburnt mapped "binary-burnt"
+  )
+
+val training = Val[File]
+val validation = Val[File]
+
+def datagen(outputfile: Val[File]) = {
+
+  val aggregtofile = ScalaTask(s"""
+    val ${outputfile.name} = newFile()
+    ${outputfile.name}.content = (
+      Seq("forest_density,tree_resistance,replication,burnt,binaryburnt")++
+      ((Seq(forest_density.toSeq,tree_resistance.toSeq,replication.toSeq,burnt.toSeq,binaryburnt.toSeq).transpose).map(_.mkString(",")))).mkString("\\n")
+   """
+  ) set (
+    inputs += (forest_density.toArray, resistance.toArray, replication.toArray, burnt.toArray, binaryburnt.toArray),
+    outputs += outputfile
+  )
+
+  DirectSampling (
+    evaluation = simmodel,
+    sampling =
+      ((forest_density in (0.1 to 0.9 by 0.1)) x
+       (tree_resistance in (0.1 to 0.9 by 0.1)) x
+       (replication in (UniformDistribution[Int](10000) take 5))),
+    aggregation = Seq(forest_density, tree_resistance, replication, burnt, binaryburnt, traversed)
+
+  ) -- aggregtofile
+
+}
+
+val errdensity = Val[Array[Double]]
+val errresistance = Val[Array[Double]]
+val score = Val[Double]
+
+val sklearnclassifier =
+  PythonTask(
+    workDirectory / "logisticregression.py",
+    libraries = Seq("pandas","numpy","sklearn")
+  ) set (
+    inputs += training mapped "data/training.csv",
+    inputs += validation mapped "data/validation.csv",
+    outputs += errdensity mapped "errdensity",
+    outputs += errresistance mapped "errresistance",
+    outputs += score mapped "score"
+  )
+
+val indics_hook = AppendToCSVFileHook(workDirectory / "exploration" / "classiferrors.csv")
+
+EmptyTask() -- Seq(training, validation).map(datagen) -- (sklearnclassifier hook indics_hook)

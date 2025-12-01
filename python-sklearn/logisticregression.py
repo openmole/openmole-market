@@ -1,36 +1,21 @@
-
 from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
 import pandas
 import numpy
 
-d = pandas.read_csv('data/training.csv')
-dp = pandas.read_csv('data/validation.csv')
+X=pandas.DataFrame({'density':forest_density_array, 'resistance':tree_resistance_array})
+Y=pandas.DataFrame({'binaryburnt':binaryburnt_array})
 
-X = d[['density','resistance']]
-y = d['binaryburnt']
-#print(X)
+X_train, X_test, Y_train, Y_test=train_test_split(X,Y)
 
-Xp = dp[['density','resistance']]
-yp = dp['binaryburnt']
+clf = LogisticRegression(random_state=0, solver='lbfgs').fit(X_train, Y_train)
 
-clf = LogisticRegression(random_state=0, solver='lbfgs').fit(X, y)
-
-pred = clf.predict(Xp)
-
-#inds = (numpy.where(abs(pred - yp)==1))[0].tolist()
-#print(inds)
-
-prederror = dp.loc[abs(pred - yp)==1]
-
-print(prederror['density'])
-print(prederror['resistance'])
+pred = clf.predict(X_test)
 
 # define outputs - must be "standard types", not objects (basic types and multidimensional lists)
-errdensity = list(prederror['density'])
-errresistance = list(prederror['resistance'])
+# here: values of parameters for which prediction fails
+errdensity = X_test['density'][abs(pred - Y_test['binaryburnt'])==1].values.flatten().tolist()
+errresistance = X_test['resistance'][abs(pred - Y_test['binaryburnt'])==1].values.flatten().tolist()
 
-score = clf.score(Xp,yp)
-print(score)
-
-
-
+# performance of the surrogate
+score = clf.score(X_test,Y_test)

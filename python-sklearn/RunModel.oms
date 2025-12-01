@@ -1,0 +1,25 @@
+// run the modified fire model in python
+
+val forest_density = Val[Double]
+val tree_resistance = Val[Double]
+val replication = Val[Int]
+
+val burnt = Val[Double]
+val binaryburnt = Val[Double]
+
+val simmodel = PythonTask(workDirectory / "fire.py", libraries=Seq("numpy")) set (
+    (inputs,outputs) += (forest_density,tree_resistance,replication),
+    inputs += forest_density mapped "forest_density",
+    inputs += tree_resistance mapped "tree_resistance",
+    inputs += replication mapped "seed",
+    outputs += burnt mapped "burnt",
+    outputs += binaryburnt mapped "binaryburnt"
+  )
+
+DirectSampling (
+  evaluation = simmodel,
+    sampling =
+      ((forest_density in (0.1 to 0.9 by 0.8)) x
+       (tree_resistance in (0.1 to 0.9 by 0.8)) x
+       (replication in (UniformDistribution[Int](max = 100000) take 1)))
+) hook (workDirectory / "exploration.csv")
