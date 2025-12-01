@@ -21,5 +21,5 @@ DirectSampling (
     sampling =
       ((forest_density in (0.1 to 0.9 by 0.8)) x
        (tree_resistance in (0.1 to 0.9 by 0.8)) x
-       (replication in (UniformDistribution[Int](max = 100000) take 1)))
+       (replication in (RandomSequence[Int](min = 0, max = 100000, size = 1))))
 ) hook (workDirectory / "exploration.csv")
