@@ -1,0 +1,28 @@
+val density = Val[Double]
+val seed = Val[Int]
+val burned = Val[Double]
+
+val cmds = 
+  List(
+    "random-seed ${seed}",
+    "setup",
+    "while [any? turtles] [go]"
+  )
+
+val fireTask =
+  NetLogo7Task(workDirectory / "Fire.nlogo", cmds) set (
+    inputs += seed,
+    inputs += density mapped "density",
+    outputs += burned mapped "burned-trees",
+    outputs += (seed, density)
+  )
+
+val exploration = 
+  DirectSampling(
+    evaluation = Replication(fireTask, seed, 10),
+    sampling = density in (20.0 to 80.0 by 10.0)
+  )
+
+exploration hook (workDirectory / "result")
+
+ 
