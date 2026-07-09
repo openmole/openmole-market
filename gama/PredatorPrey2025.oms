@@ -10,14 +10,13 @@ val seed = Val[Long]
 // The third argument is the number of steps
 val gama = 
   GAMATask(
-    project = workDirectory / "2025",
+    project = workDirectory / "ws",
     gaml = "models/Model11.gaml",
-    experiment = "prey_predator",
     finalStep = 100,
     version = "2025.06.4",
     seed = seed) set (
     inputs += (nbPreysInit mapped "nb_preys_init"),
-    outputs += (numberOfPreys mapped "Number of preys")
+    outputs += (numberOfPreys mapped "nb_preys")
   )
 
 // Explore and replicate the model
